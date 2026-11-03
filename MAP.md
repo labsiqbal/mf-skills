@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Maintain portable MF skills with independent versions and shared validation.
+Maintain portable MF skills with independent versions.
 
 ## Routing
 
@@ -11,8 +11,6 @@ Maintain portable MF skills with independent versions and shared validation.
 - Work coordination package: [entrypoint](skills/mf-orca/SKILL.md).
 - Current work: [backlog](backlog.md).
 - Package checks: [validator](scripts/check.py).
-- Behavior acceptance: [scenarios](tests/scenarios.md).
-- Sanitized validation results: [validation](work/validation.md).
 
 ## Delivery
 

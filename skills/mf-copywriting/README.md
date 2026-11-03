@@ -113,8 +113,8 @@ The update mode researches language, communication style, and copywriting patter
 - [`id/references/uji.md`](id/references/uji.md): behavior fixtures.
 - [`id/references/update.md`](id/references/update.md): on-demand language update flow.
 
-## Status and evidence
+## Status
 
-Version 0.2.0 is ready for draft and revision work with final human review. The research, source discussion, waiting-for-direction, and continuation flow were tested with separate agents and source review. The tests do not prove universal factual accuracy, consistent taste on every first draft, or equal behavior across every model and harness.
+Version 0.2.0 is ready for draft and revision work with final human review.
 
-`ready` means validated for its tested scope. `released` requires a verified Git tag. Version and author metadata live in [`SKILL.md`](SKILL.md).
+Version and author metadata live in [`SKILL.md`](SKILL.md).

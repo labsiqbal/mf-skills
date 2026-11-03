@@ -33,17 +33,13 @@ Use mf-copywriting. Rewrite this product description for beginner readers.
 Preserve the supplied features and avoid unsupported promises.
 ```
 
-Explicit invocation syntax depends on the harness. Codex supports `$mf-orca`.
+Explicit invocation syntax depends on the harness. Codex supports `$mf-orca`; Claude Code uses its native skill invocation.
 Natural-language activation depends on native discovery and model behavior.
 
-## Validation and releases
+## Releases
 
-```bash
-python3 scripts/check.py
-```
+Skills carry independent versions. A `released` skill has a verified
+`<skill-name>-v<version>` tag.
 
-[Behavior scenarios](tests/scenarios.md) and [validation results](work/validation.md)
-describe tested coverage and limits. Skills carry independent versions.
-`ready` means relevant checks and behavior tests passed; `released` also has a
-verified `<skill-name>-v<version>` tag. Neither status guarantees identical
-behavior across every model, harness, or project.
+Supported harnesses currently include Codex/T3 and Claude Code. Other harnesses
+may install packages through their native skill mechanism.

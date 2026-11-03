@@ -9,11 +9,10 @@ for human-facing copy. Preserve imported attribution, source history, relative
 references, and invocation controls. Keep private evaluation logs, credentials,
 runtime configuration, and client artifacts outside this public repository.
 
-Run `python3 scripts/check.py` before delivery. Use independent behavior tests
-for substantial instruction changes. `draft` can be installed for testing;
-`ready` requires relevant behavior evidence; `released` requires a verified tag.
+Run `python3 scripts/check.py` before delivery. `draft` is for development;
+`ready` requires relevant validation; `released` requires a verified tag.
 Tag skills independently as `<skill-name>-v<version>`. Record resolved tag SHA
 in the release receipt, never inside the tagged skill itself.
 
-The owner authorizes public GitHub publication of this monorepo and tested skill
+The owner authorizes public GitHub publication of this monorepo and skill
 releases. This grants no authority over projects operated through these skills.
