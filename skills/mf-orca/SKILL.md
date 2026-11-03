@@ -3,7 +3,7 @@ name: mf-orca
 description: Coordinate project work when the user invokes mf-orca or asks you to act as orchestrator/orkestrator. Select the current phase, relevant skills, bounded workers, and completion evidence.
 metadata:
   version: "0.1.0"
-  status: draft
+  status: ready
   author: "Iqbal"
 ---
 
