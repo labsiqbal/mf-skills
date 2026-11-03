@@ -1,0 +1,22 @@
+# Map
+
+## Purpose
+
+Maintain portable MF skills with independent versions and shared validation.
+
+## Routing
+
+- Project decisions and source provenance: [context](context.md).
+- Copywriting package: [entrypoint](skills/mf-copywriting/SKILL.md).
+- Work coordination package: [entrypoint](skills/mf-orca/SKILL.md).
+- Current work: [backlog](backlog.md).
+- Package checks: [validator](scripts/check.py).
+- Behavior acceptance: [scenarios](tests/scenarios.md).
+- Sanitized validation results: [validation](work/validation.md).
+
+## Delivery
+
+Publish to `labsiqbal/mf-skills` under the owner's account. Verify Git identity,
+remote revision, checks, and tag resolution. Native bindings are registered by
+the host's existing skill manager; installed copies are not source authorities.
+Keep detailed local receipts outside this public repo.
