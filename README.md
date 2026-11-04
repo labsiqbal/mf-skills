@@ -87,7 +87,6 @@ may install packages through their native skill mechanism.
 ## Credits
 
 The hill-climb and council workflow is informed by
-[Theo Browne (@t3dotgg)](https://github.com/t3dotgg), his
-[tstack repository](https://github.com/t3dotgg/tstack), and his
-[UI experiment video](https://www.youtube.com/watch?v=xq0eB8vxeqk).
+[Theo Browne (@t3dotgg)](https://github.com/t3dotgg) and his
+[tstack repository](https://github.com/t3dotgg/tstack).
 The reviewed Tstack revision is pinned in [source provenance](context.md#sources).
