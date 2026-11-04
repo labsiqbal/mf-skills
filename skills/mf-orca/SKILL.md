@@ -1,8 +1,8 @@
 ---
 name: mf-orca
-description: Coordinate project work when the user invokes mf-orca or asks for orchestration. Route phases, delegate bounded work, and verify completion while keeping the coordinator out of implementation.
+description: Coordinate project work when the user invokes mf-orca or asks for orchestration. Route phases, delegate bounded work, and verify completion. Support requested hill climbs while keeping the coordinator out of implementation.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   status: ready
   author: "Iqbal"
 ---
@@ -49,6 +49,11 @@ Choose the smallest route that fits current evidence:
 Reuse existing specs, tickets, decisions, commits, and handoffs. Do not restart
 planning because a new session started.
 
+For a requested hill climb or iterative optimization with before/after evidence,
+read [Hill climb](references/hill-climb.md). It wraps the selected build and
+review methods; ordinary tasks keep their existing route. Load it too when the
+owner requests a council for that optimization.
+
 Load the selected skill and relevant references through the active harness.
 Honor explicit-only invocation controls. If a method is unavailable or requires
 user invocation, report that specific gap and offer the smallest valid next
@@ -94,10 +99,16 @@ one writer for each shared output or ledger. Workers do not delegate further
 unless explicitly authorized. Read artifacts, diffs, and relevant check results
 directly; a completion summary alone does not establish acceptance.
 
+Honor owner/project model and provider choices. Otherwise use supported session
+defaults and resolve available routes through the harness. Record actual model,
+provider and effort when exposed; report unavailable selections without silent
+substitution. Task choices do not change shared defaults or install providers.
+
 Use the active harness's native/T3 delegation contract. For asynchronous work,
 write a minimal open-worker checkpoint before dispatch with task, writer, scope,
-checkout, and expected artifact; append the returned task ID immediately after
-dispatch. Keep that checkpoint for continuation.
+checkout, and expected artifact. Dispatch is complete only when the returned
+task ID is saved in that checkpoint as the next action, before any wait or
+further work. Keep that checkpoint for continuation.
 Follow the returned `next` instruction: in T3, end the turn when completion will
 wake it. Resume on that signal, inspect results, and dispatch the next authorized
 step. Use supported bounded waits for in-turn native workers. Never poll task

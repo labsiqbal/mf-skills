@@ -29,6 +29,12 @@ authorized step. Ask only for unresolved decisions that change the outcome.
 ```
 
 ```text
+Use mf-orca in hill-climb mode. Improve this UI against a fixed rubric, keep
+before/after evidence, and use a separate reviewer. Stop after at most 3 rounds
+and report the best verified candidate.
+```
+
+```text
 Use mf-copywriting. Rewrite this product description for beginner readers.
 Preserve the supplied features and avoid unsupported promises.
 ```

@@ -6,3 +6,7 @@
 - [x] MF-002 - Make mf-orca coordinator-only with mandatory harness exceptions.
   Source and binding checks pass; independent fixture and review evidence retained
   privately. Version 1.0.0 is ready for review; no release tag claimed.
+
+- [ ] MF-003 - Add requested hill-climb coordination with fixed evaluation,
+  before/after evidence, runtime model selection, bounded review and best-candidate
+  retention. Validate behavior and deliver for review; no target-product changes.
