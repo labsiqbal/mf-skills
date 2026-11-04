@@ -11,8 +11,7 @@ MF Skills is Iqbal's public monorepo for `mf-copywriting` and `mf-orca`.
   `f4f9d62208c2b2c552426342a2abe649290bffa1`.
 - `mf-orca` initially authored for owner-requested coordination in T3; source
   imported from Infra commit `1661151` with its native invocation metadata.
-- Hill-climb and council methods informed by Theo Browne's
-  [UI experiment](https://www.youtube.com/watch?v=xq0eB8vxeqk) and
+- Hill-climb and council methods informed by [Theo Browne (@t3dotgg)](https://github.com/t3dotgg)'s
   [tstack](https://github.com/t3dotgg/tstack/tree/1085050f3baed1ac724caa4a8166145fb2ac88af).
 
 ## Decisions
