@@ -11,4 +11,4 @@
   before/after evidence, runtime model selection, bounded review and best-candidate
   retention. Native fixture and independent Standards/Spec reviews pass;
   version 1.1.0 merged in PR #2. README documents capabilities and credits Theo
-  Browne's GitHub, Tstack, and video. Release and installed rollout pending.
+  Browne's GitHub and Tstack repository. Release and installed rollout pending.
