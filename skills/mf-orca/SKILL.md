@@ -2,8 +2,8 @@
 name: mf-orca
 description: Coordinate project work when the user invokes mf-orca or asks for orchestration. Route phases, delegate bounded work, and verify completion. Support requested hill climbs while keeping the coordinator out of implementation.
 metadata:
-  version: "1.1.0"
-  status: ready
+  version: "1.1.1"
+  status: draft
   author: "Iqbal"
 ---
 
@@ -103,6 +103,18 @@ Honor owner/project model and provider choices. Otherwise use supported session
 defaults and resolve available routes through the harness. Record actual model,
 provider and effort when exposed; report unavailable selections without silent
 substitution. Task choices do not change shared defaults or install providers.
+
+When the coordinator has `full-access` and the owner has authorized the task,
+dispatch workers with effective `full-access` as well. In T3 `delegate_task`,
+omit `runtimeMode` to inherit, or use the inheritance option allowed by the live
+tool contract. Use an explicit `full-access` option only when that contract
+permits it. Verify the effective mode when the harness exposes it; report a
+restriction instead of silently downgrading workers to a supervised mode.
+`scout` and review scopes do not require narrower runtime permissions. Dispatch
+and in-scope worker commands or file changes need no renewed owner approval.
+Reuse existing authority for gated actions; ask only for missing authority or
+unresolved decisions. Harness permission ceilings and enforced approvals still
+apply; runtime access does not expand project scope or action authority.
 
 Use the active harness's native/T3 delegation contract. For asynchronous work,
 write a minimal open-worker checkpoint before dispatch with task, writer, scope,
