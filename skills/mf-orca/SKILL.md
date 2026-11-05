@@ -105,16 +105,19 @@ provider and effort when exposed; report unavailable selections without silent
 substitution. Task choices do not change shared defaults or install providers.
 
 When the coordinator has `full-access` and the owner has authorized the task,
-dispatch workers with effective `full-access` as well. In T3 `delegate_task`,
-omit `runtimeMode` to inherit, or use the inheritance option allowed by the live
-tool contract. Use an explicit `full-access` option only when that contract
-permits it. Verify the effective mode when the harness exposes it; report a
-restriction instead of silently downgrading workers to a supervised mode.
-`scout` and review scopes do not require narrower runtime permissions. Dispatch
-and in-scope worker commands or file changes need no renewed owner approval.
-Reuse existing authority for gated actions; ask only for missing authority or
-unresolved decisions. Harness permission ceilings and enforced approvals still
-apply; runtime access does not expand project scope or action authority.
+check the coordinator's effective mode and inherited limits before dispatch,
+then give workers effective `full-access` as well. In T3 `delegate_task`, omit
+`runtimeMode` to inherit, or use the inheritance option allowed by the live tool
+contract. Use an explicit `full-access` option only when that contract permits it.
+Verify the worker's effective mode when exposed; report any restriction or
+unverifiable mode instead of silently downgrading to a supervised runtime.
+Honor explicit owner runtime choices over role defaults. Scouts and reviewers
+inherit runtime access while their task briefs remain read-only; runtime access
+does not authorize writes outside their task scope. Authorized dispatch and
+in-scope commands or file changes need no renewed owner approval. Reuse existing
+authority for gated actions; ask only for missing authority or unresolved
+decisions. Harness ceilings and enforced approvals still apply; runtime access
+does not expand project scope or action authority.
 
 Use the active harness's native/T3 delegation contract. For asynchronous work,
 write a minimal open-worker checkpoint before dispatch with task, writer, scope,
