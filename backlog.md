@@ -12,3 +12,8 @@
   retention. Native fixture and independent Standards/Spec reviews pass;
   version 1.1.0 merged in PR #2. README documents capabilities and credits Theo
   Browne's GitHub and Tstack repository. Release and installed rollout pending.
+
+- [x] MF-004 - Inherit full-access worker permissions without duplicate owner
+  approval for authorized work. Package, binding and registry checks pass;
+  version 1.1.1 remains draft until runtime behavior is verified. No release tag
+  or change to existing worker modes claimed.
