@@ -9,6 +9,30 @@ between writer and reader. Slang, dialect, jokes, and confession need contextual
 support. Show care through recognizable situations, grounded reasons, and
 meaningful choices; do not invent personal stories or customer voices.
 
+## Conversational copywriting and persuasive storytelling
+
+When asked for flowing, conversational prose, use conversational copywriting.
+Use persuasive storytelling (narrative persuasion) when a story helps readers
+understand an idea or consider an action. Match the voice, purpose, and audience;
+not every piece needs a story.
+
+- Address one reader using familiar vocabulary and an appropriate relationship.
+  Closeness does not require slang or forced intimacy.
+- Choose a brief situation with a relevant problem, action, and consequence.
+  Draw concrete details from the material rather than adding a long backstory.
+- Use dialogue when it clarifies the situation. Real quotations must remain
+  faithful to sources; invented dialogue belongs only in clearly labeled examples.
+- Vary sentence length and read it as speech. Connect thoughts with clear reasons;
+  use rhetorical questions, humor, and everyday analogies sparingly. Check that
+  an analogy explains the idea rather than merely decorating it.
+- Connect the situation to a lesson, then a relevant step or offer. Make the
+  relationship clear so the move from story to invitation follows logically.
+- Resolve curiosity where the answer was promised. Do not withhold the core
+  answer solely to force a click or purchase.
+- Cut repetition, hype, and drama that add no understanding. A story illustrates
+  an idea; it does not establish a general claim or guarantee health, income,
+  or sales outcomes. Those claims still require evidence.
+
 ## Calibrate against selected samples
 
 When the user selects a version, use its text as the style reference for related

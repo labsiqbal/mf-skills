@@ -2,14 +2,14 @@
 name: mf-copywriting
 description: >-
   Gunakan saat pengguna meminta menulis atau merevisi copy bahasa Indonesia atau
-  Inggris untuk landing page, sales copy, artikel, media sosial, email, WhatsApp,
+  Inggris untuk landing page, sales copy, artikel, ebook, media sosial, email, WhatsApp,
   GitHub, naskah video, slide presentasi, atau instruksi skill; termasuk teks dalam
   pembuatan halaman dan presentasi. Gunakan saat diminta membuat tulisan lebih natural, menyusun brief,
   menilai tulisan, memakai mf-copywriting, atau memanggil mf-copywriting-update
   untuk memperbarui referensi tren bahasa, gaya komunikasi, dan pola copywriting. Jangan aktif hanya karena bahasa
   percakapan, pembahasan pemasaran, atau permintaan penilaian buku.
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
   status: ready
   author: "Iqbal"
 ---

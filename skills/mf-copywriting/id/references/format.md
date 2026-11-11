@@ -7,7 +7,7 @@ di setiap panduan melengkapi [brief awal](brief.md), bukan formulir wajib.
 |---|---|
 | Landing page atau halaman produk | [Landing page](konten/landing-page.md) |
 | Iklan atau tulisan penawaran; kebutuhan persuasi dalam format lain | [Sales copy](konten/sales-copy.md) |
-| Artikel, blog, opini, atau panduan | [Artikel](konten/artikel.md) |
+| Artikel, blog, opini, panduan, atau ebook | [Artikel dan ebook](konten/artikel.md) |
 | Caption, posting, utas, atau teks carousel | [Media sosial](konten/media-sosial.md) |
 | Email pribadi, penawaran, newsletter, atau transaksi | [Email](konten/email.md) |
 | Pesan WhatsApp pribadi, grup, layanan pelanggan, atau tindak lanjut | [WhatsApp](konten/whatsapp.md) |

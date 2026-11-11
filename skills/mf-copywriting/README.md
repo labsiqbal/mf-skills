@@ -4,13 +4,14 @@ A bilingual copywriting skill for natural, context-aware human-facing content in
 
 Natural does not have to mean casual. Copy can stay clear, professional, or technical without sounding translated, templated, or machine-written.
 
-**Author:** Iqbal · **Version:** 0.2.0 · **Status:** ready
+**Author:** Iqbal · **Version:** 0.3.0 · **Status:** ready
 
 ## What it covers
 
 - Brief discovery before writing: purpose, channel, reader, source material, voice, structure, and constraints.
 - English-first guidance with an optional Indonesian branch.
-- Landing pages, sales copy, articles, social posts, email, WhatsApp, video scripts, and presentations.
+- Landing pages, sales copy, articles, ebooks, social posts, email, WhatsApp, video scripts, and presentations.
+- Conversational copywriting and persuasive storytelling, with flexible practical ebook chapters and source-grounded stories.
 - GitHub descriptions, READMEs, issues, pull requests, release notes, and Discussions.
 - Source-based writing when the user has no firsthand experience or sources yet.
 - A source discussion step before writing on the user's behalf: findings, evidence limits, and editorial angles.
@@ -115,6 +116,6 @@ The update mode researches language, communication style, and copywriting patter
 
 ## Status
 
-Version 0.2.0 is ready for draft and revision work with final human review.
+Version 0.3.0 is ready for draft and revision work with final human review.
 
 Version and author metadata live in [`SKILL.md`](SKILL.md).
