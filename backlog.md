@@ -6,7 +6,7 @@
   checks pass; editorial diff reviewed without an independent writing trial.
   Execution: LINC, `~/workspace/tools/skills-lab/mf-skills`, branch
   `feat/copywriting-conversational-storytelling`, base `25dfe0e`.
-  Existing symlinks read this source. GitHub review pending; no release tag.
+  Existing symlinks read this source. Delivery: PR #5; no release tag.
 
 - [x] MF-001 - Import both skills, publish public monorepo, migrate existing
   bindings, and release mf-orca.
