@@ -7,7 +7,7 @@ they are not mandatory forms.
 |---|---|
 | Landing or product page | [Landing pages](content/landing-page.md) |
 | Advertising, offers, or persuasion within another format | [Sales copy](content/sales-copy.md) |
-| Article, blog, opinion, or tutorial | [Articles](content/articles.md) |
+| Article, blog, opinion, tutorial, or ebook | [Articles and ebooks](content/articles.md) |
 | Caption, post, thread, or carousel | [Social media](content/social-media.md) |
 | Personal, sales, newsletter, or transactional email | [Email](content/email.md) |
 | Personal, group, service, or follow-up WhatsApp message | [WhatsApp](content/whatsapp.md) |

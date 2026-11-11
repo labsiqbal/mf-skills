@@ -15,6 +15,30 @@ yang didukung bahan. Brand bisa memperlihatkan selera melalui pilihan produk,
 pendapat yang berdasar, serta cara menjelaskan keterbatasan. Jangan mengisi
 kekosongan bahan dengan kisah pribadi atau suara pelanggan yang dikarang.
 
+## Gaya bertutur dan storytelling persuasif
+
+Saat diminta tulisan luwes seperti percakapan, gunakan gaya bertutur
+(conversational copywriting). Bila cerita membantu pembaca memahami gagasan atau
+mempertimbangkan tindakan, gunakan storytelling persuasif (narrative persuasion).
+Sesuaikan dengan suara, tujuan, dan pembaca; tidak semua tulisan membutuhkan cerita.
+
+- Ajak bicara satu pembaca dengan sapaan dan kosakata yang akrab baginya.
+  Kedekatan tidak mengharuskan slang atau gaya gue-lu.
+- Pilih kejadian singkat dengan masalah, tindakan, dan akibat yang relevan.
+  Gunakan detail konkret dari bahan, bukan latar panjang sebelum pokok bahasan.
+- Pakai dialog bila membantu memperjelas situasi. Kutipan nyata harus setia pada
+  sumber; dialog rekaan hanya untuk ilustrasi yang jelas ditandai sebagai contoh.
+- Variasikan panjang kalimat dan baca sebagai percakapan. Sambungkan pikiran
+  dengan alasan yang jelas; pertanyaan retoris, humor, dan analogi sehari-hari
+  dipakai seperlunya. Periksa apakah analogi benar-benar menjelaskan gagasan.
+- Hubungkan kejadian dengan pelajaran, lalu langkah atau penawaran yang relevan.
+  Jelaskan hubungan itu agar perpindahan dari cerita ke ajakan terasa masuk akal.
+- Bayar rasa penasaran dengan jawaban pada bagian yang dijanjikan. Jangan
+  menggantungkan jawaban inti semata-mata agar pembaca mengeklik atau membeli.
+- Pangkas pengulangan, hiperbola, dan dramatisasi yang tidak menambah pemahaman.
+  Cerita membantu menjelaskan gagasan, bukan membuktikan klaim umum atau menjamin
+  hasil kesehatan, penghasilan, maupun penjualan. Klaim tersebut tetap perlu bukti.
+
 ## Kalibrasi dari contoh pilihan pengguna
 
 Saat pengguna memilih satu versi, jadikan teksnya acuan gaya untuk pekerjaan
