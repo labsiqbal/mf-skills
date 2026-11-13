@@ -18,4 +18,3 @@ Maintain portable MF skills with independent versions.
 Publish to `labsiqbal/mf-skills` under the owner's account. Verify Git identity,
 remote revision, checks, and tag resolution. Native bindings are registered by
 the host's existing skill manager; installed copies are not source authorities.
-Keep detailed local receipts outside this public repo.

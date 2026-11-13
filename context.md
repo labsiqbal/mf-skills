@@ -20,5 +20,4 @@ MF Skills is Iqbal's public monorepo for `mf-copywriting`, `mf-orca`, and `mf-de
 
 - Packages retain independent versions and release tags.
 - Preserve the standalone copywriting repository and its prior releases.
-- Private traces and deployment/account state remain outside this repository.
 - Registry presence and native discovery are distinct from behavior acceptance.
