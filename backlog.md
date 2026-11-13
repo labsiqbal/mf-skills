@@ -1,5 +1,11 @@
 # Backlog
 
+- [x] MF-006 - Add `mf-design` for comparing HTML directions and tuning one
+  selection. Renamed from owner-authored `design-directions`; source delivered
+  on `feat/mf-design-html-workflow`. Package/skill checks and Codex main/Linc
+  native discovery pass; version 0.1.0 remains draft pending a real design brief.
+  Source integration follows PR review; no release tag.
+
 - [x] MF-005 - Add conversational copywriting and persuasive storytelling to
   mf-copywriting 0.3.0, including flexible practical ebook chapters in both
   languages. Package validator, skill validator, reference and installed-link
