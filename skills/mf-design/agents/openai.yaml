@@ -1,0 +1,4 @@
+interface:
+  display_name: "MF Design"
+  short_description: "Compare HTML directions, then tune one live"
+  default_prompt: "Use $mf-design to create three editable HTML directions, a comparison page, and a tweakable selected direction."

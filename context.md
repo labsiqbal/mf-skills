@@ -2,7 +2,7 @@
 
 ## Identity
 
-MF Skills is Iqbal's public monorepo for `mf-copywriting` and `mf-orca`.
+MF Skills is Iqbal's public monorepo for `mf-copywriting`, `mf-orca`, and `mf-design`.
 
 ## Sources
 
@@ -13,6 +13,8 @@ MF Skills is Iqbal's public monorepo for `mf-copywriting` and `mf-orca`.
   imported from Infra commit `1661151` with its native invocation metadata.
 - Hill-climb and council methods informed by [Theo Browne (@t3dotgg)](https://github.com/t3dotgg)'s
   [tstack](https://github.com/t3dotgg/tstack/tree/1085050f3baed1ac724caa4a8166145fb2ac88af).
+- `mf-design` imported from owner-authored Infra commit `86bd99bfa82de995bdb91ac7db16ea2762d1df70`
+  and renamed from `design-directions` on owner request.
 
 ## Decisions
 
