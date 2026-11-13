@@ -2,7 +2,7 @@
 name: mf-orca
 description: Coordinate project work when the user invokes mf-orca or asks for orchestration. Route phases, delegate bounded work, and verify completion. Support requested hill climbs while keeping the coordinator out of implementation.
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   status: draft
   author: "Iqbal"
 ---
@@ -51,8 +51,12 @@ planning because a new session started.
 
 For a requested hill climb or iterative optimization with before/after evidence,
 read [Hill climb](references/hill-climb.md). It wraps the selected build and
-review methods; ordinary tasks keep their existing route. Load it too when the
-owner requests a council for that optimization.
+review methods; ordinary tasks keep their existing route.
+
+Review uses one separate read-only reviewer. A council (multi-model review
+panel) runs only when the owner asks for one in the current task; a hill climb,
+high stakes, project history or an earlier council never adds one. For a
+requested council, read [Hill climb](references/hill-climb.md#assign-builder-and-evaluators).
 
 Load the selected skill and relevant references through the active harness.
 Honor explicit-only invocation controls. If a method is unavailable or requires

@@ -14,7 +14,8 @@ Record the following in the existing task/spec before implementation:
   for subjective work. Reuse existing project checks before creating more.
 - Hard guards: required behavior, security, accessibility, and relevant runtime
   checks. Improving a metric cannot compensate for a failed guard.
-- Fixed inputs and environment, required reviewer coverage, artifact home,
+- Fixed inputs and environment, reviewer coverage (one reviewer unless the
+  owner requested a council), artifact home,
   round limit, and any owner-specified time/usage budget.
 
 Default to at most three candidate rounds after baseline, stopping after two
@@ -44,7 +45,7 @@ or benchmark during orientation or review. Workers own those runs. Root reads
 their frozen receipts and raw outputs; if a receipt is missing, return the
 bounded evidence task to the existing worker.
 
-When a council is requested, resolve three available model families across
+When the owner requests a council in this task, resolve three available model families across
 distinct providers through the harness, honoring named members. Report missing
 members instead of replacing them silently or claiming complete coverage.
 Batch members within workspace/runtime concurrency limits. Reviewers receive

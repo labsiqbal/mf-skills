@@ -24,7 +24,7 @@ routes work, reviews evidence, and reports acceptance.
 | Hill climb | Improve one candidate against a fixed baseline, workload, metric or rubric, and hard guards. Default: at most 3 candidate rounds; stop after 2 consecutive rounds without a qualifying improvement. |
 | Best-candidate retention | Promote only verified improvements, retain the previous best on regression, and report whether acceptance was met, progress stalled, or the budget ran out. |
 | UI evidence | Capture before/after on matching routes, data, states, viewport, theme, and zoom. Check interactions and accessibility separately where required. |
-| Council review | When requested for a hill climb, use 3 model families across distinct providers to independently review the same frozen candidate, evidence, and rubric. Preserve findings, uncertainty, and dissent. |
+| Council review | Off by default: review uses one separate reviewer. Only when you ask for a council, use 3 model families across distinct providers to independently review the same frozen candidate, evidence, and rubric. Preserve findings, uncertainty, and dissent. |
 
 Model and provider choices follow explicit owner and project instructions.
 Otherwise, `mf-orca` resolves available routes through the harness using supported
