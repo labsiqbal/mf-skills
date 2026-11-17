@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 0.8,
+  "requestedSec": 21,
+  "seed": 11,
+  "genre": "driving-electronic",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "intro",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 8,
+        "frame": 240
+      },
+      "energy": 0.5,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "build",
+      "from": {
+        "sec": 8,
+        "frame": 240
+      },
+      "to": {
+        "sec": 14,
+        "frame": 420
+      },
+      "energy": 0.65,
+      "riser": true,
+      "drop": false
+    },
+    {
+      "name": "drop",
+      "from": {
+        "sec": 14,
+        "frame": 420
+      },
+      "to": {
+        "sec": 20,
+        "frame": 600
+      },
+      "energy": 0.85,
+      "riser": false,
+      "drop": true
+    }
+  ],
+  "shots": [],
+  "sfx": [
+    {
+      "role": "click",
+      "at": {
+        "sec": 1.3,
+        "frame": 39
+      },
+      "event": "cta-button"
+    },
+    {
+      "role": "pop",
+      "at": {
+        "sec": 3.1,
+        "frame": 93
+      },
+      "event": "badge"
+    },
+    {
+      "role": "whoosh",
+      "at": {
+        "sec": 5.6,
+        "frame": 168
+      },
+      "event": "panel"
+    },
+    {
+      "role": "tick",
+      "at": {
+        "sec": 7.3,
+        "frame": 219
+      },
+      "event": "check-1"
+    },
+    {
+      "role": "type",
+      "at": {
+        "sec": 9.1,
+        "frame": 273
+      },
+      "event": "prompt"
+    },
+    {
+      "role": "riser",
+      "at": {
+        "sec": 12.9,
+        "frame": 387
+      },
+      "event": "build"
+    },
+    {
+      "role": "hit",
+      "at": {
+        "sec": 14,
+        "frame": 420
+      },
+      "event": "logo"
+    },
+    {
+      "role": "shimmer",
+      "at": {
+        "sec": 16.4,
+        "frame": 492
+      },
+      "event": "mark"
+    }
+  ],
+  "spb": 0.5,
+  "lengthSec": 20.8,
+  "frames": 624
+}
