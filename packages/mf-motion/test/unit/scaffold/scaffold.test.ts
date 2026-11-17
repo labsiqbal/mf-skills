@@ -65,9 +65,9 @@ describe('build', () => {
   });
 
   it('writes one ESM CLI entry that prints the package version', () => {
-    const result = node([join(outdir, 'cli.mjs')]);
+    const result = node([join(outdir, 'cli.mjs'), '--json', '--version']);
     expect(result.status).toBe(0);
-    expect(result.stdout).toBe(`${pkg.version}\n`);
+    expect(JSON.parse(result.stdout).data.cli).toBe(pkg.version);
     expect(readFileSync(join(outdir, 'cli.mjs'), 'utf8').startsWith('#!/usr/bin/env node\n')).toBe(true);
   });
 });
