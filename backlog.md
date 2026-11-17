@@ -1,7 +1,7 @@
 # Backlog
 
-- [ ] MF-008 - Make all MF skill packages portable for public use.
-  State: Doing. Claim: mf-portability-20261117-c60a632d | active.
+- [x] MF-008 - Make all MF skill packages portable for public use.
+  State: Done (PR delivery). Claim: mf-portability-20261117-c60a632d | released.
   Session: development session; checkout and branch are tracked by the repository host.
   Scope: all four packages, public installation/dependency documentation and
   portability checks; preserve MF-007 and its active import checkout.
@@ -9,12 +9,14 @@
   Claimed: 2026-11-17T03:26:08.736485+00:00
   Acceptance: no personal runtime/path prerequisites; optional methods have
   fallbacks; package/regression checks pass; license coverage stated honestly.
-  Delivery: PR against main; no merge, release or runtime rollout.
+  Delivery: https://github.com/labsiqbal/mf-skills/pull/8 (against main).
   Checks: four skill validators, package/portability/regression suites and diff
   checks pass. Standards/Spec reviews clean after aligning question-bank rules.
   Owner selected MIT; license included in each package.
   Source: `4dc566f`; all skill versions remain draft pending field validation.
-  Next: publish PR; no runtime installation or release tag claimed.
+  PR checks: none configured/reported; local checks pass at `a817fa1`.
+  Next: review/merge PR; retain task checkout until integration.
+  No runtime installation, merge, or release tag claimed.
 
 - [x] MF-007 - Move Masterplan into this monorepo as `mf-masterplan`.
   State: Done (PR delivery). Claim: mf-masterplan-20261117-t3-4d38d4b0 | released.
