@@ -11,6 +11,17 @@ import { readDoc, writeDoc } from '../schemas/index';
 /** What `brand use` copies into <project>/brand/: the picked brand, not the capture or candidates. */
 const SYNCED = /^(brand\.json|brand\.md|(logo|mark)\.(svg|png|jpg|mp4)|shots|fonts)$/;
 
+/** Every file brand.json points at (captured fonts stay under capture/), relative to the brand folder. */
+export function referencedFiles(doc: BrandDoc): string[] {
+  const files = [
+    ...(doc.logo ? [doc.logo.path] : []),
+    ...(doc.mark ? [doc.mark.path] : []),
+    ...doc.shots.map((shot) => shot.path),
+    ...Object.values(doc.type).flatMap((role) => role?.files.map((file) => file.path) ?? []),
+  ];
+  return [...new Set(files)].sort();
+}
+
 export interface BrandSummary {
   id: string;
   name: string;
@@ -106,6 +117,12 @@ export async function useBrand(
           let files = 0;
           try {
             for (const name of readdirSync(dir).sort()) if (SYNCED.test(name)) files += copyTree(dir, path.join(dir, name), path.join(staging, name));
+            for (const rel of referencedFiles(doc)) {
+              const to = confine(staging, path.join(staging, rel));
+              if (existsSync(to)) continue;
+              mkdirSync(path.dirname(to), { recursive: true });
+              files += copyTree(dir, confine(dir, path.join(dir, rel)), to);
+            }
           } catch (error) {
             rmSync(staging, { recursive: true, force: true });
             throw error;

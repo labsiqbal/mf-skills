@@ -10,7 +10,7 @@ import { briefBrand } from '../../../../src/brand/fromBrief';
 import { manualBrand } from '../../../../src/brand/manual';
 import { COMMANDS } from '../../../../src/cli/commands/index';
 import type { Engine } from '../../../../src/engine/index';
-import { readDoc } from '../../../../src/schemas/index';
+import { readDoc, writeDoc } from '../../../../src/schemas/index';
 import { testBrowser } from '../../../helpers/engine';
 import { runIn } from '../../../unit/cli/harness';
 
@@ -107,6 +107,25 @@ describe('brand use', () => {
     const again = await mfm(home, 'brand', 'use', 'acme', '--project', project);
     expect(again.code).toBe(0);
     expect(readFileSync(path.join(copy, 'logo.svg'), 'utf8')).toBe('<svg xmlns="http://www.w3.org/2000/svg"/>');
+  });
+
+  it('also copies files brand.json points at outside the synced names, such as captured fonts', async () => {
+    const home = temp('mfm-home-');
+    await pickedBrand(home, 'captured-fonts');
+    const library = path.join(home, 'brands', 'captured-fonts');
+    const file = path.join(library, 'brand.json');
+    const { doc } = readDoc('brand', file);
+    mkdirSync(path.join(library, 'capture', 'assets', 'fonts'), { recursive: true });
+    writeFileSync(path.join(library, 'capture', 'assets', 'fonts', 'Brand.woff2'), 'font bytes');
+    writeFileSync(path.join(library, 'capture', 'page.html'), '<p>not synced</p>');
+    const display = doc.type.display;
+    if (!display) throw new Error('manual brand has a display role');
+    const files = [{ ...display.files[0], path: 'capture/assets/fonts/Brand.woff2', source: 'captured' as const }];
+    writeDoc('brand', file, { ...doc, type: { ...doc.type, display: { ...display, files } } });
+    const project = await newProject(home);
+    expect((await mfm(home, 'brand', 'use', 'captured-fonts', '--project', project)).code).toBe(0);
+    expect(readFileSync(path.join(project, 'brand', 'capture', 'assets', 'fonts', 'Brand.woff2'), 'utf8')).toBe('font bytes');
+    expect(existsSync(path.join(project, 'brand', 'capture', 'page.html'))).toBe(false);
   });
 
   it('needs a project and a known brand', async () => {
