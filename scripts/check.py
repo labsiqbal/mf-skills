@@ -20,7 +20,11 @@ for package in packages:
         assert re.search(r"^  release-tag: .+", header, re.M), entry
     assert body.strip(), f"Empty skill: {entry}"
     for doc in package.rglob("*.md"):
-        for target in re.findall(r"\]\(([^)]+)\)", doc.read_text()):
+        # ponytail: template links resolve in output packages; validate-package.py checks them there.
+        if doc.name.endswith("-template.md"):
+            continue
+        prose = re.sub(r"(?ms)^```[^\n]*\n.*?^```[ \t]*$", "", doc.read_text())
+        for target in re.findall(r"\]\(([^)]+)\)", prose):
             if "://" in target or target.startswith(("#", "mailto:")):
                 continue
             target = target.split("#", 1)[0].strip("<>")
