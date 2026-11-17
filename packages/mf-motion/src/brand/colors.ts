@@ -1,18 +1,22 @@
 // Colour roles by usage: ground, ink, accent, accent2, surface, muted and the
 // palette, each with the method and evidence that chose it.
+import { NUMBERS } from '../kit/numbers';
 import type { Frame } from '../media/pixels';
 
-/** Thresholds (safe-zones-and-numbers.md section 10); the numbers module replaces these. */
+/**
+ * Thresholds: the section 10 colour roles and brand.paletteMax come from the
+ * numbers module; the rest are capture-method details (brand-intake.md).
+ */
 export const ROLE_NUMBERS = {
-  inkContrastMin: 4.5,
-  accentSaturationMin: 0.35,
-  accentLuminance: [0.04, 0.85] as const,
-  surfaceDeltaLuminance: [0.005, 0.12] as const,
+  inkContrastMin: NUMBERS['role.ink.contrastMin'],
+  accentSaturationMin: NUMBERS['role.accent.saturationMin'],
+  accentLuminance: [NUMBERS['role.accent.luminance'].min, NUMBERS['role.accent.luminance'].max] as const,
+  surfaceDeltaLuminance: [NUMBERS['role.surface.deltaLuminance'].min, NUMBERS['role.surface.deltaLuminance'].max] as const,
   surfaceFallbackShift: 0.04,
-  mutedSaturationMax: 0.2,
-  mutedContrast: [2.2, 6.0] as const,
+  mutedSaturationMax: NUMBERS['role.muted.saturationMax'],
+  mutedContrast: [NUMBERS['role.muted.contrast'].min, NUMBERS['role.muted.contrast'].max] as const,
   accent2HueMinDeg: 40,
-  paletteMax: 12,
+  paletteMax: NUMBERS['brand.paletteMax'],
   mergeDistance: 28,
   photoTilePx: 32,
   photoTileColors: 64,

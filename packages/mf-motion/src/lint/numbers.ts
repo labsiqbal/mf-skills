@@ -1,15 +1,17 @@
-// Thresholds lint uses. These mirror safe-zones-and-numbers.md until the
-// numbers module (src/kit/numbers.ts) exists; that ticket switches this import.
+// Thresholds lint uses: the numbers-table keys come from src/kit/numbers.ts;
+// the two rule-local values are stated in lint.md itself, not in the table.
+import { NUMBERS } from '../kit/numbers';
+
 export const LINT_NUMBERS = {
   /** type.trackingFloorEm */
-  trackingFloorEm: -0.025,
+  trackingFloorEm: NUMBERS['type.trackingFloorEm'],
   /** type.minReadablePx = 2.6% of the short side. */
-  minReadableShare: 0.026,
+  minReadableShare: NUMBERS['type.minReadablePx'].shortSideShare,
   /** brand.film.minRealPieces */
-  filmMinRealPieces: 3,
-  /** PRF001: backdrop-filter on an element larger than this share of the frame. */
+  filmMinRealPieces: NUMBERS['brand.film.minRealPieces'],
+  /** PRF001 (lint.md): backdrop-filter on an element larger than half the frame. */
   backdropMaxFrameShare: 0.5,
-  /** STR003: allowed drift between a scene and its grid shot, in frames. */
+  /** STR003 (lint.md): a scene may differ from its grid shot by at most 1 frame. */
   sceneToleranceFrames: 1,
 } as const;
 

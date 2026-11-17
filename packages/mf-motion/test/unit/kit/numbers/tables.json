@@ -1,0 +1,756 @@
+[
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "1. Formats and time",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "fps.film",
+        "Value": "30",
+        "Resolves": "-"
+      },
+      {
+        "Key": "fps.move.default",
+        "Value": "30",
+        "Resolves": "-"
+      },
+      {
+        "Key": "fps.move.footageRates",
+        "Value": "24000/1001, 24, 25, 30000/1001, 30, 50, 60000/1001, 60 (moves in a talking-head project render at the footage's normalised rate)",
+        "Resolves": "source fixed 30 only"
+      },
+      {
+        "Key": "aspect.16:9",
+        "Value": "1920x1080",
+        "Resolves": "-"
+      },
+      {
+        "Key": "aspect.9:16",
+        "Value": "1080x1920",
+        "Resolves": "-"
+      },
+      {
+        "Key": "aspect.1:1",
+        "Value": "1080x1080",
+        "Resolves": "-"
+      },
+      {
+        "Key": "unit.u",
+        "Value": "min(W, H) / 1080; every kit size is written in u",
+        "Resolves": "-"
+      },
+      {
+        "Key": "film.lengthSec",
+        "Value": "10-30, default 20",
+        "Resolves": "-"
+      },
+      {
+        "Key": "film.lengthToleranceSec",
+        "Value": "resolved grid length within 1.5 of the requested length",
+        "Resolves": "-"
+      },
+      {
+        "Key": "film.gridRangeSec",
+        "Value": "9.5-31.0 hard validator range",
+        "Resolves": "-"
+      },
+      {
+        "Key": "film.tailSec",
+        "Value": "0.8 default, 0.0-2.0 allowed",
+        "Resolves": "-"
+      },
+      {
+        "Key": "grid.bpm",
+        "Value": "60-180",
+        "Resolves": "-"
+      },
+      {
+        "Key": "grid.beatsPerBar",
+        "Value": "3 or 4",
+        "Resolves": "-"
+      },
+      {
+        "Key": "grid.defaultSeed",
+        "Value": "1",
+        "Resolves": "source used 7"
+      },
+      {
+        "Key": "move.durationSec",
+        "Value": "1.5-6.0",
+        "Resolves": "source 1.2-6.0"
+      },
+      {
+        "Key": "time.snap",
+        "Value": "every resolved time snaps to the nearest frame of the project fps (round half up)",
+        "Resolves": "-"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "2. Safe zones",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "safe.frameMarginPx",
+        "16:9 (1920x1080)": "24",
+        "9:16 (1080x1920)": "40",
+        "1:1 (1080x1080)": "24"
+      },
+      {
+        "Key": "safe.copy.leftPx",
+        "16:9 (1920x1080)": "115",
+        "9:16 (1080x1920)": "70",
+        "1:1 (1080x1080)": "76"
+      },
+      {
+        "Key": "safe.copy.rightPx",
+        "16:9 (1920x1080)": "115",
+        "9:16 (1080x1920)": "190",
+        "1:1 (1080x1080)": "76"
+      },
+      {
+        "Key": "safe.copy.topPx",
+        "16:9 (1920x1080)": "86",
+        "9:16 (1080x1920)": "210",
+        "1:1 (1080x1080)": "76"
+      },
+      {
+        "Key": "safe.copy.bottomPx",
+        "16:9 (1920x1080)": "108",
+        "9:16 (1080x1920)": "600",
+        "1:1 (1080x1080)": "97"
+      },
+      {
+        "Key": "safe.captionBand (y range reserved for the user's subtitles)",
+        "16:9 (1920x1080)": "y 864-1000",
+        "9:16 (1080x1920)": "y 1150-1320",
+        "1:1 (1080x1080)": "y 830-990"
+      },
+      {
+        "Key": "safe.faceBand (overlay profiles with avoidFace)",
+        "16:9 (1920x1080)": "x 576-1344, y 108-864",
+        "9:16 (1080x1920)": "x 162-918, y 422-1114",
+        "1:1 (1080x1080)": "x 270-810, y 130-810"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "3. Text audit",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "audit.stepSec",
+        "Value": "0.1 (every 3rd frame at 30 fps) plus every entrance and exit landing frame",
+        "Resolves": "-"
+      },
+      {
+        "Key": "audit.ignoreOpacityBelow",
+        "Value": "0.35",
+        "Resolves": "-"
+      },
+      {
+        "Key": "audit.movingExemptPxPerStep",
+        "Value": "text whose ink box moved more than 6 px since the previous step is exempt from the frame-margin check for that step",
+        "Resolves": "-"
+      },
+      {
+        "Key": "audit.overlapShrinkY",
+        "Value": "ink boxes shrink 20% vertically before the text-on-text overlap test",
+        "Resolves": "-"
+      },
+      {
+        "Key": "audit.spillTolerancePx",
+        "Value": "2",
+        "Resolves": "-"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "4. Type",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "type.minReadablePx",
+        "Value": "2.6% of the short side (28 px at 1080)"
+      },
+      {
+        "Key": "type.titleHeightShare",
+        "Value": "4-9% of frame height"
+      },
+      {
+        "Key": "type.heroHeightShare",
+        "Value": "9-21% of frame height"
+      },
+      {
+        "Key": "type.verticalTitleScale",
+        "Value": "9:16 titles 1.35x the 16:9 size for the same role"
+      },
+      {
+        "Key": "type.maxWordsPerLine.9:16",
+        "Value": "5"
+      },
+      {
+        "Key": "type.trackingFloorEm",
+        "Value": "-0.025"
+      },
+      {
+        "Key": "type.clipFloorEm",
+        "Value": "masks extend 0.42 em below the line box"
+      },
+      {
+        "Key": "type.splitComplexScripts",
+        "Value": "Arabic, Hebrew, Devanagari, Bengali, Thai and other shaping scripts split by word or line, never by letter"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "5. Reading and motion timing",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "read.holdSec",
+        "Value": "0.5 + 0.3 per word, measured from the entrance landing to the exit start",
+        "Resolves": "-"
+      },
+      {
+        "Key": "read.lastLineMinSec",
+        "Value": "2.0",
+        "Resolves": "-"
+      },
+      {
+        "Key": "read.accentWordMinSec",
+        "Value": "0.4 for a one or two word accent line marked data-mf-accent",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.arriveSec",
+        "Value": "0.45-0.9 with expo.out or power4.out",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.exitSec",
+        "Value": "0.2-0.35 with power3.in; an exit lasts 40-50% of its entrance",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.cameraSec",
+        "Value": "0.6 typical, power2.inOut",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.stagger.lettersFrames",
+        "Value": "1",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.stagger.wordsMs",
+        "Value": "60-120",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.stagger.itemsMs",
+        "Value": "40-80",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.overlapStart",
+        "Value": "the next element starts when the previous is 30-50% through its entrance",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.secondaryTravel",
+        "Value": "secondary elements travel 50-70% of the hero's distance, starting 100-200 ms later",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.transitionsPerFilm",
+        "Value": "3-5 kinds; at most one third hard cuts; every transition has a visible cause",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.perspectivePx",
+        "Value": "1600",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.arriveFromZPx",
+        "Value": "-900",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.dofBlurPx",
+        "Value": "7-10 at 35-55% opacity",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.diveScale",
+        "Value": "2.6-3.4 with blur, power3.in",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.pushInScale",
+        "Value": "1.7",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.springs",
+        "Value": "back.out(1.4-2.0) on transforms only; never blur on back or elastic eases",
+        "Resolves": "-"
+      },
+      {
+        "Key": "motion.onTwosFps",
+        "Value": "12 (stepped ease steps(round(d*12)))",
+        "Resolves": "-"
+      },
+      {
+        "Key": "endCard.markScaleFrom",
+        "Value": "1.6 to 1.0",
+        "Resolves": "source 1.6 vs 1.7"
+      },
+      {
+        "Key": "endCard.holdSec",
+        "Value": "2.0-3.5",
+        "Resolves": "-"
+      },
+      {
+        "Key": "overlay.exitWindowSec",
+        "Value": "the overlay exits in its last 0.3-0.45 s, accelerating",
+        "Resolves": "-"
+      },
+      {
+        "Key": "overlay.firstInkSec",
+        "Value": "first visible ink within 0.3 s",
+        "Resolves": "-"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "6. Measured checks",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "still.sampleFps",
+        "Value": "10",
+        "Resolves": "-"
+      },
+      {
+        "Key": "still.downscalePx",
+        "Value": "160 px wide greyscale",
+        "Resolves": "-"
+      },
+      {
+        "Key": "still.pixelDelta",
+        "Value": "a pixel changed when its level differs by more than 6 of 255",
+        "Resolves": "-"
+      },
+      {
+        "Key": "still.frameThreshold",
+        "Value": "a frame is still when fewer than 0.4% of pixels changed",
+        "Resolves": "-"
+      },
+      {
+        "Key": "still.maxSec",
+        "Value": "2.0 (film outside the end card; broll; overlay outside declared holds)",
+        "Resolves": "source 1.0 vs 3.0 vs 3.5"
+      },
+      {
+        "Key": "still.endCardMaxSec",
+        "Value": "3.5",
+        "Resolves": "-"
+      },
+      {
+        "Key": "still.overlayHoldMaxSec",
+        "Value": "4.0 per declared hold window",
+        "Resolves": "-"
+      },
+      {
+        "Key": "frame0.inkMin",
+        "Value": "3% of pixels differ by more than 24 levels from the corner median (film, broll)",
+        "Resolves": "-"
+      },
+      {
+        "Key": "overlay.emptyCoverageMax",
+        "Value": "alpha coverage at frame 0 and at the last frame at most 0.5%",
+        "Resolves": "-"
+      },
+      {
+        "Key": "contrast.textMin",
+        "Value": "4.5:1 against the measured local background",
+        "Resolves": "-"
+      },
+      {
+        "Key": "contrast.hardMin",
+        "Value": "3.0:1 (below is a hard failure; 3.0-4.5 caps an axis)",
+        "Resolves": "-"
+      },
+      {
+        "Key": "timestamps.maxJitterMs",
+        "Value": "1",
+        "Resolves": "-"
+      },
+      {
+        "Key": "duration.toleranceFrames",
+        "Value": "1",
+        "Resolves": "-"
+      },
+      {
+        "Key": "key.minHueDistanceDeg",
+        "Value": "60 from every palette colour; chosen as the hue at maximum distance; saturation 1.0, value 0.85",
+        "Resolves": "-"
+      },
+      {
+        "Key": "key.purityLevels",
+        "Value": "background pixels within 2 levels per channel of the key colour",
+        "Resolves": "-"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "7. Sound",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "audio.sampleRate",
+        "Value": "48000",
+        "Resolves": "-"
+      },
+      {
+        "Key": "audio.lufsTarget",
+        "Value": "-14.0 integrated",
+        "Resolves": "-"
+      },
+      {
+        "Key": "audio.lufsTolerance",
+        "Value": "+-1.0 LU",
+        "Resolves": "source window -17..-12"
+      },
+      {
+        "Key": "audio.truePeakMax",
+        "Value": "-1.0 dBTP",
+        "Resolves": "source -3 vs -1 vs -0.5"
+      },
+      {
+        "Key": "audio.loudnorm",
+        "Value": "two-pass, I=-14, TP=-1, LRA=11, linear=true, output -ar 48000",
+        "Resolves": "-"
+      },
+      {
+        "Key": "sfx.peakOffsetFrames",
+        "Value": "peak lands 0.5 frame after the picture time",
+        "Resolves": "-"
+      },
+      {
+        "Key": "sfx.peakToleranceFrames",
+        "Value": "1 (flag beyond +-1 frame, i.e. 33.3 ms at 30 fps)",
+        "Resolves": "source 50 ms"
+      },
+      {
+        "Key": "sfx.riseDb",
+        "Value": "target +5 over the local bed, hit +10; allowed 3-14; flag under 3",
+        "Resolves": "-"
+      },
+      {
+        "Key": "sfx.bedBandHz",
+        "Value": "300-4000 envelope for the rise measurement",
+        "Resolves": "-"
+      },
+      {
+        "Key": "sfx.ownWindowMs",
+        "Value": "+-70 around an SFX: hats and plucks skip, kick halves",
+        "Resolves": "-"
+      },
+      {
+        "Key": "mix.kickDuckMax",
+        "Value": "bed ducked by up to 55% on kick",
+        "Resolves": "-"
+      },
+      {
+        "Key": "mix.preHitDip",
+        "Value": "bed dips to 15% over the 0.3 s before the hit",
+        "Resolves": "-"
+      },
+      {
+        "Key": "mix.endFadeSec",
+        "Value": "0.25",
+        "Resolves": "-"
+      },
+      {
+        "Key": "mix.voiceDuckDb",
+        "Value": "-8 on music under voiceover",
+        "Resolves": "-"
+      },
+      {
+        "Key": "bed.lowShareMax",
+        "Value": "55% of bed energy below 150 Hz",
+        "Resolves": "source 55 vs 60"
+      },
+      {
+        "Key": "energy.pad",
+        "Value": "always",
+        "Resolves": "-"
+      },
+      {
+        "Key": "energy.hats",
+        "Value": "from 0.30 (sixteenths from 0.75)",
+        "Resolves": "source doc vs code"
+      },
+      {
+        "Key": "energy.bass",
+        "Value": "from 0.40",
+        "Resolves": "-"
+      },
+      {
+        "Key": "energy.kick",
+        "Value": "from 0.45 (four on the floor from 0.70 where the genre allows)",
+        "Resolves": "-"
+      },
+      {
+        "Key": "energy.pluck",
+        "Value": "from 0.55",
+        "Resolves": "-"
+      },
+      {
+        "Key": "energy.clap",
+        "Value": "from 0.70",
+        "Resolves": "-"
+      },
+      {
+        "Key": "sfx.roles",
+        "Value": "click, tick, type, pop, whoosh, hit (at most one per film), shimmer, riser",
+        "Resolves": "-"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "8. Tempo table",
+    "mode": "table",
+    "data": [
+      {
+        "Requested length": "10 s",
+        "Bars at 120 BPM (4/4)": "5",
+        "Alternative": "4 bars at 96-100 BPM"
+      },
+      {
+        "Requested length": "15 s",
+        "Bars at 120 BPM (4/4)": "7-8",
+        "Alternative": "-"
+      },
+      {
+        "Requested length": "20 s",
+        "Bars at 120 BPM (4/4)": "10",
+        "Alternative": "8 bars at 96 BPM"
+      },
+      {
+        "Requested length": "30 s",
+        "Bars at 120 BPM (4/4)": "15",
+        "Alternative": "12 bars at 96 BPM"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "9. Planning and placement",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "interview.maxQuestions",
+        "Value": "5, asked in one batch"
+      },
+      {
+        "Key": "brand.shots",
+        "Value": "pick 3-6"
+      },
+      {
+        "Key": "brand.candidateMinPx",
+        "Value": "800x400"
+      },
+      {
+        "Key": "brand.paletteMax",
+        "Value": "12"
+      },
+      {
+        "Key": "brand.film.minRealPieces",
+        "Value": "3 (logo plus at least 2 real shots, or a product video counted once)"
+      },
+      {
+        "Key": "placement.minStartGapSec",
+        "Value": "4.0 start to start"
+      },
+      {
+        "Key": "placement.minClearGapSec",
+        "Value": "0.5 between one move's end and the next start"
+      },
+      {
+        "Key": "placement.sayWindowSec",
+        "Value": "the say quote matches transcript words within +-1.5 s of at"
+      },
+      {
+        "Key": "placement.sayMatchMin",
+        "Value": "0.8 token overlap"
+      },
+      {
+        "Key": "catalogue.candidates",
+        "Value": "name 4-6 candidates per idea"
+      },
+      {
+        "Key": "catalogue.indexTokens",
+        "Value": "at most 1,000 (counted as characters / 4)"
+      },
+      {
+        "Key": "catalogue.categoryTokens",
+        "Value": "at most 1,500 each"
+      },
+      {
+        "Key": "critique.maxRounds",
+        "Value": "3 at runtime; more only with a recorded user approval"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "10. Colour roles",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "role.ink.contrastMin",
+        "Value": "4.5:1 against ground"
+      },
+      {
+        "Key": "role.accent.saturationMin",
+        "Value": "0.35"
+      },
+      {
+        "Key": "role.accent.luminance",
+        "Value": "0.04-0.85"
+      },
+      {
+        "Key": "role.surface.deltaLuminance",
+        "Value": "within 0.005-0.12 of ground"
+      },
+      {
+        "Key": "role.muted.saturationMax",
+        "Value": "0.20"
+      },
+      {
+        "Key": "role.muted.contrast",
+        "Value": "2.2-6.0 against ground"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "11. Reference reading",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "ref.maxHeight",
+        "Value": "720"
+      },
+      {
+        "Key": "ref.frameEverySec",
+        "Value": "0.5 at 480 px wide"
+      },
+      {
+        "Key": "ref.cutSceneScore",
+        "Value": "0.32"
+      },
+      {
+        "Key": "ref.paletteClusters",
+        "Value": "8, merged when RGB distance is under 28"
+      },
+      {
+        "Key": "ref.motionEnergyFps",
+        "Value": "10"
+      },
+      {
+        "Key": "ref.stripFps",
+        "Value": "4 (8 with --fast-motion), 24 frames per strip"
+      },
+      {
+        "Key": "ref.cutToleranceFrames",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "12. Quality targets",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "rubric.axes",
+        "Value": "hook, brand, motion, legibility, rhythm, finish"
+      },
+      {
+        "Key": "rubric.target.runtime",
+        "Value": "8 on every axis"
+      },
+      {
+        "Key": "rubric.target.library",
+        "Value": "9 on every axis, every declared aspect and mode"
+      },
+      {
+        "Key": "lab.driftMax",
+        "Value": "0.5 on any axis"
+      },
+      {
+        "Key": "lab.driftEveryUnits",
+        "Value": "50 judged units"
+      },
+      {
+        "Key": "lab.roundsPerAttempt",
+        "Value": "5"
+      },
+      {
+        "Key": "lab.noGainStop",
+        "Value": "2 consecutive rounds without a qualifying gain"
+      },
+      {
+        "Key": "lab.redesigns",
+        "Value": "1"
+      },
+      {
+        "Key": "lab.qualifyingGain",
+        "Value": "min axis rises, or min equal and mean rises by at least 0.2"
+      }
+    ]
+  },
+  {
+    "doc": "safe-zones-and-numbers.md",
+    "section": "13. Previews and budgets",
+    "mode": "table",
+    "data": [
+      {
+        "Key": "preview.longEdgePx",
+        "Value": "480"
+      },
+      {
+        "Key": "preview.codec",
+        "Value": "VP9 WebM, 30 fps, no audio"
+      },
+      {
+        "Key": "preview.maxKb",
+        "Value": "350 per move preview, 600 per theme preview"
+      },
+      {
+        "Key": "gallery.maxMb",
+        "Value": "200 total"
+      },
+      {
+        "Key": "disk.doctorWarnGb",
+        "Value": "5 free"
+      },
+      {
+        "Key": "disk.doctorFailGb",
+        "Value": "2 free"
+      }
+    ]
+  }
+]
