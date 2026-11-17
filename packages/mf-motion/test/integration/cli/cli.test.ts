@@ -44,7 +44,7 @@ describe('mf-motion CLI', () => {
       data: {
         cli: pkg.version,
         engine: { hyperframes: null, gsap: null, three: null },
-        schemas: { profile: 1, project: 1, brand: 1, brief: 1, events: 1 },
+        schemas: expect.objectContaining({ profile: 1, project: 1, brand: 1, brief: 1, events: 1 }),
       },
       warnings: [],
       next: [],

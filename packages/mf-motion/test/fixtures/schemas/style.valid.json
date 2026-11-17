@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "kind": "style",
+  "source": "ref/source.mp4",
+  "durationSec": 30.0,
+  "cuts": [
+    2.1,
+    4.0,
+    7.5
+  ],
+  "shotLengths": [
+    2.1,
+    1.9,
+    3.5,
+    22.5
+  ],
+  "shotStats": {
+    "cuts": 3,
+    "shots": 4,
+    "median": 2.8,
+    "mean": 7.5,
+    "shortest": 1.9,
+    "longest": 22.5
+  },
+  "palette": [
+    {
+      "hex": "#101820",
+      "share": 0.6,
+      "area": "ground"
+    },
+    {
+      "hex": "#F2AA4C",
+      "share": 0.1,
+      "area": "type"
+    }
+  ],
+  "motionEnergy": [
+    0.1,
+    0.4,
+    0.2
+  ],
+  "sheets": [
+    "ref/sheet-1.png"
+  ],
+  "strips": [
+    "ref/strip-1.png"
+  ]
+}

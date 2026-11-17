@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "sound",
+  "mode": "synth",
+  "file": "sound/score.wav",
+  "raw": "sound/score-raw.wav",
+  "seconds": 22.929,
+  "bpm": 112,
+  "key": "A minor",
+  "genre": "pulse-pop",
+  "seed": 1,
+  "lufs": -14.0,
+  "truePeak": -1.2,
+  "lowShare": 0.5,
+  "voice": null,
+  "sfx": [
+    {
+      "role": "boom",
+      "event": "hero-card",
+      "atSec": 8.571,
+      "peakAtSec": 8.58,
+      "gainDb": -6
+    }
+  ],
+  "x": {
+    "invalidBecause": "unknown sfx role"
+  }
+}

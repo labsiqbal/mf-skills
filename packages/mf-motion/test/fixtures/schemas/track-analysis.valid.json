@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "kind": "track-analysis",
+  "file": "sound/track.wav",
+  "sha256": "9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e",
+  "provider": "fallback",
+  "bpm": 120,
+  "bpmCurve": [
+    119.8,
+    120.1
+  ],
+  "beats": [
+    0.5,
+    1.0,
+    1.5
+  ],
+  "downbeats": [
+    0.5
+  ],
+  "meter": 4,
+  "sections": [
+    {
+      "from": 0,
+      "to": 16,
+      "label": null
+    }
+  ],
+  "drop": {
+    "atSec": 16.0,
+    "confidence": 0.8
+  },
+  "lufs": -9.5,
+  "truePeak": -0.4
+}

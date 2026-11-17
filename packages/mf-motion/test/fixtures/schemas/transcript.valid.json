@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "transcript",
+  "language": "en",
+  "engine": "whisper.cpp",
+  "model": "base.en",
+  "words": [
+    {
+      "w": "Hello",
+      "start": 0.12,
+      "end": 0.48,
+      "conf": 0.97
+    },
+    {
+      "w": "everyone",
+      "start": 0.5,
+      "end": 0.95,
+      "conf": 0.93
+    }
+  ],
+  "lines": [
+    {
+      "text": "Hello everyone",
+      "start": 0.12,
+      "end": 0.95
+    }
+  ]
+}

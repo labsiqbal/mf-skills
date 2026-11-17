@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 112,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 1.5,
+  "requestedSec": 20,
+  "seed": 1,
+  "genre": "pulse-pop",
+  "key": null,
+  "track": null,
+  "cues": {
+    "hook": {
+      "sec": 0,
+      "frame": 0
+    },
+    "drop": {
+      "sec": 8.571,
+      "frame": 257
+    },
+    "end-card": {
+      "sec": 17.5,
+      "frame": 525
+    }
+  },
+  "sections": [
+    {
+      "name": "intro",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 8.571,
+        "frame": 257
+      },
+      "energy": 0.4,
+      "riser": true,
+      "drop": false
+    },
+    {
+      "name": "main",
+      "from": {
+        "sec": 8.571,
+        "frame": 257
+      },
+      "to": {
+        "sec": 22.929,
+        "frame": 688
+      },
+      "energy": 0.8,
+      "riser": false,
+      "drop": true
+    }
+  ],
+  "shots": [
+    {
+      "id": "s01",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 4.286,
+        "frame": 129
+      },
+      "intent": "hook",
+      "scene": "logo-assemble",
+      "motion": "assemble",
+      "sound": "riser"
+    },
+    {
+      "id": "s02",
+      "from": {
+        "sec": 4.286,
+        "frame": 129
+      },
+      "to": {
+        "sec": 22.929,
+        "frame": 688
+      },
+      "intent": "proof",
+      "scene": "ui-tour",
+      "motion": "pan-scan",
+      "sound": "hit on drop"
+    }
+  ],
+  "sfx": [
+    {
+      "role": "hit",
+      "at": {
+        "sec": 8.571,
+        "frame": 257
+      },
+      "event": "hero-card"
+    }
+  ],
+  "spb": 0.536,
+  "lengthSec": 22.929,
+  "frames": 688
+}

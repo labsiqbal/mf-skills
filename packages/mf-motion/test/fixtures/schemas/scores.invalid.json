@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "kind": "scores",
+  "packetHash": "9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e",
+  "judge": {
+    "mode": "fresh",
+    "context": "subagent",
+    "provider": null,
+    "modelId": null
+  },
+  "axes": {
+    "hook": {
+      "score": 9,
+      "notes": [
+        "Clear."
+      ],
+      "fixes": []
+    },
+    "brand": {
+      "score": 9,
+      "notes": [
+        "Clear."
+      ],
+      "fixes": []
+    },
+    "motion": {
+      "score": 9,
+      "notes": [
+        "Clear."
+      ],
+      "fixes": []
+    },
+    "legibility": {
+      "score": 9,
+      "notes": [
+        "Clear."
+      ],
+      "fixes": []
+    },
+    "rhythm": {
+      "score": 7,
+      "notes": [
+        "Clear."
+      ],
+      "fixes": []
+    },
+    "finish": {
+      "score": 9,
+      "notes": [
+        "Clear."
+      ],
+      "fixes": []
+    }
+  },
+  "at": "2026-11-18T10:00:00.000Z",
+  "x": {
+    "invalidBecause": "rhythm 7 without a fix line"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kind": "library-index",
+  "entries": [
+    {
+      "type": "move",
+      "id": "team-wave",
+      "version": "1.0.0",
+      "path": "moves/team-wave/move.mjs",
+      "sha256": "9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e",
+      "verdict": "moves/team-wave/verdict.json",
+      "addedAt": "2026-11-18T11:00:00.000Z"
+    }
+  ]
+}

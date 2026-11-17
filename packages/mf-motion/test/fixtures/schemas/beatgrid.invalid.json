@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid",
+  "bpm": 112,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 1.5,
+  "requestedSec": 20,
+  "seed": 1,
+  "genre": "pulse-pop",
+  "key": null,
+  "track": null,
+  "cues": {
+    "hook": "bar 1",
+    "drop": "bar 5 beat 1",
+    "end-card": 17.5,
+    "Bad Name": "bar 2"
+  },
+  "sections": [
+    {
+      "name": "intro",
+      "from": "bar 1",
+      "to": "bar 5",
+      "energy": 0.4,
+      "riser": true,
+      "drop": false
+    },
+    {
+      "name": "main",
+      "from": "bar 5",
+      "to": "end",
+      "energy": 0.8,
+      "riser": false,
+      "drop": true
+    }
+  ],
+  "shots": [
+    {
+      "id": "s01",
+      "from": "bar 1",
+      "to": "bar 3",
+      "intent": "hook",
+      "scene": "logo-assemble",
+      "motion": "assemble",
+      "sound": "riser"
+    },
+    {
+      "id": "s02",
+      "from": "bar 3",
+      "to": "end",
+      "intent": "proof",
+      "scene": "ui-tour",
+      "motion": "pan-scan",
+      "sound": "hit on drop"
+    }
+  ],
+  "sfx": [
+    {
+      "role": "hit",
+      "at": "cue drop",
+      "event": "hero-card"
+    }
+  ],
+  "x": {
+    "invalidBecause": "cue name with capitals and a space"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "kind": "verdict",
+  "unit": {
+    "type": "move",
+    "id": "stat-count",
+    "version": "1.0.0"
+  },
+  "round": 2,
+  "profile": "overlay-alpha",
+  "target": 9,
+  "library": true,
+  "level": "PASS",
+  "hardFailures": [],
+  "capped": [
+    {
+      "axis": "finish",
+      "raw": 10,
+      "capped": 9,
+      "because": "1 engine warning"
+    }
+  ],
+  "effective": {
+    "hook": 9,
+    "brand": 9,
+    "motion": 9,
+    "legibility": 10,
+    "rhythm": 9,
+    "finish": 9
+  },
+  "min": 9,
+  "mean": 9.17,
+  "packetHash": "9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e",
+  "scoresHash": "9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e",
+  "rubricVersion": "1.0.0",
+  "engine": "0.9.61",
+  "cli": "1.0.0",
+  "at": "2026-11-18T10:05:00.000Z"
+}

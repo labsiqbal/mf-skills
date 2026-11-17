@@ -87,7 +87,7 @@ describe('schema', () => {
   });
 
   it('version lists the schema versions', () => {
-    expect(mfm(mkdtempSync(join(tmpdir(), 'mfm-home-')), 'version').json.data.schemas).toEqual({
+    expect(mfm(mkdtempSync(join(tmpdir(), 'mfm-home-')), 'version').json.data.schemas).toMatchObject({
       profile: 1,
       project: 1,
       brand: 1,

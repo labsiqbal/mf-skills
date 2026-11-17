@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "kind": "move-meta",
+  "id": "stat-count",
+  "version": "1.0.0",
+  "name": "Stat count",
+  "oneLiner": "A single number counts up beside its label, then settles.",
+  "category": "data",
+  "uses": [
+    "overlay",
+    "broll"
+  ],
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "modes": [
+    "full",
+    "alpha",
+    "key"
+  ],
+  "durationSec": {
+    "min": 2,
+    "default": 3.5,
+    "max": 5
+  },
+  "holds": [
+    {
+      "from": 0.6,
+      "to": 0.9
+    }
+  ],
+  "avoidFace": true,
+  "say": [
+    "a number of customers or users",
+    "a growth figure or percentage"
+  ],
+  "tags": [
+    "number",
+    "stat"
+  ],
+  "signature": {
+    "layout": "single-hero",
+    "motion": "count-up",
+    "material": "flat",
+    "data": "single-number",
+    "use": "proof"
+  },
+  "vars": {
+    "value": {
+      "type": "number",
+      "default": 42,
+      "min": 0,
+      "describe": "the number shown"
+    },
+    "label": {
+      "type": "text",
+      "default": "teams onboarded",
+      "maxChars": 32,
+      "describe": "what the number counts"
+    },
+    "points": {
+      "type": "list",
+      "default": [],
+      "maxItems": 3,
+      "items": {
+        "type": "text",
+        "default": "",
+        "maxChars": 24,
+        "describe": "one point"
+      },
+      "describe": "supporting points"
+    },
+    "tone": {
+      "type": "enum",
+      "default": "accent",
+      "values": [
+        "accent",
+        "ink"
+      ],
+      "describe": "colour role of the number"
+    }
+  },
+  "examples": {
+    "tessarine": {
+      "value": 1200,
+      "label": "signals sorted"
+    },
+    "mossmallow": {
+      "value": 38,
+      "label": "recipes saved"
+    },
+    "quillfen": {
+      "value": 12,
+      "label": "essays this month"
+    }
+  },
+  "kit": [
+    "counter",
+    "label"
+  ],
+  "status": "seed"
+}

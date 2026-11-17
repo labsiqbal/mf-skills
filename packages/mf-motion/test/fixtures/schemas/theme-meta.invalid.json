@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "kind": "theme-meta",
+  "id": "quiet-grid",
+  "version": "1.0.0",
+  "name": "Quiet grid",
+  "oneLiner": "Calm product film on a technical grid with measured cuts.",
+  "bestFor": [
+    "SaaS launches",
+    "feature updates"
+  ],
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "lengthSec": {
+    "min": 10,
+    "max": 30
+  },
+  "bpm": [
+    96,
+    118
+  ],
+  "genre": "pulse-pop",
+  "stills": [
+    0.2,
+    0.5,
+    0.85
+  ],
+  "scenes": [
+    "logo-assemble",
+    "ui-tour",
+    "end-card"
+  ],
+  "signature": {
+    "pace": "frantic",
+    "grammar": "ui-in-use",
+    "material": "grid-technical",
+    "palette": "brand-dark",
+    "type": "grotesk-tight",
+    "sound": "driving"
+  },
+  "status": "seed",
+  "x": {
+    "invalidBecause": "pace outside the vocabulary"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "kind": "placement",
+  "source": {
+    "media": "/videos/talk.mp4",
+    "transcript": "media/transcript.json",
+    "fps": "30000/1001",
+    "durationSec": 95.2
+  },
+  "aspect": "9:16",
+  "mode": "alpha",
+  "items": [
+    {
+      "id": "p01",
+      "at": 3.2,
+      "durSec": 3.5,
+      "move": "stat-count",
+      "version": "1.0.0",
+      "layer": "overlay",
+      "vars": {
+        "value": 42,
+        "label": "teams onboarded"
+      },
+      "say": "forty-two teams",
+      "reason": "The speaker states a number."
+    },
+    {
+      "id": "p02",
+      "at": 12.0,
+      "durSec": 4,
+      "move": "browser-window",
+      "version": "1.2.0",
+      "layer": "broll",
+      "vars": {},
+      "say": "open the dashboard",
+      "reason": "Shows the product screen named."
+    }
+  ]
+}

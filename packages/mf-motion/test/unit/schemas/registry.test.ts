@@ -22,9 +22,10 @@ const code = (fn: () => unknown) => {
 
 describe('schema registry', () => {
   it('registers the user-state kinds with their versions and migrators', () => {
-    expect(KINDS).toEqual(['profile', 'project', 'brand', 'brief', 'events']);
-    expect(schemaVersions()).toEqual({ profile: 1, project: 1, brand: 1, brief: 1, events: 1 });
-    for (const kind of KINDS) {
+    const userState = ['profile', 'project', 'brand', 'brief', 'events'] as const;
+    expect(KINDS.slice(0, 5)).toEqual(userState);
+    expect(schemaVersions()).toMatchObject({ profile: 1, project: 1, brand: 1, brief: 1, events: 1 });
+    for (const kind of userState) {
       expect(typeof schemas[kind].migrators).toBe('object');
       expect(v.safeParse(schemas[kind].schema, fixture(`${kind}.valid.json`)).success, kind).toBe(true);
     }
@@ -37,7 +38,7 @@ describe('schema registry', () => {
     expect(readDoc(kind as Kind, file)).toEqual({ doc, from: 1, migrated: false });
   });
 
-  it.each(KINDS)('%s rejects an unknown key', (kind) => {
+  it.each(['profile', 'project', 'brand', 'brief', 'events'] as const)('%s rejects an unknown key', (kind) => {
     const doc = { ...fixture(`${kind}.valid.json`), surprise: true };
     expect(code(() => parseDoc(kind, doc))).toMatchObject({ code: 'SCHEMA_INVALID', exitCode: 2 });
   });

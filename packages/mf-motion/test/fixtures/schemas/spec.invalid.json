@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "kind": "spec",
+  "storyline": "b",
+  "numbers": {
+    "arriveSec": [
+      0.4,
+      0.7
+    ],
+    "exitSec": [
+      0.3,
+      0.5
+    ],
+    "cameraSec": 2.5,
+    "staggerMs": [
+      60,
+      90
+    ],
+    "heroShare": 0.45,
+    "transitions": [
+      "cut",
+      "match-cut"
+    ],
+    "endCardHoldSec": 3.5
+  },
+  "banned": [
+    "emoji",
+    "dashes-in-copy",
+    "custom:no stock smiles",
+    "lens-flare"
+  ],
+  "x": {
+    "invalidBecause": "banned id outside the closed list without custom:"
+  }
+}

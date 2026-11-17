@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "kind": "metrics",
+  "file": "rounds/1/render.mp4",
+  "sha256": "9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e9f2c0d1e",
+  "profile": "film",
+  "aspect": "16:9",
+  "mode": "full",
+  "durationSec": 20.0,
+  "expectedSec": 20.0,
+  "frames": 600,
+  "fps": "30",
+  "timestamps": {
+    "irregular": 0,
+    "maxJitterMs": 0.4
+  },
+  "frame0Ink": 0.31,
+  "overlayCoverage": null,
+  "stills": [
+    {
+      "fromSec": 16.5,
+      "toSec": 20.0,
+      "lenSec": 3.5,
+      "exempt": "end-card"
+    }
+  ],
+  "longestStillSec": 1.2,
+  "contrast": [
+    {
+      "atSec": 2.0,
+      "elementId": "headline",
+      "ratio": 7.4,
+      "plate": null
+    }
+  ],
+  "audit": {
+    "hits": [
+      {
+        "fromSec": 1,
+        "toSec": 2,
+        "elementId": "x",
+        "problem": "too-big"
+      }
+    ]
+  },
+  "lines": [
+    {
+      "elementId": "headline",
+      "inSec": 0.4,
+      "outSec": 3.6,
+      "holdSec": 2.4,
+      "words": 4,
+      "ok": true
+    }
+  ],
+  "key": null,
+  "audio": {
+    "lufs": -14.2,
+    "truePeak": -1.3,
+    "lowShare": 0.48,
+    "sfx": [
+      {
+        "role": "hit",
+        "event": "hero-card",
+        "atSec": 8.571,
+        "peakOffsetMs": 12,
+        "riseDb": 9.5
+      }
+    ]
+  },
+  "engineCheck": {
+    "errors": 0,
+    "warnings": 1,
+    "findings": [
+      {
+        "code": "W001",
+        "atSec": null,
+        "message": "Unused asset."
+      }
+    ]
+  },
+  "hard": [
+    {
+      "check": "duration",
+      "pass": true,
+      "value": 20.0,
+      "limit": "20 +- 0.1"
+    }
+  ],
+  "caps": [
+    {
+      "axis": "finish",
+      "cap": 9,
+      "because": "1 engine warning"
+    }
+  ],
+  "x": {
+    "invalidBecause": "unknown audit problem"
+  }
+}

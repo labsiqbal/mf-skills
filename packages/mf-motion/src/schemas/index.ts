@@ -12,6 +12,20 @@ import { EVENTS_VERSION, eventSchema } from './events';
 import { PROFILE_VERSION, migrateProfile0To1, profileSchema } from './profile';
 import { PROJECT_VERSION, projectSchema } from './project';
 import { type JsonSchema, toJsonSchema } from './shared';
+import { beatgridResolvedSchema, beatgridSchema } from './beatgrid';
+import { judgePacketSchema } from './judge-packet';
+import { libraryIndexSchema } from './library-index';
+import { metricsSchema } from './metrics';
+import { moveMetaSchema } from './move-meta';
+import { placementSchema } from './placement';
+import { scoresRegistered } from './scores';
+import { soundSchema } from './sound';
+import { specSchema } from './spec';
+import { styleSchema } from './style';
+import { themeMetaSchema } from './theme-meta';
+import { trackAnalysisSchema } from './track-analysis';
+import { transcriptSchema } from './transcript';
+import { verdictSchema } from './verdict';
 
 export type Migrator = (doc: Record<string, unknown>) => Record<string, unknown>;
 
@@ -33,6 +47,22 @@ export const schemas = {
   brand: { version: BRAND_VERSION, schema: brandSchema, migrators: {}, file: '<data home>/brands/<id>/brand.json' },
   brief: { version: BRIEF_VERSION, schema: briefSchema, migrators: {}, file: '<project>/plan/brief.json' },
   events: { version: EVENTS_VERSION, schema: eventSchema, migrators: {}, file: '<project>/events.jsonl', lines: true },
+  // Plan and quality contracts.
+  beatgrid: { version: 1, schema: beatgridSchema, migrators: {}, file: '<project>/plan/beatgrid.json' },
+  'beatgrid-resolved': { version: 1, schema: beatgridResolvedSchema, migrators: {}, file: '<project>/plan/beatgrid.resolved.json' },
+  placement: { version: 1, schema: placementSchema, migrators: {}, file: '<project>/plan/placement.json' },
+  transcript: { version: 1, schema: transcriptSchema, migrators: {}, file: '<project>/media/transcript.json' },
+  'move-meta': { version: 1, schema: moveMetaSchema, migrators: {}, file: 'meta exported by every move module' },
+  'theme-meta': { version: 1, schema: themeMetaSchema, migrators: {}, file: 'meta exported by every theme module' },
+  metrics: { version: 1, schema: metricsSchema, migrators: {}, file: '<project>/rounds/<n>/metrics.json' },
+  scores: { version: 1, schema: scoresRegistered, migrators: {}, file: '<project>/rounds/<n>/scores.json' },
+  'judge-packet': { version: 1, schema: judgePacketSchema, migrators: {}, file: '<project>/rounds/<n>/packet/packet.json' },
+  verdict: { version: 1, schema: verdictSchema, migrators: {}, file: '<project>/rounds/<n>/verdict.json' },
+  sound: { version: 1, schema: soundSchema, migrators: {}, file: '<project>/sound/sound.json' },
+  'track-analysis': { version: 1, schema: trackAnalysisSchema, migrators: {}, file: '<project>/sound/track-analysis.json' },
+  spec: { version: 1, schema: specSchema, migrators: {}, file: '<project>/plan/spec.json' },
+  style: { version: 1, schema: styleSchema, migrators: {}, file: '<project>/ref/style.json' },
+  'library-index': { version: 1, schema: libraryIndexSchema, migrators: {}, file: '<data home>/library/index.json' },
 } satisfies Record<string, SchemaEntry>;
 
 export type Kind = keyof typeof schemas;
