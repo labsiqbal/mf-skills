@@ -1,0 +1,8 @@
+{
+  "typography": [
+    { "role": "display", "fontFamily": "Quill Display", "fontSize": "64px", "fontWeight": "700", "lineHeight": "70.4px", "letterSpacing": "-0.64px", "color": "#1E1B18", "sampleText": "The Quillfen Review" },
+    { "role": "heading", "fontFamily": "Quill Display", "fontSize": "32px", "fontWeight": "700", "lineHeight": "1.2", "letterSpacing": "normal", "color": "#1E1B18", "sampleText": "Long reads, set slowly" },
+    { "role": "body", "fontFamily": "\"Quill Text\", Georgia, serif", "fontSize": "18px", "fontWeight": "400", "lineHeight": "normal", "letterSpacing": "normal", "color": "#1E1B18", "sampleText": "Essays on craft and time." },
+    { "role": "code", "fontFamily": "Quill Mono", "fontSize": "15px", "fontWeight": "400", "lineHeight": "normal", "letterSpacing": "0.02em", "color": "#1E1B18", "sampleText": "issue = 42" }
+  ]
+}

@@ -1,5 +1,7 @@
 // A small OpenType/TrueType table reader: just the tables mf-motion needs
-// (name, OS/2, head, post, fvar). No native code, no font library.
+// (name, OS/2, head, post, fvar), from plain sfnt files and from WOFF and
+// WOFF2 web fonts (unpacked with node:zlib). No native code, no font library.
+import { brotliDecompressSync, inflateSync } from 'node:zlib';
 
 export interface FvarAxis {
   tag: string;
@@ -25,6 +27,9 @@ export interface FontInfo {
   italic: boolean;
   /** PANOSE bytes (10). */
   panose: number[];
+  /** name ID 13 (licence description) and 14 (licence URL), when present. */
+  licence: string;
+  licenceUrl: string;
   axes: FvarAxis[];
   tables: string[];
 }
@@ -39,7 +44,7 @@ function directory(view: DataView): Map<string, { offset: number; length: number
   const signature = view.getUint32(0);
   // 0x00010000 TrueType outlines, 'OTTO' CFF, 'true' legacy Apple.
   if (signature !== 0x00010000 && signature !== 0x4f54544f && signature !== 0x74727565) {
-    throw new Error('not an OpenType or TrueType font (collections and WOFF are not read)');
+    throw new Error('not an OpenType, TrueType, WOFF or WOFF2 font (collections are not read)');
   }
   const count = view.getUint16(4);
   const tables = new Map<string, { offset: number; length: number }>();
@@ -95,8 +100,92 @@ function names(view: DataView, table: { offset: number }): Map<number, string> {
   return new Map([...found].map(([id, value]) => [id, value.text]));
 }
 
-/** Read the tables mf-motion uses from a TTF/OTF file's bytes. */
-export function readFont(bytes: Uint8Array): FontInfo {
+const WOFF2_TAGS = [
+  'cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name', 'OS/2', 'post', 'cvt ', 'fpgm', 'glyf', 'loca', 'prep', 'CFF ', 'VORG', 'EBDT',
+  'EBLC', 'gasp', 'hdmx', 'kern', 'LTSH', 'PCLT', 'VDMX', 'vhea', 'vmtx', 'BASE', 'GDEF', 'GPOS', 'GSUB', 'EBSC', 'JSTF', 'MATH',
+  'CBDT', 'CBLC', 'COLR', 'CPAL', 'SVG ', 'sbix', 'acnt', 'avar', 'bdat', 'bloc', 'bsln', 'cvar', 'fdsc', 'feat', 'fmtx', 'fvar',
+  'gvar', 'hsty', 'just', 'lcar', 'mort', 'morx', 'opbd', 'prop', 'trak', 'Zapf', 'Silf', 'Glat', 'Gloc', 'Feat', 'Sill',
+];
+
+/** Rebuild a plain sfnt (with only the tables we read) from a WOFF or WOFF2 file. */
+function unwrap(bytes: Uint8Array): Uint8Array {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const signature = view.getUint32(0);
+  const tables: Array<{ tag: string; data: Uint8Array }> = [];
+  if (signature === 0x774f4646) {
+    // WOFF 1: zlib per table.
+    const count = view.getUint16(12);
+    for (let i = 0; i < count; i += 1) {
+      const entry = 44 + i * 20;
+      const offset = view.getUint32(entry + 4);
+      const compLength = view.getUint32(entry + 8);
+      const origLength = view.getUint32(entry + 12);
+      const raw = bytes.subarray(offset, offset + compLength);
+      tables.push({ tag: tag(view, entry), data: compLength < origLength ? new Uint8Array(inflateSync(raw)) : raw });
+    }
+  } else if (signature === 0x774f4632) {
+    // WOFF 2: one brotli stream; only glyf, loca and hmtx carry transforms, which we do not read.
+    const count = view.getUint16(12);
+    const compressedSize = view.getUint32(20);
+    let at = 48;
+    const base128 = () => {
+      let value = 0;
+      for (let i = 0; i < 5; i += 1) {
+        const byte = view.getUint8(at);
+        at += 1;
+        value = value * 128 + (byte & 0x7f);
+        if ((byte & 0x80) === 0) return value;
+      }
+      return value;
+    };
+    const entries: Array<{ tag: string; length: number }> = [];
+    for (let i = 0; i < count; i += 1) {
+      const flags = view.getUint8(at);
+      at += 1;
+      let tableTag: string;
+      if ((flags & 0x3f) === 0x3f) {
+        tableTag = tag(view, at);
+        at += 4;
+      } else {
+        tableTag = WOFF2_TAGS[flags & 0x3f] ?? '????';
+      }
+      const version = (flags >> 6) & 3;
+      const origLength = base128();
+      const transformed = (tableTag === 'glyf' || tableTag === 'loca') ? version === 0 : version !== 0;
+      const length = transformed ? base128() : origLength;
+      entries.push({ tag: tableTag, length });
+    }
+    const stream = new Uint8Array(brotliDecompressSync(bytes.subarray(at, at + compressedSize)));
+    let offset = 0;
+    for (const entry of entries) {
+      tables.push({ tag: entry.tag, data: stream.subarray(offset, offset + entry.length) });
+      offset += entry.length;
+    }
+  } else {
+    return bytes;
+  }
+  const keep = tables.filter((table) => ['head', 'name', 'OS/2', 'post', 'fvar'].includes(table.tag));
+  const headerSize = 12 + keep.length * 16;
+  const total = headerSize + keep.reduce((sum, table) => sum + Math.ceil(table.data.length / 4) * 4, 0);
+  const out = new Uint8Array(total);
+  const outView = new DataView(out.buffer);
+  outView.setUint32(0, 0x00010000);
+  outView.setUint16(4, keep.length);
+  let offset = headerSize;
+  keep.forEach((table, i) => {
+    const record = 12 + i * 16;
+    for (let c = 0; c < 4; c += 1) outView.setUint8(record + c, table.tag.charCodeAt(c));
+    outView.setUint32(record + 8, offset);
+    outView.setUint32(record + 12, table.data.length);
+    out.set(table.data, offset);
+    offset += Math.ceil(table.data.length / 4) * 4;
+  });
+  return out;
+}
+
+/** Read the tables mf-motion uses from a TTF/OTF, WOFF or WOFF2 file's bytes. */
+export function readFont(input: Uint8Array): FontInfo {
+  const bytes = unwrap(input);
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const tables = directory(view);
   const need = (name: string) => {
@@ -163,6 +252,8 @@ export function readFont(bytes: Uint8Array): FontInfo {
     isFixedPitch,
     italic,
     panose,
+    licence: nameTable.get(13) ?? '',
+    licenceUrl: nameTable.get(14) ?? '',
     axes,
     tables: [...tables.keys()].sort(),
   };

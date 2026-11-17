@@ -1,0 +1,4 @@
+@font-face { font-family: "Quill Text"; src: url("https://use.typekit.net/af/0a1b2c/QuillText-latin.woff2") format("woff2"); unicode-range: U+0000-00FF; }
+@font-face { font-family: "Quill Text"; src: url("https://use.typekit.net/af/0a1b2c/QuillText-ext.woff2") format("woff2"); unicode-range: U+0100-024F; }
+@font-face { font-family: "Quill Text"; src: url("https://use.typekit.net/af/0a1b2c/QuillText.ttf"); }
+@font-face { font-family: "Quill Mono"; src: url("../fonts/QuillMono.woff") format("woff"); }

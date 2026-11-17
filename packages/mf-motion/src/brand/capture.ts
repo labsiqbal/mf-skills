@@ -15,6 +15,8 @@ import { BRAND_VERSION } from '../schemas/brand';
 import { writeDoc } from '../schemas/index';
 import { type BrandColors, type RoleInputs, deriveRoles } from './colors';
 import { BRAND_ID, brandSlug, registrableDomain } from './domain';
+import { type FontRoles, fontOrigins, fontWarnings, mapFontRoles } from './fonts';
+import { rightsNotice } from './rights';
 import { TEXT_LIMITS, fenceSafe, plainText, sanitizeField, sanitizeLines, truncate } from './sanitize';
 
 /** Files an AI-directed capture leaves for agents; never kept. */
@@ -31,6 +33,8 @@ export interface CaptureRequest {
   refresh?: boolean;
   /** Data home root. */
   home: string;
+  /** Open project, for the rights.notice event. */
+  project?: string | null;
   cwd: string;
   engine?: Engine;
   browserPath?: string;
@@ -43,8 +47,12 @@ export interface CaptureResult {
   candidatesSheet: string | null;
   logoSheet: string | null;
   roles: BrandColors | null;
-  fonts: null;
+  fonts: FontRoles | null;
+  /** The one-time rights notice to show the user, or null when shown before. */
+  notice: string | null;
   warnings: Warning[];
+  /** Commands the agent should offer next. */
+  next: string[];
   reused: boolean;
 }
 
@@ -168,15 +176,17 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
     lockFile(dir),
     async () => {
       if (existsSync(brandFile) && !request.refresh) {
-        const existing = JSON.parse(readFileSync(brandFile, 'utf8')) as { status?: 'draft' | 'picked'; colors?: BrandColors };
+        const existing = JSON.parse(readFileSync(brandFile, 'utf8')) as { status?: 'draft' | 'picked'; colors?: BrandColors; type?: FontRoles };
         request.onProgress?.(`Reusing brand ${id} from the library (use --refresh to capture again)`);
         return {
           brand: { id, status: existing.status ?? 'draft', dir },
           candidatesSheet: null,
           logoSheet: null,
           roles: existing.colors ?? null,
-          fonts: null,
+          fonts: existing.type ?? null,
+          notice: null,
           warnings: [],
+          next: [],
           reused: true,
         };
       }
@@ -236,6 +246,19 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         }
       }
       const colors = deriveRoles({ tokens: tokens as RoleInputs['tokens'], computedStyles: computedStyles as RoleInputs['computedStyles'], screenshots: viewports });
+      const origins =
+        'localFile' in source
+          ? fontOrigins(readFileSync(source.localFile, 'utf8'), (href) => {
+              try {
+                const target = confine(source.localRoot, path.resolve(path.dirname(source.localFile), href.split(/[?#]/)[0] ?? ''));
+                return readFileSync(target, 'utf8');
+              } catch {
+                return null;
+              }
+            })
+          : new Map<string, string>();
+      const type = mapFontRoles({ brandDir: dir, captureDir, origins });
+      const notice = rightsNotice(request.home, 'brand', { project: request.project ?? null });
       const capturedAt = new Date().toISOString();
       const previous = path.join(dir, 'brand.prev.json');
       if (existsSync(brandFile)) renameSync(brandFile, previous);
@@ -253,7 +276,7 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
           engine: engine.version,
         },
         colors,
-        type: { display: null, heading: null, body: null, mono: null },
+        type,
         logo: null,
         mark: null,
         shots: [],
@@ -266,7 +289,7 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         radiusPx: null,
         buttons: [],
         copy: { headline, cta, domain: 'url' in source ? new URL(source.url).hostname : null },
-        rights: { noticeShownAt: null, oflSubstituted: false },
+        rights: { noticeShownAt: notice.shownAt, oflSubstituted: false },
       });
 
       const fenced = [...(headline ? [headline] : []), ...headingLines.filter((line) => line !== headline), ...sanitized.kept]
@@ -298,8 +321,11 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
           details: { count: counter.dropped },
         });
       }
+      const fontNotes = fontWarnings(id, type);
+      warnings.push(...fontNotes.warnings);
+      const next = fontNotes.next;
       if (removed.length > 0) request.onProgress?.(`Removed agent-instruction files from the capture: ${removed.join(', ')}`);
-      return { brand: { id, status: 'draft', dir }, candidatesSheet: null, logoSheet: null, roles: colors, fonts: null, warnings, reused: false };
+      return { brand: { id, status: 'draft', dir }, candidatesSheet: null, logoSheet: null, roles: colors, fonts: type, notice: notice.text, warnings, next, reused: false };
     },
     { command: 'brand capture', ...(request.onWarn ? { onStale: request.onWarn } : {}) },
   );
