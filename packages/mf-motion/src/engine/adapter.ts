@@ -46,6 +46,11 @@ export interface CallOptions {
    * Only --version and --help, which never touch the cache, skip it.
    */
   privateCache?: boolean;
+  /**
+   * A command that exits non-zero with a full report (no `error` envelope) has
+   * still succeeded: `check` exits 1 with `ok: false` when it finds errors.
+   */
+  reportOnFailure?: boolean;
   onStderr?: (chunk: string) => void;
 }
 
@@ -100,8 +105,10 @@ export async function callEngine(engine: Engine, args: readonly string[], option
     throw new MfmError('ENGINE_MISSING', { spawnError: result.spawnError.code }, { message: 'The render engine could not be started.' });
   }
   const json = lastJson(result.stdout);
-  const reportedFailure = (json as { ok?: unknown } | undefined)?.ok === false;
-  if (result.code !== 0 || reportedFailure) throw engineError(options.failure, json, result);
+  const envelope = json as { ok?: unknown; error?: unknown } | undefined;
+  const isReport = options.reportOnFailure === true && envelope !== undefined && typeof envelope === 'object' && envelope.error === undefined;
+  const reportedFailure = envelope?.ok === false;
+  if ((result.code !== 0 || reportedFailure) && !isReport) throw engineError(options.failure, json, result);
   if (options.expectJson !== false && json === undefined) {
     throw new MfmError('ENGINE_OUTPUT_UNPARSEABLE', { command: args[0] ?? '', stdoutTail: result.stdout.slice(-2000) });
   }
@@ -162,16 +169,18 @@ export interface CheckResult {
   warnings: number;
   findings: Finding[];
   snapshots: string[];
+  /** Engine crops of findings (`finding-NN-<code>.png`), absolute paths. */
+  findingFiles: string[];
   raw: unknown;
 }
 
 type Section = { errorCount?: number; warningCount?: number; findings?: Array<Record<string, unknown>> };
 
-/** `check --json --snapshots --at-transitions [--at t,...]`. */
+/** `check --json --snapshots --at-transitions [--at t,...]`; a report with error findings is a result, not a failure. */
 export async function check(engine: Engine, buildDir: string, options: { at?: number[] } = {}): Promise<CheckResult> {
   const args = ['check', buildDir, '--json', '--snapshots', '--at-transitions'];
   if (options.at && options.at.length > 0) args.push('--at', options.at.join(','));
-  const { json } = await callEngine(engine, args, { timeoutMs: TIMEOUTS.check, failure: 'CHECK_FAILED', buildDir });
+  const { json } = await callEngine(engine, args, { timeoutMs: TIMEOUTS.check, failure: 'CHECK_FAILED', buildDir, reportOnFailure: true });
   const report = json as Record<string, unknown>;
   let errors = 0;
   let warnings = 0;
@@ -192,8 +201,9 @@ export async function check(engine: Engine, buildDir: string, options: { at?: nu
       });
     }
   }
-  const snapshots = ((report.snapshots as { files?: unknown } | undefined)?.files as string[] | undefined) ?? [];
-  return { errors, warnings, findings, snapshots, raw: json };
+  const shots = report.snapshots as { files?: unknown; findingFiles?: unknown } | undefined;
+  const strings = (value: unknown) => (Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []);
+  return { errors, warnings, findings, snapshots: strings(shots?.files), findingFiles: strings(shots?.findingFiles), raw: json };
 }
 
 export interface SnapshotResult {

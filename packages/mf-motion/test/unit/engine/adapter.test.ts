@@ -54,6 +54,15 @@ describe('engine calls', () => {
     await expect(check(engine, build)).rejects.toMatchObject({ code: 'CHECK_FAILED', details: { engineCode: 'runtime_error' } });
   });
 
+  it('return a check report with error findings (exit 1, ok false, no error envelope) instead of failing', async () => {
+    const engine = fakeEngine();
+    engine.setMode('findings');
+    const build = mkdtempSync(path.join(tmpdir(), 'mfm-build-'));
+    const result = await check(engine, build);
+    expect(result).toMatchObject({ errors: 1, warnings: 1, snapshots: ['.hyperframes/artifacts/snapshots/a/frame-00-at-0.2s.png'], findingFiles: ['/abs/finding-00-text_box_overflow.png'] });
+    expect(result.findings.map((finding) => finding.code)).toEqual(['text_box_overflow', 'canvas_overflow']);
+  });
+
   it('report output without JSON as ENGINE_OUTPUT_UNPARSEABLE', async () => {
     const engine = fakeEngine();
     engine.setMode('garbage');

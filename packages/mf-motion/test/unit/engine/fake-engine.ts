@@ -16,6 +16,11 @@ const out = args.indexOf('--output');
 if (out >= 0 && mode === 'ok') require('node:fs').writeFileSync(args[out + 1], 'fake output');
 if (mode === 'env') { console.log('progress line'); console.log(JSON.stringify({ ok: true, env: process.env, args })); }
 else if (mode === 'fail') { console.log(JSON.stringify({ ok: false, error: { code: 'runtime_error', message: 'No composition found', hint: 'add index.html' } })); process.exit(1); }
+else if (mode === 'findings') {
+  // check with error findings: a full report with ok false and exit 1, no error envelope.
+  console.log(JSON.stringify({ ok: false, layout: { ok: false, errorCount: 1, warningCount: 1, findings: [{ code: 'text_box_overflow', severity: 'error', message: 'Text overflows', time: 0.2, selector: '#off' }, { code: 'canvas_overflow', severity: 'warning', message: 'Off canvas', time: 0.2, selector: '#off' }] }, snapshots: { enabled: true, files: ['.hyperframes/artifacts/snapshots/a/frame-00-at-0.2s.png'], findingFiles: ['/abs/finding-00-text_box_overflow.png'] } }));
+  process.exit(1);
+}
 else if (mode === 'garbage') { console.log('not json at all'); }
 else if (mode === 'sleep') {
   const { spawn } = require('node:child_process');
@@ -30,7 +35,7 @@ export interface FakeEngine extends Engine {
   modeFile: string;
   pidsFile: string;
   lastArgs(): string[];
-  setMode(mode: 'ok' | 'env' | 'fail' | 'garbage' | 'sleep'): void;
+  setMode(mode: 'ok' | 'env' | 'fail' | 'findings' | 'garbage' | 'sleep'): void;
 }
 
 export function fakeEngine(): FakeEngine {
