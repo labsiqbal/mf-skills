@@ -18,5 +18,4 @@ Maintain portable MF skills with independent versions.
 ## Delivery
 
 Publish through the repository's configured remote and account. Verify Git identity,
-remote revision, checks, and tag resolution. Native bindings are registered by
-the host's existing skill manager; installed copies are not source authorities.
+remote revision, checks, and tag resolution.
