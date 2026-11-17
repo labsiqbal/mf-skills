@@ -178,12 +178,21 @@ def metadata(text: str, label: str) -> str:
     return match.group(1) if match else ""
 
 
-def valid_http_url(value: str) -> bool:
+def valid_repository_url(value: str) -> bool:
     try:
         parsed = urlsplit(value)
         return (
-            parsed.scheme in {"http", "https"}
-            and bool(parsed.hostname)
+            (
+                (parsed.scheme in {"http", "https"} and bool(parsed.hostname))
+                or (
+                    parsed.scheme == "file"
+                    and not parsed.netloc
+                    and parsed.path.startswith("/")
+                    and parsed.path != "/"
+                    and not parsed.query
+                    and not parsed.fragment
+                )
+            )
             and not parsed.username
             and not any(character.isspace() for character in value)
         )
@@ -515,8 +524,8 @@ def validate_source_provenance(root: Path, path: Path, fields: dict[str, str], e
     if any(inactive.values()):
         fail(errors, f"{relative} source provenance must be all active or all N/A")
     source = unquote(fields.get("Source repository", ""))
-    if not valid_http_url(source):
-        fail(errors, f"{relative} Source repository must be valid http/https URL")
+    if not valid_repository_url(source):
+        fail(errors, f"{relative} Source repository must be valid http/https URL or absolute hostless file URI")
     sha = unquote(fields.get("Source commit", ""))
     if not re.fullmatch(r"[0-9a-fA-F]{7,40}", sha):
         fail(errors, f"{relative} Source commit must be a pinned SHA")

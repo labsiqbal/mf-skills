@@ -10,7 +10,7 @@ description: >-
   percakapan, pembahasan pemasaran, atau permintaan penilaian buku.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
   status: draft
   author: "Iqbal"
 ---
