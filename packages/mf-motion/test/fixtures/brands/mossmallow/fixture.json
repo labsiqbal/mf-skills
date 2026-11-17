@@ -1,0 +1,4 @@
+{
+  "fonts": { "noto-sans": "NotoSans.woff2" },
+  "pick": { "logo": "l1", "mark": "l2", "shots": ["s3", "s4", "s2", "s1"] }
+}

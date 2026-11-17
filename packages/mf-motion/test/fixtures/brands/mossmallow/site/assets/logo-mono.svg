@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="561" height="80" viewBox="0 0 561 80" role="img" aria-label="Mossmallow">
+  <title>Mossmallow</title>
+  <g transform="translate(0 0)"><circle cx="40" cy="40" r="40" fill="#1F2A24"/><path d="M26 54A30 30 0 0 1 58 22A30 30 0 0 1 26 54Z" fill="#FBF7F0"/><path d="M19 61L46 34" stroke="#1F2A24" stroke-width="4" stroke-linecap="round"/></g>
+  <path transform="translate(102 0)" d="M5 70V42A12 12 0 0 1 29 42V70M29 42A12 12 0 0 1 53 42V70 M88 30A20 20 0 1 1 88 70A20 20 0 1 1 88 30Z M150 36C145 29 126 29 126 40C126 51 150 48 150 59C150 71 129 72 124 64 M193 36C188 29 169 29 169 40C169 51 193 48 193 59C193 71 172 72 167 64 M209 70V42A12 12 0 0 1 233 42V70M233 42A12 12 0 0 1 257 42V70 M292 30A20 20 0 1 0 292 70A20 20 0 1 0 292 30ZM312 30V70 M327 10V70 M342 10V70 M377 30A20 20 0 1 1 377 70A20 20 0 1 1 377 30Z M412 30L422 70L433 38L444 70L454 30" fill="none" stroke="#1F2A24" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

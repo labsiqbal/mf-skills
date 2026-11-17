@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mossmallow - Shelf</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.sum .card { display: flex; flex-direction: column; gap: 2px; padding: 16px 20px; }
+.sum strong { font-size: 22px; font-weight: 800; font-stretch: 87.5%; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.plant { display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 18px; }
+.plant .art { background: var(--leaf-soft); border-radius: 16px; height: 128px; display: grid; place-items: center; margin-bottom: 8px; }
+.plant .chip { align-self: flex-start; margin-top: 6px; }
+@media (max-width: 600px) {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .plant { padding: 12px; }
+  .plant .art { height: 104px; }
+  .plant .art svg { height: 88px; width: 75px; }
+  .plant h3 { font-size: 16px; }
+  .plant p { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="monstera" viewBox="0 0 120 140"><path d="M60 88C57 62 40 47 18 44c3 24 20 40 42 44z" fill="#2E9C63"/><path d="M60 88c3-28 22-46 44-49-2 25-20 43-44 49z" fill="#238653"/><path d="M60 88C52 58 56 30 62 12c12 20 14 50-2 76z" fill="#1F7A4A"/><path d="M27 52l14 9M38 47l10 13M88 50l-14 10M97 56l-15 8M60 30l0 40" stroke="#FBF7F0" stroke-width="3" stroke-linecap="round"/><path d="M30 94h60l-7 38a6 6 0 0 1-6 5H43a6 6 0 0 1-6-5z" fill="#F2A65A"/><rect x="25" y="86" width="70" height="13" rx="6.5" fill="#E8914A"/></symbol><symbol id="snake" viewBox="0 0 120 140"><path d="M46 90C41 62 43 34 50 10c7 24 8 54 3 80z" fill="#2F7D4F"/><path d="M60 90c-3-34 1-62 10-78 5 27 3 54-3 78z" fill="#238653"/><path d="M74 90c0-25 6-46 17-58 1 23-6 44-12 58z" fill="#3E9466"/><path d="M49 30l3 4M48 46l4 3M50 62l3 4M67 32l3 3M66 50l3 3M82 52l3 2" stroke="#BFE3CC" stroke-width="3" stroke-linecap="round"/><path d="M30 94h60l-7 38a6 6 0 0 1-6 5H43a6 6 0 0 1-6-5z" fill="#F2A65A"/><rect x="25" y="86" width="70" height="13" rx="6.5" fill="#E8914A"/></symbol><symbol id="pothos" viewBox="0 0 120 140"><path d="M60 88c0-20-8-34-22-40" stroke="#1F7A4A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M60 88c2-22 14-38 30-42" stroke="#1F7A4A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M38 48c-10-8-24-2-22 10 8 2 18 0 22-10z" fill="#3E9466"/><path d="M90 46c8-10 22-6 22 6-8 3-18 2-22-6z" fill="#238653"/><path d="M60 70c-6-14 2-28 14-28 2 12-4 24-14 28z" fill="#2E9C63"/><path d="M34 92c-8 6-10 18-4 28 6-6 8-18 4-28z" fill="#6DBB8A"/><path d="M88 92c8 6 10 18 4 28-6-6-8-18-4-28z" fill="#3E9466"/><path d="M30 94h60l-7 38a6 6 0 0 1-6 5H43a6 6 0 0 1-6-5z" fill="#F2A65A"/><rect x="25" y="86" width="70" height="13" rx="6.5" fill="#E8914A"/></symbol><symbol id="fig" viewBox="0 0 120 140"><path d="M60 90V30" stroke="#6B4A2E" stroke-width="5" stroke-linecap="round"/><ellipse cx="44" cy="44" rx="16" ry="11" transform="rotate(-30 44 44)" fill="#238653"/><ellipse cx="77" cy="38" rx="17" ry="11" transform="rotate(25 77 38)" fill="#2E9C63"/><ellipse cx="45" cy="70" rx="17" ry="11" transform="rotate(-15 45 70)" fill="#1F7A4A"/><ellipse cx="76" cy="64" rx="17" ry="11" transform="rotate(18 76 64)" fill="#238653"/><ellipse cx="60" cy="22" rx="11" ry="15" fill="#3E9466"/><path d="M30 94h60l-7 38a6 6 0 0 1-6 5H43a6 6 0 0 1-6-5z" fill="#F2A65A"/><rect x="25" y="86" width="70" height="13" rx="6.5" fill="#E8914A"/></symbol><symbol id="calathea" viewBox="0 0 120 140"><path d="M60 88C48 66 26 60 14 64c8 18 28 26 46 24z" fill="#2E9C63"/><path d="M60 88c12-22 34-28 46-24-8 18-28 26-46 24z" fill="#238653"/><path d="M60 88C50 62 52 36 60 20c8 16 10 42 0 68z" fill="#1F7A4A"/><path d="M60 30v50M24 66c12 4 24 10 34 18M96 66c-12 4-24 10-34 18" stroke="#9CD3B1" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M30 94h60l-7 38a6 6 0 0 1-6 5H43a6 6 0 0 1-6-5z" fill="#F2A65A"/><rect x="25" y="86" width="70" height="13" rx="6.5" fill="#E8914A"/></symbol><symbol id="pearls" viewBox="0 0 120 140"><path d="M30 94h60l-7 38a6 6 0 0 1-6 5H43a6 6 0 0 1-6-5z" fill="#F2A65A"/><rect x="25" y="86" width="70" height="13" rx="6.5" fill="#E8914A"/><path d="M44 90c-6 16-6 30 0 44M60 92c0 14 2 26 6 38M76 90c6 14 8 26 6 40" stroke="#4E8A63" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="44" cy="72" r="4.5" fill="#6DBB8A"/><circle cx="52" cy="70" r="4.5" fill="#6DBB8A"/><circle cx="60" cy="68" r="4.5" fill="#6DBB8A"/><circle cx="68" cy="70" r="4.5" fill="#6DBB8A"/><circle cx="76" cy="72" r="4.5" fill="#6DBB8A"/><circle cx="48" cy="80" r="4.5" fill="#6DBB8A"/><circle cx="56" cy="78" r="4.5" fill="#6DBB8A"/><circle cx="64" cy="78" r="4.5" fill="#6DBB8A"/><circle cx="72" cy="80" r="4.5" fill="#6DBB8A"/><circle cx="43" cy="100" r="4.5" fill="#6DBB8A"/><circle cx="42" cy="112" r="4.5" fill="#6DBB8A"/><circle cx="44" cy="124" r="4.5" fill="#6DBB8A"/><circle cx="61" cy="102" r="4.5" fill="#6DBB8A"/><circle cx="63" cy="114" r="4.5" fill="#6DBB8A"/><circle cx="65" cy="126" r="4.5" fill="#6DBB8A"/><circle cx="79" cy="100" r="4.5" fill="#6DBB8A"/><circle cx="81" cy="112" r="4.5" fill="#6DBB8A"/><circle cx="81" cy="124" r="4.5" fill="#6DBB8A"/></symbol></defs></svg>
+<aside class="side">
+  <img src="../site/assets/logo.svg" alt="Mossmallow">
+  <nav class="nav"><a class="on"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10l-1.6 7H8.6z"/><path d="M12 13V8"/><path d="M12 10c-2.2-3.2-5.4-3.4-6.6-2.2 1.2 3.2 4.4 3.6 6.6 2.2z"/><path d="M12 9c2.2-3.2 5.4-3.4 6.6-2.2-1.2 3.2-4.4 3.6-6.6 2.2z"/></svg>Shelf</a><a><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 4.2 6 7.2 6 10.6a6 6 0 0 1-12 0c0-3.4 2.8-6.4 6-10.6z"/></svg>Watering</a><a><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5h3"/><path d="M17 5h3v3"/><path d="M20 16v3h-3"/><path d="M7 19H4v-3"/><circle cx="12" cy="12" r="3.2"/></svg>Check-up</a><a><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.6 3.8 6 7 6 10.2a6 6 0 0 1-12 0c0-2.2 1-4 2.8-5.2.2 2 1.2 3.2 2.4 3.2-.2-3 .2-5.6.8-8.2z"/></svg>Streaks</a></nav>
+  <div class="tip"><strong>Tip of the day</strong><span class="muted">Turn your fig a quarter turn each week so it grows straight, not shy.</span></div>
+</aside>
+<header class="bar"><img src="../site/assets/logo.svg" alt="Mossmallow"><span class="avatar">M</span></header>
+<main class="main">
+<div class="top">
+  <div><h1>Your shelf</h1><p class="muted">Six plants, all doing fine. Two of them would love a drink today.</p></div>
+  <a class="btn">+ Add a plant</a>
+</div>
+<div class="sum wide-only">
+  <div class="card"><span class="muted">Thirsty today</span><strong>2 plants</strong></div>
+  <div class="card"><span class="muted">Next check-up</span><strong>Saturday</strong></div>
+  <div class="card"><span class="muted">Care streak</span><strong>21 days</strong></div>
+</div>
+<section class="grid"><article class="card plant">
+  <div class="art"><svg width="89" height="104" aria-hidden="true"><use href="#monstera"/></svg></div>
+  <h3>Monstera</h3>
+  <p class="muted">Big Leaf Energy · living room</p>
+  <span class="chip water"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 4.2 6 7.2 6 10.6a6 6 0 0 1-12 0c0-3.4 2.8-6.4 6-10.6z"/></svg>Water today</span>
+</article><article class="card plant">
+  <div class="art"><svg width="89" height="104" aria-hidden="true"><use href="#snake"/></svg></div>
+  <h3>Snake plant</h3>
+  <p class="muted">Steady Eddie · bedroom</p>
+  <span class="chip ok"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10l-1.6 7H8.6z"/><path d="M12 13V8"/><path d="M12 10c-2.2-3.2-5.4-3.4-6.6-2.2 1.2 3.2 4.4 3.6 6.6 2.2z"/><path d="M12 9c2.2-3.2 5.4-3.4 6.6-2.2-1.2 3.2-4.4 3.6-6.6 2.2z"/></svg>Happy</span>
+</article><article class="card plant">
+  <div class="art"><svg width="89" height="104" aria-hidden="true"><use href="#pothos"/></svg></div>
+  <h3>Pothos</h3>
+  <p class="muted">Trailblazer · bookshelf</p>
+  <span class="chip ok"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10l-1.6 7H8.6z"/><path d="M12 13V8"/><path d="M12 10c-2.2-3.2-5.4-3.4-6.6-2.2 1.2 3.2 4.4 3.6 6.6 2.2z"/><path d="M12 9c2.2-3.2 5.4-3.4 6.6-2.2-1.2 3.2-4.4 3.6-6.6 2.2z"/></svg>Water in 2 days</span>
+</article><article class="card plant">
+  <div class="art"><svg width="89" height="104" aria-hidden="true"><use href="#fig"/></svg></div>
+  <h3>Fiddle-leaf fig</h3>
+  <p class="muted">The Diva · by the window</p>
+  <span class="chip water"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 4.2 6 7.2 6 10.6a6 6 0 0 1-12 0c0-3.4 2.8-6.4 6-10.6z"/></svg>Water today</span>
+</article><article class="card plant">
+  <div class="art"><svg width="89" height="104" aria-hidden="true"><use href="#calathea"/></svg></div>
+  <h3>Calathea</h3>
+  <p class="muted">Night Owl · bathroom</p>
+  <span class="chip ok"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10l-1.6 7H8.6z"/><path d="M12 13V8"/><path d="M12 10c-2.2-3.2-5.4-3.4-6.6-2.2 1.2 3.2 4.4 3.6 6.6 2.2z"/><path d="M12 9c2.2-3.2 5.4-3.4 6.6-2.2-1.2 3.2-4.4 3.6-6.6 2.2z"/></svg>Water in 4 days</span>
+</article><article class="card plant">
+  <div class="art"><svg width="89" height="104" aria-hidden="true"><use href="#pearls"/></svg></div>
+  <h3>String of pearls</h3>
+  <p class="muted">Bubbles · kitchen</p>
+  <span class="chip ok"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10l-1.6 7H8.6z"/><path d="M12 13V8"/><path d="M12 10c-2.2-3.2-5.4-3.4-6.6-2.2 1.2 3.2 4.4 3.6 6.6 2.2z"/><path d="M12 9c2.2-3.2 5.4-3.4 6.6-2.2-1.2 3.2-4.4 3.6-6.6 2.2z"/></svg>Water in 6 days</span>
+</article></section>
+</main>
+<nav class="tabs"><a class="on"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h10l-1.6 7H8.6z"/><path d="M12 13V8"/><path d="M12 10c-2.2-3.2-5.4-3.4-6.6-2.2 1.2 3.2 4.4 3.6 6.6 2.2z"/><path d="M12 9c2.2-3.2 5.4-3.4 6.6-2.2-1.2 3.2-4.4 3.6-6.6 2.2z"/></svg>Shelf</a><a><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 4.2 6 7.2 6 10.6a6 6 0 0 1-12 0c0-3.4 2.8-6.4 6-10.6z"/></svg>Watering</a><a><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5h3"/><path d="M17 5h3v3"/><path d="M20 16v3h-3"/><path d="M7 19H4v-3"/><circle cx="12" cy="12" r="3.2"/></svg>Check-up</a><a><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.6 3.8 6 7 6 10.2a6 6 0 0 1-12 0c0-2.2 1-4 2.8-5.2.2 2 1.2 3.2 2.4 3.2-.2-3 .2-5.6.8-8.2z"/></svg>Streaks</a></nav>
+</body>
+</html>

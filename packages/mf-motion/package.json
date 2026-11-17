@@ -25,7 +25,9 @@
     "test:unit": "vitest run --project unit",
     "test:render": "vitest run --project render",
     "pack:check": "node scripts/pack-check.mjs",
-    "licence:check": "node scripts/licence-denylist.mjs"
+    "licence:check": "node scripts/licence-denylist.mjs",
+    "fixtures:screens": "node scripts/fixtures-screens.mjs",
+    "fixtures:brands": "node scripts/fixtures-brands.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

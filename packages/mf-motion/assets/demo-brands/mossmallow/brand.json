@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "kind": "brand",
+  "id": "mossmallow",
+  "name": "Mossmallow",
+  "tagline": "Mossmallow reminds you, checks on them and celebrates every new leaf.",
+  "status": "picked",
+  "source": {
+    "mode": "capture-local",
+    "url": null,
+    "capturedAt": null,
+    "engine": "0.9.61"
+  },
+  "colors": {
+    "ground": "#FBF7F0",
+    "ink": "#1F2A24",
+    "accent": "#238653",
+    "accent2": "#F2A65A",
+    "surface": "#FFFFFF",
+    "muted": "#5F6E64",
+    "palette": [
+      "#FBF7F0",
+      "#1F2A24",
+      "#238653",
+      "#F2A65A",
+      "#5F6E64"
+    ],
+    "evidence": {
+      "ground": {
+        "method": "area",
+        "share": 0.994,
+        "contrast": null
+      },
+      "ink": {
+        "method": "text-use",
+        "share": 0.525,
+        "contrast": 13.898
+      },
+      "accent": {
+        "method": "button-fill",
+        "share": null,
+        "contrast": 4.269
+      },
+      "surface": {
+        "method": "area",
+        "share": 0.818,
+        "contrast": null
+      },
+      "muted": {
+        "method": "text-use",
+        "share": 0.471,
+        "contrast": 5.041
+      }
+    }
+  },
+  "type": {
+    "display": {
+      "family": "Noto Sans",
+      "weight": 800,
+      "sizePx": 72,
+      "letterSpacingEm": -0.01,
+      "lineHeight": 1.08,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSans.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSans.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "inter"
+    },
+    "heading": {
+      "family": "Noto Sans",
+      "weight": 800,
+      "sizePx": 44,
+      "letterSpacingEm": null,
+      "lineHeight": 1.08,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSans.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSans.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "inter"
+    },
+    "body": {
+      "family": "Noto Sans",
+      "weight": 400,
+      "sizePx": 22,
+      "letterSpacingEm": null,
+      "lineHeight": 1.55,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSans.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSans.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "inter"
+    },
+    "mono": null
+  },
+  "logo": {
+    "path": "logo.svg",
+    "kind": "svg",
+    "w": 561,
+    "h": 80
+  },
+  "mark": {
+    "path": "mark.svg",
+    "kind": "svg",
+    "w": 80,
+    "h": 80
+  },
+  "shots": [
+    {
+      "path": "shots/shot-1.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s3.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-2.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s4.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-3.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s2.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-4.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s1.png",
+      "note": null
+    }
+  ],
+  "candidates": {
+    "sheet": null,
+    "logoSheet": null,
+    "logos": [],
+    "shots": []
+  },
+  "radiusPx": null,
+  "buttons": [],
+  "copy": {
+    "headline": "Happy plants, zero guesswork.",
+    "cta": "Get the app",
+    "domain": null
+  },
+  "rights": {
+    "noticeShownAt": null,
+    "oflSubstituted": false
+  }
+}

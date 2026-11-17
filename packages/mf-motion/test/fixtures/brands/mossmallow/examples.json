@@ -1,0 +1,73 @@
+{
+  "message-cascade": {
+    "messages": [
+      { "from": "user", "text": "Is it normal that my fig dropped a leaf?" },
+      { "from": "brand", "text": "Totally normal after a move. Bright light, same schedule, a little patience." },
+      { "from": "user", "text": "Should I water it more?" },
+      { "from": "brand", "text": "Nope. It is just being dramatic. You are doing great." }
+    ]
+  },
+  "follower-milestone": {
+    "handle": "@mossmallow",
+    "from": 9200,
+    "to": 10000,
+    "label": "plant people and counting"
+  },
+  "prompt-to-result": {
+    "prompt": "Why are my calathea leaves curling?",
+    "result": {
+      "title": "A little thirsty",
+      "body": "The soil is dry 3 cm down. Water 200 ml today and mist twice a week.",
+      "meta": "92% sure"
+    }
+  },
+  "terminal-run": {
+    "command": "mossmallow water --due today",
+    "lines": ["Monstera ........ 250 ml  done", "Fiddle-leaf fig .. 400 ml  done", "Calathea ........ skipped, still damp"],
+    "result": "2 plants watered, 0 thirsty"
+  },
+  "task-checkoff": {
+    "title": "Sunday plant care",
+    "items": ["Water the monstera", "Turn the fig a quarter turn", "Mist the calathea", "Wipe the dusty leaves"],
+    "progressLabel": "Plants pampered"
+  },
+  "revenue-step": {
+    "title": "Plants rescued each quarter",
+    "unit": "plants",
+    "series": [
+      { "label": "Q1", "value": 12400 },
+      { "label": "Q2", "value": 18900 },
+      { "label": "Q3", "value": 26100 },
+      { "label": "Q4", "value": 35800 }
+    ],
+    "delta": "+37%"
+  },
+  "ranked-bars": {
+    "title": "Most checked-up plants this month",
+    "unit": "check-ups",
+    "items": [
+      { "label": "Monstera", "value": 4820 },
+      { "label": "Fiddle-leaf fig", "value": 3910 },
+      { "label": "Pothos", "value": 3650 },
+      { "label": "Calathea", "value": 2740 },
+      { "label": "Snake plant", "value": 1980 }
+    ]
+  },
+  "ink-underline": {
+    "text": "Water it less than you think",
+    "keyword": "less",
+    "shape": "underline"
+  },
+  "title-lockup": {
+    "headline": "Happy plants, zero guesswork.",
+    "subline": "Get the app"
+  },
+  "three-step-flow": {
+    "steps": [
+      { "title": "Snap a photo", "body": "Point your camera at the leaf that worries you." },
+      { "title": "Get the check-up", "body": "A straight answer in seconds, no plant judgement." },
+      { "title": "Follow the plan", "body": "Reminders do the remembering for you." }
+    ],
+    "highlight": 1
+  }
+}
