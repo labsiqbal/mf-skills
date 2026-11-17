@@ -5,11 +5,11 @@
   Session: development session; checkout and branch are tracked by the repository host.
   Scope: all four packages, public installation/dependency documentation and
   portability checks; preserve MF-007 and its active import checkout.
-  Base: `d13f80f` / PR #7 (Masterplan import), not yet integrated into main.
+  Start base: `d13f80f` / PR #7 (Masterplan import), now merged into main.
   Claimed: 2026-11-17T03:26:08.736485+00:00
   Acceptance: no personal runtime/path prerequisites; optional methods have
   fallbacks; package/regression checks pass; license coverage stated honestly.
-  Delivery: PR against import branch; no merge, release or runtime rollout.
+  Delivery: PR against main; no merge, release or runtime rollout.
   Checks: four skill validators, package/portability/regression suites and diff
   checks pass. Standards/Spec reviews clean after aligning question-bank rules.
   Owner selected MIT; license included in each package.
