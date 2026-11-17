@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "project",
+  "id": "tessarine-launch-lmut",
+  "title": "Tessarine launch",
+  "type": "film",
+  "aspect": "16:9",
+  "width": 1920,
+  "height": 1080,
+  "fps": "30",
+  "brand": "tessarine",
+  "theme": null,
+  "language": "en",
+  "engine": {
+    "hyperframes": "0.9.61",
+    "gsap": "3.15.0",
+    "three": "0.187.0"
+  },
+  "cli": "1.0.0",
+  "createdAt": "2026-11-17T22:04:59.798Z"
+}
