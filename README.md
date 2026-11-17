@@ -1,6 +1,6 @@
 # MF Skills
 
-Agent skills by Iqbal for writing, web design, and coordinating project work.
+Agent skills by Iqbal for writing, product planning, web design, and coordinating project work.
 
 - **[mf-copywriting](skills/mf-copywriting/SKILL.md)**: English and Indonesian
   copywriting, source discussion, revision, and editorial review.
@@ -9,6 +9,10 @@ Agent skills by Iqbal for writing, web design, and coordinating project work.
   evidence-based completion reports.
 - **[mf-design](skills/mf-design/SKILL.md)**: compare distinct HTML directions,
   choose one, and tune its CSS through a live panel with reset and export.
+
+- **[mf-masterplan](skills/mf-masterplan/SKILL.md)**: turn a product idea or
+  existing source into a build-ready package with research, decisions, ticket
+  contracts, and an offline HTML deck.
 
 ## mf-orca capabilities
 
@@ -44,6 +48,7 @@ Choose a skill with the Vercel Skills CLI:
 npx skills add labsiqbal/mf-skills --skill mf-orca -g
 npx skills add labsiqbal/mf-skills --skill mf-copywriting -g
 npx skills add labsiqbal/mf-skills --skill mf-design -g
+npx skills add labsiqbal/mf-skills --skill mf-masterplan -g
 ```
 
 Managed installations should update their existing source registry rather than
@@ -79,6 +84,11 @@ Preserve the supplied features and avoid unsupported promises.
 ```text
 Use mf-design. Create three distinct HTML directions for this landing-page brief,
 show a comparison, then tune my choice through a live panel with CSS export.
+```
+
+```text
+Use mf-masterplan. Turn this product idea into a build-ready package,
+resolve product decisions with me, and preserve the project's existing tracker.
 ```
 
 Explicit invocation syntax depends on the harness. Codex supports `$mf-orca`; Claude Code uses its native skill invocation.
