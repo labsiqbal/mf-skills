@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; background: #000000; }
+  #main { position: relative; width: 320px; height: 180px; overflow: hidden; background: #000000; }
+  #box { position: absolute; left: 100px; top: 50px; width: 120px; height: 80px; background: #FF0000; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="main" data-composition-id="main" data-width="320" data-height="180" data-duration="3">
+  <div id="box" class="clip" data-start="0" data-duration="3"></div>
+</div>
+<!-- vendor/gsap is copied in by the test (GSAP is never committed). -->
+<script src="vendor/gsap/gsap.min.js"></script>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.to('#box', { opacity: 1, duration: 0.2 }, 1.0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines.main = tl;
+</script>
+</body>
+</html>

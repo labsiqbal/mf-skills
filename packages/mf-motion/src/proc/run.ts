@@ -244,3 +244,73 @@ export async function runJson(file: string, args: readonly string[], options: To
   }
   return { result, json };
 }
+
+export interface StreamRun {
+  /** Raw stdout chunks with backpressure: the child waits while the consumer is busy. */
+  chunks: AsyncIterable<Buffer>;
+  /** Settles when the process ends; `stdout` is empty (it went to `chunks`). */
+  result: Promise<RunResult>;
+}
+
+/**
+ * Run a program and stream its binary stdout (for example raw video frames).
+ * Same rules as `run`: argument array, no shell, time limit, stderr captured.
+ */
+export function runStream(file: string, args: readonly string[], options: Omit<RunOptions, 'onStdout' | 'input'> = {}): StreamRun {
+  const started = Date.now();
+  const stderr = new Capture(options.maxCaptureBytes ?? 4 * 1024 * 1024);
+  let timedOut = false;
+  let spawnError: RunResult['spawnError'];
+  const child = spawn(file, [...args], {
+    cwd: options.cwd,
+    env: options.env ?? process.env,
+    shell: false,
+    windowsHide: true,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const timer =
+    timeoutMs > 0
+      ? setTimeout(() => {
+          timedOut = true;
+          child.kill('SIGKILL');
+        }, timeoutMs)
+      : undefined;
+  child.stderr.on('data', (chunk: Buffer) => {
+    stderr.push(chunk);
+    options.onStderr?.(chunk.toString('utf8'));
+  });
+  const result = new Promise<RunResult>((resolve) => {
+    let settled = false;
+    const finish = (code: number | null, signal: NodeJS.Signals | null) => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      resolve({
+        file,
+        args,
+        code,
+        signal,
+        stdout: '',
+        stderr: stderr.text(),
+        timedOut,
+        durationMs: Date.now() - started,
+        ...(spawnError ? { spawnError } : {}),
+      });
+    };
+    child.on('error', (error: NodeJS.ErrnoException) => {
+      spawnError = { code: error.code ?? 'UNKNOWN', message: error.message };
+      if (child.pid === undefined) finish(null, null);
+    });
+    child.on('close', (code, signal) => finish(code, signal));
+  });
+  async function* chunks(): AsyncGenerator<Buffer> {
+    try {
+      for await (const chunk of child.stdout) yield chunk as Buffer;
+    } finally {
+      // The consumer stopped early: end the producer too.
+      if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+    }
+  }
+  return { chunks: chunks(), result };
+}
