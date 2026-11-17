@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "kind": "brand",
+  "id": "tessarine.example",
+  "name": "Tessarine",
+  "tagline": "Signals, sorted.",
+  "status": "picked",
+  "source": { "mode": "capture-local", "url": null, "capturedAt": "2026-11-18T08:00:00.000Z", "engine": "0.9.61" },
+  "colors": {
+    "ground": "#0E0F1A",
+    "ink": "#F4F2FF",
+    "accent": "#8B6DFF",
+    "accent2": null,
+    "surface": "#1A1C2E",
+    "muted": "#9A97B8",
+    "palette": ["#0E0F1A", "#F4F2FF", "#8B6DFF", "#1A1C2E", "#9A97B8"],
+    "evidence": {
+      "ground": { "method": "area", "share": 0.62, "contrast": null },
+      "ink": { "method": "text-use", "share": 0.2, "contrast": 16.1 },
+      "accent": { "method": "button-fill", "share": 0.04, "contrast": 5.2 },
+      "surface": { "method": "area", "share": 0.18, "contrast": null },
+      "muted": { "method": "text-use", "share": 0.05, "contrast": 6.3 }
+    }
+  },
+  "type": {
+    "display": {
+      "family": "Inter",
+      "weight": 700,
+      "sizePx": 64,
+      "letterSpacingEm": -0.02,
+      "lineHeight": 1.05,
+      "files": [
+        { "path": "fonts/inter-700.woff2", "weight": "700", "style": "normal", "axes": null, "source": "bundled", "origin": null, "licenceHint": "ofl" }
+      ],
+      "fallback": "inter"
+    },
+    "heading": null,
+    "body": null,
+    "mono": null
+  },
+  "logo": { "path": "logo.svg", "kind": "svg", "w": 240, "h": 64 },
+  "mark": null,
+  "shots": [
+    { "path": "shots/shot-1.png", "kind": "png", "w": 1600, "h": 1000, "from": "capture/screens/home.png", "note": null },
+    { "path": "shots/shot-2.png", "kind": "png", "w": 1600, "h": 1000, "from": "capture/screens/board.png", "note": "dashboard" },
+    { "path": "shots/shot-3.png", "kind": "png", "w": 1600, "h": 1000, "from": "capture/screens/settings.png", "note": null }
+  ],
+  "candidates": { "sheet": "candidates-sheet.png", "logoSheet": "logo-sheet.png", "logos": ["candidates/logo-1.svg"], "shots": ["candidates/shot-1.png"] },
+  "radiusPx": 12,
+  "buttons": [{ "label": "Start free", "background": "#8B6DFF", "color": "#0E0F1A", "radiusPx": 12 }],
+  "copy": { "headline": "Signals, sorted.", "cta": "Start free", "domain": "tessarine.example" },
+  "rights": { "noticeShownAt": "2026-11-18T08:00:00.000Z", "oflSubstituted": false }
+}

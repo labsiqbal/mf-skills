@@ -1,3 +1,4 @@
+import { schemaVersions } from '../../schemas/index';
 import { CLI_VERSION, defineCommand } from '../registry';
 
 export interface VersionData {
@@ -32,7 +33,7 @@ export const versionCommand = defineCommand({
     const data: VersionData = {
       cli: CLI_VERSION,
       engine: { hyperframes: null, gsap: null, three: null },
-      schemas: {},
+      schemas: schemaVersions(),
     };
     return { data };
   },

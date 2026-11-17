@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 0,
+  "kind": "profile",
+  "brand": "tessarine.example",
+  "editor": "resolve",
+  "aspect": "16:9",
+  "export": "mov",
+  "language": "en",
+  "rightsNoticeShownAt": "2026-11-18T09:00:00.000Z",
+  "cloud": {
+    "voice-cloud": {
+      "enabled": false,
+      "provider": null,
+      "model": null
+    },
+    "images": {
+      "enabled": true,
+      "provider": "example-images",
+      "model": "image-model-1"
+    },
+    "vision": {
+      "enabled": false,
+      "provider": null,
+      "model": null
+    }
+  },
+  "createdAt": "2026-11-18T09:00:00.000Z",
+  "updatedAt": "2026-11-18T09:05:00.000Z"
+}

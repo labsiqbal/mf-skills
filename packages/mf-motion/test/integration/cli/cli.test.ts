@@ -41,7 +41,11 @@ describe('mf-motion CLI', () => {
       command: 'version',
       cli: pkg.version,
       schemaVersion: 1,
-      data: { cli: pkg.version, engine: { hyperframes: null, gsap: null, three: null }, schemas: {} },
+      data: {
+        cli: pkg.version,
+        engine: { hyperframes: null, gsap: null, three: null },
+        schemas: { profile: 1, project: 1, brand: 1, brief: 1, events: 1 },
+      },
       warnings: [],
       next: [],
     });

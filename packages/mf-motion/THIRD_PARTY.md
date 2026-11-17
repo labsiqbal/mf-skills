@@ -5,7 +5,9 @@ packages it is built, tested or run with, at the exact versions it pins.
 
 ## Bundled into `dist/`
 
-None.
+| Package | Version | Licence | Use |
+|---|---|---|---|
+| valibot | 1.5.0 | MIT | document schemas and validation |
 
 ## Development only (not shipped)
 

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "project",
+  "id": "launch-film-k3qa",
+  "title": "Launch Film",
+  "type": "film",
+  "aspect": "9:16",
+  "width": 1080,
+  "height": 1920,
+  "fps": "30000/1001",
+  "brand": "tessarine.example",
+  "theme": "quiet-grid",
+  "language": "pt-BR",
+  "engine": { "hyperframes": "0.9.61", "gsap": "3.15.0", "three": "0.187.0" },
+  "cli": "1.0.0",
+  "createdAt": "2026-11-18T09:00:00.000Z",
+  "x": { "agentNote": "free-form notes live under x" }
+}

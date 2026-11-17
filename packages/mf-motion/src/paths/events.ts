@@ -3,34 +3,15 @@
 // strictly increasing seq.
 import { appendFileSync, closeSync, existsSync, fstatSync, openSync, readFileSync, readSync } from 'node:fs';
 import path from 'node:path';
+import * as v from 'valibot';
 import { MfmError } from '../cli/errors';
+import { issuesOf, parseDoc } from '../schemas/index';
+import { EVENT_TYPES, EVENTS_VERSION, type EventType, eventSchema } from '../schemas/events';
 import { acquireLock, type LockOptions } from './lock';
 
-export const EVENTS_SCHEMA_VERSION = 1;
-
-export const EVENT_TYPES = [
-  'project.created',
-  'brand.captured',
-  'brand.picked',
-  'rights.notice',
-  'plan.shown',
-  'approval.recorded',
-  'build.done',
-  'render.started',
-  'render.finished',
-  'measure.done',
-  'gate.verdict',
-  'consent.granted',
-  'cloud.call',
-  'delivered',
-  'clean',
-  'migrate',
-  // Agent notes written by `mf-motion note`; the event type list in the docs
-  // names `note` as an append path but no type for it.
-  'note.added',
-] as const;
-
-export type EventType = (typeof EVENT_TYPES)[number];
+export const EVENTS_SCHEMA_VERSION = EVENTS_VERSION;
+export { EVENT_TYPES };
+export type { EventType };
 export type Actor = 'cli' | 'agent' | 'user';
 
 export interface ProjectEvent {
@@ -52,26 +33,10 @@ export interface NewEvent {
   data?: Record<string, unknown>;
 }
 
-const EVENT_KEYS = ['schemaVersion', 'at', 'seq', 'type', 'actor', 'durationMs', 'round', 'data'];
-
-/**
- * Local guard for one event line until the schema registry provides the
- * `events` schema. Returns a list of problems; empty means valid.
- */
+/** Problems of one event line against the `events` schema; empty means valid. */
 export function eventProblems(value: unknown): string[] {
-  if (value === null || typeof value !== 'object' || Array.isArray(value)) return ['event is not an object'];
-  const event = value as Record<string, unknown>;
-  const problems: string[] = [];
-  for (const key of Object.keys(event)) if (!EVENT_KEYS.includes(key)) problems.push(`unknown key ${key}`);
-  if (!Number.isInteger(event.schemaVersion) || (event.schemaVersion as number) < 1) problems.push('schemaVersion must be an integer >= 1');
-  if (typeof event.at !== 'string' || Number.isNaN(Date.parse(event.at))) problems.push('at must be an ISO time');
-  if (!Number.isInteger(event.seq) || (event.seq as number) < 1) problems.push('seq must be an integer >= 1');
-  if (!(EVENT_TYPES as readonly unknown[]).includes(event.type)) problems.push(`type ${String(event.type)} is not an event type`);
-  if (!['cli', 'agent', 'user'].includes(event.actor as string)) problems.push('actor must be cli, agent or user');
-  if (!(event.durationMs === null || (typeof event.durationMs === 'number' && event.durationMs >= 0))) problems.push('durationMs must be null or >= 0');
-  if (!(event.round === null || (Number.isInteger(event.round) && (event.round as number) >= 1))) problems.push('round must be null or an integer >= 1');
-  if (event.data === null || typeof event.data !== 'object' || Array.isArray(event.data)) problems.push('data must be an object');
-  return problems;
+  const result = v.safeParse(eventSchema, value);
+  return result.success ? [] : issuesOf(result.issues).map((issue) => `${issue.path} ${issue.message}`);
 }
 
 export function eventsFile(projectRoot: string): string {
@@ -89,15 +54,8 @@ function parseLine(line: string, file: string, lineNumber: number): ProjectEvent
   } catch {
     throw new MfmError('SCHEMA_INVALID', { file, line: lineNumber }, { message: `${file} line ${lineNumber} is not JSON.` });
   }
-  const problems = eventProblems(value);
-  if (problems.length > 0) {
-    throw new MfmError('SCHEMA_INVALID', { file, line: lineNumber, problems }, { message: `${file} line ${lineNumber} is not a valid event.` });
-  }
-  const event = value as ProjectEvent;
-  if (event.schemaVersion > EVENTS_SCHEMA_VERSION) {
-    throw new MfmError('SCHEMA_TOO_NEW', { file, line: lineNumber, schemaVersion: event.schemaVersion });
-  }
-  return event;
+  // Older lines migrate in memory; the file itself is never rewritten.
+  return parseDoc('events', value, `${file} line ${lineNumber}`).doc as ProjectEvent;
 }
 
 /** Every event of a project, in file order. */

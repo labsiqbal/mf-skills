@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kind": "brief",
+  "purpose": "Announce the spring release to existing customers.",
+  "audience": "Product teams already using the app.",
+  "lengthSec": 20.5,
+  "aspect": "16:9",
+  "theme": null,
+  "signatureMoment": "The dashboard assembles itself from the logo mark.",
+  "cta": "Try it today",
+  "mustSay": ["Spring release"],
+  "mustNotSay": [],
+  "captions": false,
+  "voiceover": "none",
+  "music": "synth",
+  "reference": "ref",
+  "answeredAt": "2026-11-18T09:10:00.000Z"
+}

@@ -27,16 +27,10 @@ describe('event log', () => {
 
   it('guards the event line shape', () => {
     expect(eventProblems({ schemaVersion: 1, at: new Date().toISOString(), seq: 1, type: 'note.added', actor: 'agent', durationMs: null, round: null, data: {} })).toEqual([]);
-    expect(eventProblems({ schemaVersion: 1, at: 'yesterday', seq: 0, type: 'nope', actor: 'bot', durationMs: -1, round: 0, data: [], extra: 1 })).toEqual([
-      'unknown key extra',
-      'at must be an ISO time',
-      'seq must be an integer >= 1',
-      'type nope is not an event type',
-      'actor must be cli, agent or user',
-      'durationMs must be null or >= 0',
-      'round must be null or an integer >= 1',
-      'data must be an object',
-    ]);
+    const problems = eventProblems({ schemaVersion: 1, at: 'yesterday', seq: 0, type: 'nope', actor: 'bot', durationMs: -1, round: 0, data: [], extra: 1 });
+    for (const field of ['extra', 'at', 'seq', 'type', 'actor', 'durationMs', 'round', 'data']) {
+      expect(problems.some((problem) => problem.startsWith(`${field} `)), field).toBe(true);
+    }
     expect(() => appendEvent(project(), { type: 'bogus' as 'note.added', actor: 'agent' })).toThrow(MfmError);
   });
 

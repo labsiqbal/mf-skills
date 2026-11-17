@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-11-18T09:20:00.000Z",
+  "seq": 4,
+  "type": "approval.recorded",
+  "actor": "user",
+  "durationMs": null,
+  "round": null,
+  "data": { "subject": "beatgrid", "text": "Looks good, go ahead.", "planHash": "9f2c0d" }
+}
