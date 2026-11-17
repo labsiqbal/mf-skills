@@ -1,5 +1,16 @@
 # Backlog
 
+- [x] MF-010 - Retire mf-orca; extract hill climb as standalone `mf-hillclimb`.
+  State: Done (PR delivery). Claim: mf-hillclimb-20261117-c60a632d.
+  Scope: remove `skills/mf-orca`; new `mf-hillclimb` 0.1.0 draft with a 10-round
+  limit and no council; update README, Map and context. Installed mf-orca
+  Codex binding and registry entry removed on owner request; tag
+  `mf-orca-v0.1.0` and its release remain as history.
+  Acceptance: package, portability and validator checks pass; one behavior trial
+  of mf-hillclimb on a real fixture with evidence kept outside the repository.
+  Result: trial PASS (stopped on stall after round 5); two gaps it exposed were
+  fixed in the contract and round rules and remain untested; version stays draft.
+
 - [x] MF-008 - Make all MF skill packages portable for public use.
   State: Done (PR delivery). Claim: mf-portability-20261117-c60a632d | released.
   Session: development session; checkout and branch are tracked by the repository host.
