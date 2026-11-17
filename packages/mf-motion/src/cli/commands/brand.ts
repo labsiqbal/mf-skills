@@ -1,11 +1,11 @@
-// Brand commands. Each subcommand is one registry entry; later tickets add
-// show, list, use and rm here.
+// Brand commands. Each subcommand is one registry entry.
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { type FontRoles, captureBrand, pickBrand, substituteOfl } from '../../brand/index';
 import { confine, dataHome, findProjectRoot, homeLayout, lockFile, withLock } from '../../paths/index';
 import { readDoc, writeDoc } from '../../schemas/index';
 import { briefBrand } from '../../brand/fromBrief';
+import { dropPreviousPick, listBrands, removeBrand, showBrand, useBrand } from '../../brand/library';
 import { manualBrand } from '../../brand/manual';
 import { MOOD_NAMES } from '../../brand/moods';
 import { MfmError } from '../errors';
@@ -58,16 +58,8 @@ export const brandCaptureCommand = defineCommand({
     });
     if (result.notice) log.warn(result.notice);
     if (flags.use) {
-      const root = findProjectRoot(cwd, global.project);
-      await withLock(
-        lockFile(root),
-        () => {
-          const file = path.join(root, 'project.json');
-          const { doc } = readDoc('project', file);
-          writeDoc('project', file, { ...doc, brand: result.brand.id });
-        },
-        { command: 'brand capture --use', onStale: (message) => log.warn(message) },
-      );
+      // The fresh capture is a draft; the draft notice would repeat the pick step `next` already names.
+      await useBrand({ home, id: result.brand.id, project: findProjectRoot(cwd, global.project), command: 'brand capture --use', onWarn: (message) => log.warn(message) });
     }
     const { id, status } = result.brand;
     return {
@@ -162,6 +154,7 @@ export const brandPickCommand = defineCommand({
       project,
       onWarn: (message) => log.warn(message),
     });
+    await dropPreviousPick(home, String(args.id), { command: 'brand pick', onWarn: (message) => log.warn(message) });
     return { data: result };
   },
 });
@@ -250,5 +243,84 @@ export const brandFromBriefCommand = defineCommand({
     });
     if (result.notice) log.warn(result.notice);
     return { data: { brand: result.brand, moods: result.moods, pairs: result.pairs, notice: result.notice } };
+  },
+});
+
+export const brandShowCommand = defineCommand({
+  name: 'brand show',
+  summary: 'Show one brand from the library: colours, fonts, logo, shots and status.',
+  positionals: [{ name: 'id', description: 'brand id in the library', required: true }],
+  flags: {},
+  dataSchema: {
+    type: 'object',
+    required: ['brand'],
+    properties: { brand: { type: 'object', required: ['id', 'status', 'dir', 'updatedAt'], properties: { id: { type: 'string' }, dir: { type: 'string' }, updatedAt: { type: 'string' } } } },
+  },
+  async handler({ args, cwd, env, global }) {
+    return { data: { brand: showBrand(dataHome({ flag: global.home, env, cwd }), String(args.id)) } };
+  },
+});
+
+export const brandListCommand = defineCommand({
+  name: 'brand list',
+  summary: 'List the brands in the library, most recently updated first.',
+  flags: {},
+  dataSchema: {
+    type: 'object',
+    required: ['brands'],
+    properties: {
+      brands: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['id', 'name', 'status', 'source', 'updatedAt'],
+          properties: { id: { type: 'string' }, name: { type: 'string' }, status: { enum: ['draft', 'picked'] }, source: { type: 'object' }, updatedAt: { type: 'string' } },
+        },
+      },
+    },
+  },
+  async handler({ cwd, env, global }) {
+    const { brands, problems } = listBrands(dataHome({ flag: global.home, env, cwd }));
+    const warnings = problems.map((problem) => ({ code: 'SCHEMA_INVALID' as const, message: `Brand ${problem.id} could not be read: ${problem.message}`, details: { brand: problem.id } }));
+    return { data: { brands }, warnings };
+  },
+});
+
+export const brandUseCommand = defineCommand({
+  name: 'brand use',
+  summary: "Copy a brand into the current project's brand/ folder and set it on project.json.",
+  positionals: [{ name: 'id', description: 'brand id in the library', required: true }],
+  flags: {},
+  dataSchema: {
+    type: 'object',
+    required: ['project', 'brand'],
+    properties: { project: { type: 'string' }, brand: { type: 'object', required: ['id', 'status', 'dir'], properties: { id: { type: 'string' }, status: { enum: ['draft', 'picked'] }, dir: { type: 'string' } } } },
+  },
+  async handler({ args, cwd, env, global, log }) {
+    const home = dataHome({ flag: global.home, env, cwd });
+    const project = findProjectRoot(cwd, global.project);
+    const { warnings, ...data } = await useBrand({ home, id: String(args.id), project, command: 'brand use', onWarn: (message) => log.warn(message) });
+    return { data, warnings };
+  },
+});
+
+export const brandRmCommand = defineCommand({
+  name: 'brand rm',
+  summary: 'Delete a brand from the library; refuses while its lock is held.',
+  positionals: [{ name: 'id', description: 'brand id in the library', required: true }],
+  flags: {
+    yes: { type: 'boolean', description: 'confirm the delete' },
+  },
+  dataSchema: {
+    type: 'object',
+    required: ['removed'],
+    properties: { removed: { type: 'object', required: ['id', 'bytes'], properties: { id: { type: 'string' }, bytes: { type: 'integer' } } } },
+  },
+  async handler({ args, flags, cwd, env, global, log }) {
+    if (!flags.yes) {
+      throw new MfmError('USAGE', { flag: '--yes' }, { message: 'brand rm deletes the brand folder and needs --yes.', hint: `Run \`mf-motion brand rm ${String(args.id)} --yes --json\` once the user agrees.` });
+    }
+    const home = dataHome({ flag: global.home, env, cwd });
+    return { data: await removeBrand(home, String(args.id), { command: 'brand rm', onWarn: (message) => log.warn(message) }) };
   },
 });

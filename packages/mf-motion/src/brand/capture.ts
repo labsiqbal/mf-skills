@@ -177,12 +177,18 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
     lockFile(dir),
     async () => {
       if (existsSync(brandFile) && !request.refresh) {
-        const existing = JSON.parse(readFileSync(brandFile, 'utf8')) as { status?: 'draft' | 'picked'; colors?: BrandColors; type?: FontRoles };
+        const existing = JSON.parse(readFileSync(brandFile, 'utf8')) as {
+          status?: 'draft' | 'picked';
+          colors?: BrandColors;
+          type?: FontRoles;
+          candidates?: { sheet?: string | null; logoSheet?: string | null };
+        };
         request.onProgress?.(`Reusing brand ${id} from the library (use --refresh to capture again)`);
+        const sheet = (rel: string | null | undefined) => (rel && existsSync(path.join(dir, rel)) ? path.join(dir, rel) : null);
         return {
           brand: { id, status: existing.status ?? 'draft', dir },
-          candidatesSheet: null,
-          logoSheet: null,
+          candidatesSheet: sheet(existing.candidates?.sheet),
+          logoSheet: sheet(existing.candidates?.logoSheet),
           roles: existing.colors ?? null,
           fonts: existing.type ?? null,
           notice: null,
@@ -269,8 +275,14 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         ...(request.onWarn ? { onWarn: request.onWarn } : {}),
       });
       const capturedAt = new Date().toISOString();
+      // --refresh keeps the previous pick in brand.prev.json until the new pick; a
+      // second refresh before that pick keeps the older pick rather than a draft.
       const previous = path.join(dir, 'brand.prev.json');
-      if (existsSync(brandFile)) renameSync(brandFile, previous);
+      if (existsSync(brandFile)) {
+        const before = JSON.parse(readFileSync(brandFile, 'utf8')) as { status?: string };
+        if (before.status === 'picked' || !existsSync(previous)) renameSync(brandFile, previous);
+        else rmSync(brandFile, { force: true });
+      }
       writeDoc('brand', brandFile, {
         schemaVersion: BRAND_VERSION,
         kind: 'brand',
