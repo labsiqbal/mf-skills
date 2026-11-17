@@ -1,0 +1,6 @@
+{
+  "hits": [],
+  "lines": [
+    { "elementId": "headline", "inSec": 0.5, "outSec": 3.5, "holdSec": 2.6, "words": 3, "ok": true, "box": { "x": 200, "y": 150, "width": 240, "height": 60 }, "color": "#FFFFFF" }
+  ]
+}
