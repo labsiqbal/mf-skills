@@ -19,6 +19,11 @@ export interface RunOptions {
   onStdout?: (chunk: string) => void;
   /** Captured bytes kept per stream; older output is dropped first. Default 32 MiB. */
   maxCaptureBytes?: number;
+  /**
+   * Stop the whole process tree on timeout (the child and everything it
+   * started): a process group on POSIX, `taskkill /T` on Windows.
+   */
+  killTree?: boolean;
 }
 
 export interface RunResult {
@@ -64,21 +69,47 @@ export function run(file: string, args: readonly string[], options: RunOptions =
     let settled = false;
     let timedOut = false;
     let spawnError: RunResult['spawnError'];
+    const tree = options.killTree === true;
     const child = spawn(file, [...args], {
       cwd: options.cwd,
       env: options.env ?? process.env,
       shell: false,
       windowsHide: true,
       stdio: ['pipe', 'pipe', 'pipe'],
+      // A POSIX process group lets the whole tree be signalled at once.
+      detached: tree && process.platform !== 'win32',
     });
+    // A detached group does not receive the terminal's Ctrl-C, so pass it on:
+    // stop the tree, then let the signal end this process as it would have.
+    const stopTree = tree && child.pid !== undefined ? () => killProcessTree(child.pid ?? 0, 'SIGKILL') : undefined;
+    const onSignal = (signal: NodeJS.Signals) => {
+      stopTree?.();
+      detachSignals();
+      process.kill(process.pid, signal);
+    };
+    const detachSignals = () => {
+      if (!stopTree) return;
+      process.removeListener('exit', stopTree);
+      process.removeListener('SIGINT', onSignal);
+      process.removeListener('SIGTERM', onSignal);
+    };
+    if (stopTree) {
+      process.once('exit', stopTree);
+      process.once('SIGINT', onSignal);
+      process.once('SIGTERM', onSignal);
+    }
     const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     let killTimer: NodeJS.Timeout | undefined;
+    const stop = (signal: NodeJS.Signals) => {
+      if (tree && child.pid !== undefined) killProcessTree(child.pid, signal);
+      else child.kill(signal);
+    };
     const timer =
       timeoutMs > 0
         ? setTimeout(() => {
             timedOut = true;
-            child.kill('SIGTERM');
-            killTimer = setTimeout(() => child.kill('SIGKILL'), KILL_GRACE_MS);
+            stop('SIGTERM');
+            killTimer = setTimeout(() => stop('SIGKILL'), KILL_GRACE_MS);
           }, timeoutMs)
         : undefined;
     const finish = (code: number | null, signal: NodeJS.Signals | null) => {
@@ -86,6 +117,9 @@ export function run(file: string, args: readonly string[], options: RunOptions =
       settled = true;
       if (timer) clearTimeout(timer);
       if (killTimer) clearTimeout(killTimer);
+      detachSignals();
+      // Anything the child left behind in its group goes too.
+      if (tree && timedOut && child.pid !== undefined) killProcessTree(child.pid, 'SIGKILL');
       resolve({
         file,
         args,
@@ -118,6 +152,26 @@ export function run(file: string, args: readonly string[], options: RunOptions =
     if (options.input !== undefined) child.stdin.end(options.input);
     else child.stdin.end();
   });
+}
+
+/** Signal a process and every process it started. Errors (already gone) are ignored. */
+export function killProcessTree(pid: number, signal: NodeJS.Signals): void {
+  if (pid <= 0) return;
+  if (process.platform === 'win32') {
+    // taskkill is a real executable; /T takes the tree, /F forces it.
+    const killer = spawn('taskkill', ['/PID', String(pid), '/T', '/F'], { shell: false, windowsHide: true, stdio: 'ignore' });
+    killer.on('error', () => {});
+    return;
+  }
+  try {
+    process.kill(-pid, signal);
+  } catch {
+    try {
+      process.kill(pid, signal);
+    } catch {
+      // Already gone.
+    }
+  }
 }
 
 export interface ToolRunOptions extends RunOptions {

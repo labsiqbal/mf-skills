@@ -1,3 +1,4 @@
+import { enginePins } from '../../engine/pins';
 import { schemaVersions } from '../../schemas/index';
 import { CLI_VERSION, defineCommand } from '../registry';
 
@@ -32,7 +33,7 @@ export const versionCommand = defineCommand({
     log.debug(`mf-motion ${CLI_VERSION} on Node.js ${process.versions.node}`);
     const data: VersionData = {
       cli: CLI_VERSION,
-      engine: { hyperframes: null, gsap: null, three: null },
+      engine: enginePins(),
       schemas: schemaVersions(),
     };
     return { data };

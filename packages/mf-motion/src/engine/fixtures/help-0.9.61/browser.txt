@@ -1,0 +1,11 @@
+Manage the Chrome browser used for rendering (hyperframes browser v0.9.61)
+
+USAGE hyperframes browser [OPTIONS] [SUBCOMMAND]
+
+ARGUMENTS
+
+  SUBCOMMAND    ensure = find or download Chrome, path = print executable path, clear = remove cached download
+
+OPTIONS
+
+  --force    ensure only: purge any cached download (including a stale/partial one) and re-download from scratch (Default: false)

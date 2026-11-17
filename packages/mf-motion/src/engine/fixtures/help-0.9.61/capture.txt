@@ -1,0 +1,23 @@
+Capture a website as editable HyperFrames components (hyperframes capture v0.9.61)
+
+USAGE hyperframes capture [OPTIONS] [URL]
+
+ARGUMENTS
+
+  URL    Website URL to capture (omit when using --local-file or --video)
+
+OPTIONS
+
+            --local-file=<local_file>    Capture a local HTML file (or a directory's index.html) instead of a URL; remote subresources still go through the public-address policy
+            --local-root=<local_root>    (--local-file) Directory the page may read local files from (default: the HTML file's directory)
+                -o, --output=<output>    Output directory name (default: ./capture, then ./capture-2/, ./capture-3/, …)
+                        --skip-assets    Skip downloading assets (images, SVGs) (Default: false)
+                        --skip-vision    Skip optional AI image captioning (Default: false)
+  --max-screenshots=<max_screenshots>    Maximum page-capture files including the full-page plate, excluding derived contact sheets (default: 21)
+                  --timeout=<timeout>    Page load timeout: a number of ms, or a duration such as 30s or 2m (default: 120000)
+    --capture-budget=<capture_budget>    Cooperative post-navigation budget in ms (default: 120000), separate from page-load --timeout; not a hard wall-clock timeout and cannot interrupt already-started native/core work
+                               --json    Output JSON (for AI agents / programmatic use) (Default: false)
+                      --video=<video>    Switch to video-download mode: path to a captured project directory whose video-manifest.json should be read. Pair with --index, --video-url, or --list.
+                      --index=<index>    (--video mode) Manifest entry index to download (0-based)
+              --video-url=<video_url>    (--video mode) Exact video URL to download (must match a manifest entry)
+                               --list    (--video mode) List manifest entries and exit (Default: false)

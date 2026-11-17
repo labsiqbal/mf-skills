@@ -43,7 +43,7 @@ describe('mf-motion CLI', () => {
       schemaVersion: 1,
       data: {
         cli: pkg.version,
-        engine: { hyperframes: null, gsap: null, three: null },
+        engine: { hyperframes: '0.9.61', gsap: '3.15.0', three: '0.187.0' },
         schemas: expect.objectContaining({ profile: 1, project: 1, brand: 1, brief: 1, events: 1 }),
       },
       warnings: [],

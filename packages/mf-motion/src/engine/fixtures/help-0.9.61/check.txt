@@ -1,0 +1,40 @@
+Run lint, runtime, layout, motion, and WCAG contrast verification in one browser session (hyperframes check v0.9.61)
+
+USAGE hyperframes check [OPTIONS] [DIR]
+
+ARGUMENTS
+
+  DIR    Project directory
+
+OPTIONS
+
+                                             --json    Output agent-readable JSON (Default: false)
+                                     --lint-verbose    Accepted as render's spelling; check always prints every lint finding (Default: false)
+                                --samples=<samples>    Number of midpoint samples across the duration (Default: 9)
+                                    --range=<range>    Runtime sample interval in global seconds: start,end. Static lint remains project-wide.
+                          --components=<components>    CSS selector list: filter findings involving these components or descendants; preserve full-check status.
+                                          --at=<at>    Comma-separated timestamps in seconds (e.g., --at 1.5,4,7.25)
+                                   --at-transitions    Also sample at every tween start/end boundary (plus segment midpoints) to catch transient overlaps at transition seams (Default: false)
+  --max-transition-samples=<max_transition_samples>    Optional cap on transition-derived samples; when it truncates, the omitted count is reported (default: unlimited)
+                          --max-issues=<max_issues>    Maximum issues to print or return after static collapse (Default: 80)
+                                  --collapse-static    Collapse repeated static issues across samples (Default: true)
+                               --no-collapse-static
+                            --tolerance=<tolerance>    Allowed pixel overflow before reporting an issue (Default: 2)
+                                  --budget=<budget>    Stop the whole check this long after it starts (ms, or 90s, 8m; at least 30s) and report what it found so far
+                                            --cache    Return the stored result when the project, options and CLI are unchanged since the last pass (pass --no-cache to always re-run) (Default: true)
+                                         --no-cache
+                                --timeout=<timeout>    Initial render-ready timeout in ms, or with a unit (45s, 2m); also sets the navigation minimum (10s floor, default: 45000, as snapshot and render) (Default: 45000)
+                                         --contrast    Run the WCAG AA contrast pass (enabled by default) (Default: true)
+                                      --no-contrast
+                                            --craft    Run the craft pass (dead stretches, unread lines, silent films; enabled by default). --no-craft skips it, e.g. for a render preflight (Default: true)
+                                         --no-craft
+                                           --strict    Exit non-zero on warnings too (Default: false)
+                                    --prepare-media    Only make the browser-playable copies of videos Chrome cannot decode, then exit (no browser, no report). Stopped copies resume on the next run (Default: false)
+                                            --proxy    Auto-transcode browser-hostile video codecs (default: hyperframes.json media.autoProxy, which defaults on)
+                                      --browser-gpu    Use hardware browser GPU capture; pass --no-browser-gpu for deterministic SwiftShader (default: auto-detect, PRODUCER_BROWSER_GPU_MODE overrides)
+                                        --snapshots    Save contrast-pass PNGs under .hyperframes/artifacts/snapshots/ (Default: false)
+                                --include-unmounted    Also lint compositions/ files that index.html never mounts (Default: false)
+                      --caption-zone=<caption_zone>    Caption band "x0=0;y0=.82;x1=1;y1=1[;severity=warning|error][;seek=.5,1]" (fractions 0-1; defaults: warning, seek=1)
+                            --safe-zone=<safe_zone>    Warn when text leaves a safe area: tiktok, reels or shorts on 9:16 (default: all three), standard (title-safe margins, any frame), or off
+                        --frame-check=<frame_check>    Bare --frame-check uses defaults (tol=2px, severity=warning, seek=.5; breach floor=max(120px, 6% of shorter canvas edge)); or pass "severity=error;seek=.25,.75;tol=4" to tune
+                                  --layout=<layout>    Layout knobs: "proseCoverageFloor=0.05" (0–1; default 0.15).

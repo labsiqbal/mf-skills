@@ -1,0 +1,12 @@
+{
+  "name": "mf-motion-engine",
+  "version": "0.9.61",
+  "private": true,
+  "description": "Pinned render engine for mf-motion, installed into the mf-motion cache.",
+  "license": "MIT",
+  "dependencies": {
+    "gsap": "3.15.0",
+    "hyperframes": "0.9.61",
+    "three": "0.187.0"
+  }
+}
