@@ -1,0 +1,40 @@
+{
+  "tokens": {
+    "colorStats": [
+      {
+        "hex": "#3A3A3A",
+        "count": 20,
+        "textCount": 20
+      },
+      {
+        "hex": "#2A2A2A",
+        "count": 2,
+        "bgCount": 1,
+        "maxArea": 1
+      }
+    ]
+  },
+  "computedStyles": {
+    "buttons": [
+      {
+        "background": "#E4572E",
+        "height": "40px"
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "width": 640,
+      "height": 360,
+      "fill": "#2A2A2A",
+      "regions": []
+    }
+  ],
+  "expect": {
+    "ground": "#2A2A2A",
+    "ink": "#FFFFFF",
+    "methods": {
+      "ink": "generated"
+    }
+  }
+}

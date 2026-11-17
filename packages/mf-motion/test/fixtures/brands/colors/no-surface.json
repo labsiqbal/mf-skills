@@ -1,0 +1,51 @@
+{
+  "tokens": {
+    "colorStats": [
+      {
+        "hex": "#FFFFFF",
+        "count": 3,
+        "bgCount": 3,
+        "maxArea": 1
+      },
+      {
+        "hex": "#111111",
+        "count": 30,
+        "textCount": 30
+      },
+      {
+        "hex": "#808080",
+        "count": 2,
+        "bgCount": 2
+      }
+    ]
+  },
+  "computedStyles": {
+    "buttons": [
+      {
+        "background": "#2F6BFF",
+        "height": "40px"
+      }
+    ],
+    "cards": [
+      {
+        "background": "#7A7A7A"
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "width": 640,
+      "height": 360,
+      "fill": "#FFFFFF",
+      "regions": []
+    }
+  ],
+  "expect": {
+    "ground": "#FFFFFF",
+    "ink": "#111111",
+    "methods": {
+      "surface": "generated"
+    },
+    "surfaceShift": 0.04
+  }
+}

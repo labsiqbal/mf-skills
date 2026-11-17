@@ -7,12 +7,13 @@ import path from 'node:path';
 import { MfmError } from '../cli/errors';
 import type { Warning } from '../cli/output';
 import { type Engine, capture, ensureBrowser, ensureEngine, readOk } from '../engine/index';
-import { framePng } from '../media/pixels';
+import { type Frame, frameAt, framePng } from '../media/pixels';
 import { probe } from '../media/probe';
 import { confine, homeLayout, lockFile, withLock } from '../paths/index';
 import { run } from '../proc/run';
 import { BRAND_VERSION } from '../schemas/brand';
 import { writeDoc } from '../schemas/index';
+import { type BrandColors, type RoleInputs, deriveRoles } from './colors';
 import { BRAND_ID, brandSlug, registrableDomain } from './domain';
 import { TEXT_LIMITS, fenceSafe, plainText, sanitizeField, sanitizeLines, truncate } from './sanitize';
 
@@ -41,7 +42,7 @@ export interface CaptureResult {
   brand: { id: string; status: 'draft' | 'picked'; dir: string };
   candidatesSheet: string | null;
   logoSheet: string | null;
-  roles: null;
+  roles: BrandColors | null;
   fonts: null;
   warnings: Warning[];
   reused: boolean;
@@ -83,57 +84,6 @@ function visibleLines(captureDir: string): string[] {
   return readFileSync(file, 'utf8')
     .split(/\r?\n/)
     .map((line) => line.replace(/^\s*\[[a-z0-9-]+\]\s*/i, ''));
-}
-
-const toHex = (value: unknown): string | null => {
-  if (typeof value !== 'string') return null;
-  const match = value.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
-  if (!match?.[1]) return null;
-  const hex = match[1].length === 3 ? match[1].split('').map((c) => c + c).join('') : match[1];
-  return `#${hex.toUpperCase()}`;
-};
-
-function luminance(hex: string): number {
-  const channel = (i: number) => {
-    const c = Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) / 255;
-    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * channel(0) + 0.7152 * channel(1) + 0.0722 * channel(2);
-}
-
-function contrast(a: string, b: string): number {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x) as [number, number];
-  return (hi + 0.05) / (lo + 0.05);
-}
-
-/**
- * Provisional colour roles from the capture's colour statistics, marked
- * `generated`; colour roles by usage replace them.
- */
-function provisionalColors(tokens: Record<string, unknown>) {
-  const stats = (Array.isArray(tokens.colorStats) ? tokens.colorStats : []) as Array<Record<string, unknown>>;
-  const by = (key: string) =>
-    stats
-      .map((stat) => ({ hex: toHex(stat.hex), value: Number(stat[key] ?? 0) }))
-      .filter((entry): entry is { hex: string; value: number } => entry.hex !== null && entry.value > 0)
-      .sort((a, b) => b.value - a.value)[0]?.hex ?? null;
-  const listed = (Array.isArray(tokens.colors) ? tokens.colors : []).map(toHex).filter((hex): hex is string => hex !== null);
-  const ground = by('maxArea') ?? by('bgCount') ?? listed[0] ?? '#FFFFFF';
-  let ink = by('textCount') ?? (luminance(ground) > 0.4 ? '#111111' : '#F5F5F5');
-  if (contrast(ink, ground) < 4.5) ink = luminance(ground) > 0.4 ? '#111111' : '#F5F5F5';
-  const accent = by('interactiveBg') ?? listed.find((hex) => hex !== ground && hex !== ink) ?? ink;
-  const palette = [...new Set([ground, ink, accent, ...listed])].slice(0, 12);
-  const evidence = { method: 'generated' as const, share: null, contrast: null };
-  return {
-    ground,
-    ink,
-    accent,
-    accent2: null,
-    surface: ground,
-    muted: ink,
-    palette,
-    evidence: { ground: evidence, ink: evidence, accent: evidence, surface: evidence, muted: evidence },
-  };
 }
 
 function brandName(title: string | null, fallback: string, counter: { dropped: number }): string {
@@ -218,13 +168,13 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
     lockFile(dir),
     async () => {
       if (existsSync(brandFile) && !request.refresh) {
-        const existing = JSON.parse(readFileSync(brandFile, 'utf8')) as { status?: 'draft' | 'picked' };
+        const existing = JSON.parse(readFileSync(brandFile, 'utf8')) as { status?: 'draft' | 'picked'; colors?: BrandColors };
         request.onProgress?.(`Reusing brand ${id} from the library (use --refresh to capture again)`);
         return {
           brand: { id, status: existing.status ?? 'draft', dir },
           candidatesSheet: null,
           logoSheet: null,
-          roles: null,
+          roles: existing.colors ?? null,
           fonts: null,
           warnings: [],
           reused: true,
@@ -251,6 +201,7 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
       const removed = removeAgentFiles(captureDir);
 
       const tokens = readJson(path.join(captureDir, 'extracted', 'tokens.json'));
+      const computedStyles = readJson(path.join(captureDir, 'extracted', 'design-styles.json'));
       const lines = visibleLines(captureDir);
       const assets = Number(report.assets ?? 0);
       const svgs = Array.isArray(tokens.svgs) ? tokens.svgs.length : 0;
@@ -276,6 +227,15 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
       const rel = (file: string) => path.relative(dir, file).split(path.sep).join('/');
       const screenshots = walk(path.join(captureDir, 'screenshots')).filter((file) => /\.(png|jpe?g)$/i.test(file) && !/contact-sheet/i.test(file));
       const logos = walk(path.join(captureDir, 'assets')).filter((file) => /\.(svg|png|jpe?g|webp)$/i.test(file) && !/contact-sheet/i.test(file));
+      const viewports: Frame[] = [];
+      for (const file of screenshots.filter((shot) => /scroll-\d+\.png$/i.test(shot))) {
+        try {
+          viewports.push(await frameAt(file, 0, { format: 'rgba', width: 640 }));
+        } catch (error) {
+          request.onWarn?.(`Could not read ${path.basename(file)}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+      const colors = deriveRoles({ tokens: tokens as RoleInputs['tokens'], computedStyles: computedStyles as RoleInputs['computedStyles'], screenshots: viewports });
       const capturedAt = new Date().toISOString();
       const previous = path.join(dir, 'brand.prev.json');
       if (existsSync(brandFile)) renameSync(brandFile, previous);
@@ -292,7 +252,7 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
           capturedAt,
           engine: engine.version,
         },
-        colors: provisionalColors(tokens),
+        colors,
         type: { display: null, heading: null, body: null, mono: null },
         logo: null,
         mark: null,
@@ -339,7 +299,7 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         });
       }
       if (removed.length > 0) request.onProgress?.(`Removed agent-instruction files from the capture: ${removed.join(', ')}`);
-      return { brand: { id, status: 'draft', dir }, candidatesSheet: null, logoSheet: null, roles: null, fonts: null, warnings, reused: false };
+      return { brand: { id, status: 'draft', dir }, candidatesSheet: null, logoSheet: null, roles: colors, fonts: null, warnings, reused: false };
     },
     { command: 'brand capture', ...(request.onWarn ? { onStale: request.onWarn } : {}) },
   );
