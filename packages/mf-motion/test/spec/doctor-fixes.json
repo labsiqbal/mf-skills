@@ -1,0 +1,36 @@
+{
+  "doc": "setup-and-doctor.md",
+  "section": "Fix lines per OS",
+  "mode": "table",
+  "code": "src/doctor/fixes.ts#fixTableSpec",
+  "data": [
+    {
+      "Need": "Node 24",
+      "macOS": "brew install node@24",
+      "Debian/Ubuntu": "curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash - && sudo apt-get install -y nodejs",
+      "Fedora": "sudo dnf install nodejs24",
+      "Windows": "winget install OpenJS.NodeJS.LTS"
+    },
+    {
+      "Need": "FFmpeg",
+      "macOS": "brew install ffmpeg",
+      "Debian/Ubuntu": "sudo apt-get install -y ffmpeg",
+      "Fedora": "sudo dnf install ffmpeg (RPM Fusion)",
+      "Windows": "winget install Gyan.FFmpeg"
+    },
+    {
+      "Need": "yt-dlp",
+      "macOS": "brew install yt-dlp",
+      "Debian/Ubuntu": "pipx install yt-dlp",
+      "Fedora": "pipx install yt-dlp",
+      "Windows": "winget install yt-dlp.yt-dlp"
+    },
+    {
+      "Need": "Chrome libs",
+      "macOS": "-",
+      "Debian/Ubuntu": "sudo apt-get install -y libnss3 libgbm1 libasound2t64 libatk-bridge2.0-0 libxkbcommon0 libdrm2",
+      "Fedora": "sudo dnf install nss mesa-libgbm alsa-lib at-spi2-atk libxkbcommon libdrm",
+      "Windows": "-"
+    }
+  ]
+}

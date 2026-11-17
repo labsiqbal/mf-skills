@@ -2,6 +2,7 @@
 // added here with one import and one entry, so reverting a ticket removes only
 // its own lines.
 import type { AnyCommand } from '../registry';
+import { doctorCommand } from './doctor';
 import { migrateCommand } from './migrate';
 import { approveCommand, newCommand, noteCommand, statusCommand } from './project';
 import { schemaCommand } from './schema';
@@ -15,4 +16,5 @@ export const COMMANDS: readonly AnyCommand[] = [
   statusCommand,
   schemaCommand,
   migrateCommand,
+  doctorCommand,
 ];

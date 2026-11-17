@@ -49,6 +49,16 @@ jobs:
         with:
           path: .cache/npm
           key: npm-${{ runner.os }}-${{ hashFiles('packages/mf-motion/package-lock.json') }}
+      - name: Install FFmpeg (users install it themselves; doctor prints the line)
+        run: |
+          case "$RUNNER_OS" in
+            Linux) sudo apt-get update && sudo apt-get install -y ffmpeg ;;
+            macOS) brew install ffmpeg ;;
+            Windows) choco install ffmpeg -y --no-progress ;;
+          esac
+      - name: Allow Chrome's sandbox on Ubuntu 24.04 (unprivileged user namespaces)
+        if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: npm --prefix packages/mf-motion ci
       - run: npm --prefix packages/mf-motion run typecheck
       - run: npm --prefix packages/mf-motion run build
@@ -70,9 +80,19 @@ jobs:
         with:
           path: .cache/npm
           key: npm-${{ runner.os }}-${{ hashFiles('packages/mf-motion/package-lock.json') }}
+      - name: Install FFmpeg (users install it themselves; doctor prints the line)
+        run: |
+          case "$RUNNER_OS" in
+            Linux) sudo apt-get update && sudo apt-get install -y ffmpeg ;;
+            macOS) brew install ffmpeg ;;
+            Windows) choco install ffmpeg -y --no-progress ;;
+          esac
+      - name: Allow Chrome's sandbox on Ubuntu 24.04 (unprivileged user namespaces)
+        if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: npm --prefix packages/mf-motion ci
       - run: npm --prefix packages/mf-motion run build
-      - run: npm --prefix packages/mf-motion run test:render -- --passWithNoTests
+      - run: npm --prefix packages/mf-motion run test:render
 
   pack-check:
     name: pack check
@@ -99,3 +119,74 @@ jobs:
         with:
           node-version: 24
       - run: npm --prefix packages/mf-motion run licence:check
+
+  bare-container-doctor:
+    name: bare container doctor (debian bookworm-slim, Node 24 only)
+    runs-on: ubuntu-24.04
+    container: node:24-bookworm-slim
+    env:
+      # The mounted workspace belongs to the host runner account, which the
+      # engine treats as another owner; keep its cache inside the container.
+      MF_MOTION_CACHE: /root/.cache/mf-motion
+      MF_MOTION_HOME: /root/mf-motion
+    steps:
+      - uses: actions/checkout@v5
+      - run: npm --prefix packages/mf-motion ci
+      - run: npm --prefix packages/mf-motion run build
+      - run: mkdir -p "$GITHUB_WORKSPACE/.cache" && npm pack ./packages/mf-motion --pack-destination "$GITHUB_WORKSPACE/.cache"
+      - name: doctor --fix lists FFmpeg and the Chrome libraries as missing, with apt lines
+        run: |
+          set +e
+          node packages/mf-motion/dist/cli.mjs doctor --fix --json --cli-tarball .cache/mf-motion-1.0.0.tgz > .cache/doctor-1.json
+          code=$?
+          set -e
+          test "$code" = 1
+          node -e '
+            const d = require("./.cache/doctor-1.json").data;
+            const row = (id) => d.checks.find((c) => c.id === id);
+            for (const id of ["ffmpeg", "chrome"]) {
+              if (row(id).status !== "missing" || !/apt-get install/.test(row(id).fix)) throw new Error(id + " row: " + JSON.stringify(row(id)));
+            }
+            const lines = [...new Set(d.checks.filter((c) => c.status === "missing" && /apt-get install/.test(c.fix ?? "")).map((c) => c.fix))];
+            require("fs").writeFileSync(".cache/fix-lines.sh", "apt-get update\n" + lines.map((l) => l.replace(/sudo /g, "")).join("\n") + "\n");
+          '
+          cat .cache/fix-lines.sh
+      - name: Run the printed fix lines (root in the container, so without sudo)
+        run: sh .cache/fix-lines.sh
+      - name: doctor --fix now exits 0
+        run: node packages/mf-motion/dist/cli.mjs doctor --fix --json --cli-tarball .cache/mf-motion-1.0.0.tgz
+
+  offline-smoke:
+    name: offline smoke
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - run: npm --prefix packages/mf-motion ci
+      - run: npm --prefix packages/mf-motion run build
+      - run: mkdir -p "$GITHUB_WORKSPACE/.cache" && npm pack ./packages/mf-motion --pack-destination "$GITHUB_WORKSPACE/.cache"
+      - run: node packages/mf-motion/dist/cli.mjs doctor --fix --json --cli-tarball .cache/mf-motion-1.0.0.tgz
+      - name: Without a network, doctor --offline exits 0 and its launcher runs version
+        # A network namespace without links; the commands run as the runner user,
+        # not a mapped root, so the cache keeps its real owners.
+        run: |
+          cat > .cache/offline.sh <<'EOF2'
+          set -e
+          if node -e 'require("https").get("https://registry.npmjs.org", () => process.exit(0)).on("error", () => process.exit(1))'; then
+            echo "network is reachable inside the namespace" >&2; exit 1
+          fi
+          node packages/mf-motion/dist/cli.mjs doctor --offline --json > .cache/doctor-offline.json
+          node -e '
+            const { execFileSync } = require("child_process");
+            const d = require("./.cache/doctor-offline.json").data;
+            if (!d.ok) throw new Error("doctor --offline not ok");
+            const out = JSON.parse(execFileSync(d.launcher[0], [...d.launcher.slice(1), "version", "--json"]).toString());
+            if (out.data.cli !== "1.0.0") throw new Error("launcher version " + out.data.cli);
+          '
+          EOF2
+          sudo --preserve-env unshare --net -- sudo --preserve-env -u "$USER" env "PATH=$PATH" bash .cache/offline.sh
+
