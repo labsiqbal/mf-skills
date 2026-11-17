@@ -1,6 +1,7 @@
 // Usage: node scripts/pack-check.mjs [--dir <package dir>]
 // Runs `npm pack --dry-run --json` and fails when the package would ship
-// lab/, test/ or evidence files, any GSAP file, or weigh 15 MB or more packed.
+// lab/, test/ or evidence files, any GSAP file, or weigh 15 MB or more packed,
+// or when the bundled fonts' licence assets/fonts/OFL.txt is missing.
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -32,6 +33,9 @@ export function packProblems(entry) {
     if (parts[0] === 'test') problems.push(`test file packed: ${file.path}`);
     if (parts.includes('evidence')) problems.push(`evidence file packed: ${file.path}`);
     if (/gsap/i.test(file.path)) problems.push(`GSAP file packed: ${file.path}`);
+  }
+  if (!(entry.files ?? []).some((file) => file.path === 'assets/fonts/OFL.txt')) {
+    problems.push('assets/fonts/OFL.txt (the licence of the bundled fonts) is not packed');
   }
   if (!(entry.size < MAX_PACKED_BYTES)) {
     problems.push(`packed size ${entry.size} bytes is not under ${MAX_PACKED_BYTES} bytes`);
