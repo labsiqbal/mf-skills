@@ -1,0 +1,63 @@
+{
+  "doc": "rubric.md",
+  "section": "Measured caps",
+  "mode": "table",
+  "code": "src/quality/rubric.ts#capsTable",
+  "data": [
+    {
+      "Measured defect": "Frame 0 ink under frame0.inkMin",
+      "Axis": "hook",
+      "Cap": "5"
+    },
+    {
+      "Measured defect": "Longest still stretch over its limit",
+      "Axis": "rhythm",
+      "Cap": "6"
+    },
+    {
+      "Measured defect": "Contrast between contrast.hardMin and contrast.textMin",
+      "Axis": "legibility",
+      "Cap": "6"
+    },
+    {
+      "Measured defect": "Measured text below type.minReadablePx",
+      "Axis": "legibility",
+      "Cap": "6"
+    },
+    {
+      "Measured defect": "Reading hold short on any line",
+      "Axis": "legibility",
+      "Cap": "7"
+    },
+    {
+      "Measured defect": "Text in the face band (overlay with avoidFace)",
+      "Axis": "finish",
+      "Cap": "6"
+    },
+    {
+      "Measured defect": "Engine check warnings, 3 or more",
+      "Axis": "finish",
+      "Cap": "8"
+    },
+    {
+      "Measured defect": "Loudness outside audio.lufsTolerance",
+      "Axis": "finish",
+      "Cap": "7"
+    },
+    {
+      "Measured defect": "Bed low-end share over bed.lowShareMax",
+      "Axis": "finish",
+      "Cap": "8"
+    },
+    {
+      "Measured defect": "SFX peak off by more than sfx.peakToleranceFrames",
+      "Axis": "rhythm",
+      "Cap": "7"
+    },
+    {
+      "Measured defect": "SFX rise under the minimum",
+      "Axis": "rhythm",
+      "Cap": "8"
+    }
+  ]
+}

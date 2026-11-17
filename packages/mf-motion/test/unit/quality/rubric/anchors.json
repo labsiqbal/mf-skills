@@ -1,0 +1,212 @@
+[
+  {
+    "doc": "rubric.md",
+    "section": "hook",
+    "mode": "table",
+    "data": [
+      {
+        "Score": "10",
+        "Anchor": "Frame 0 already shows the product, a result or a bold line; by 1 s the viewer knows what this is and wants the next beat."
+      },
+      {
+        "Score": "9",
+        "Anchor": "Strong opening image by 0.3 s and a clear promise by 1 s; one small hesitation."
+      },
+      {
+        "Score": "8",
+        "Anchor": "Content by 0.5 s, purpose clear by 1.5 s."
+      },
+      {
+        "Score": "7",
+        "Anchor": "Opens on a generic title or logo but moves to content within 1.5 s."
+      },
+      {
+        "Score": "5-6",
+        "Anchor": "A title fading over brand colour; purpose clear only after 2 s."
+      },
+      {
+        "Score": "3-4",
+        "Anchor": "Empty, black or logo-only opening longer than 1 s."
+      },
+      {
+        "Score": "1-2",
+        "Anchor": "Nothing readable or nothing happening in the first 2 s."
+      }
+    ]
+  },
+  {
+    "doc": "rubric.md",
+    "section": "brand",
+    "mode": "table",
+    "data": [
+      {
+        "Score": "10",
+        "Anchor": "Real brand material (logo, real screens, real copy voice) used with the brand's own palette roles and type; nothing generic."
+      },
+      {
+        "Score": "9",
+        "Anchor": "Palette roles and type exact; real material present; one element feels borrowed from a template."
+      },
+      {
+        "Score": "8",
+        "Anchor": "Correct colours and fonts; real material present but secondary."
+      },
+      {
+        "Score": "7",
+        "Anchor": "Correct colours; generic shapes and stock-like layouts dominate."
+      },
+      {
+        "Score": "5-6",
+        "Anchor": "Colours roughly right, type wrong, no real material."
+      },
+      {
+        "Score": "3-4",
+        "Anchor": "Could be any brand."
+      },
+      {
+        "Score": "1-2",
+        "Anchor": "Conflicts with the brand (wrong colours, misused logo)."
+      }
+    ]
+  },
+  {
+    "doc": "rubric.md",
+    "section": "motion",
+    "mode": "table",
+    "data": [
+      {
+        "Score": "10",
+        "Anchor": "Arrivals land with weight, exits are faster than entrances, overlaps are tuned, camera moves are motivated, nothing floats."
+      },
+      {
+        "Score": "9",
+        "Anchor": "All of the above with one slightly generic ease or stagger."
+      },
+      {
+        "Score": "8",
+        "Anchor": "Purposeful and varied; a few moves feel mechanical."
+      },
+      {
+        "Score": "7",
+        "Anchor": "One ease and one timing used everywhere; competent but uniform."
+      },
+      {
+        "Score": "5-6",
+        "Anchor": "Fade-and-slide on everything; idle loops or creeping scales."
+      },
+      {
+        "Score": "3-4",
+        "Anchor": "Jittery, abrupt or random movement."
+      },
+      {
+        "Score": "1-2",
+        "Anchor": "Motion that obstructs reading or looks broken."
+      }
+    ]
+  },
+  {
+    "doc": "rubric.md",
+    "section": "legibility",
+    "mode": "table",
+    "data": [
+      {
+        "Score": "10",
+        "Anchor": "Every line holds long enough, sized for the phone sheet, high contrast, never competing with another line."
+      },
+      {
+        "Score": "9",
+        "Anchor": "One line slightly fast or small, still readable."
+      },
+      {
+        "Score": "8",
+        "Anchor": "All readable; one or two need a second look."
+      },
+      {
+        "Score": "7",
+        "Anchor": "Readable on desktop, strained on the phone sheet."
+      },
+      {
+        "Score": "5-6",
+        "Anchor": "Some lines too fast, small or low-contrast to read once."
+      },
+      {
+        "Score": "3-4",
+        "Anchor": "Several lines unreadable."
+      },
+      {
+        "Score": "1-2",
+        "Anchor": "Most copy unreadable."
+      }
+    ]
+  },
+  {
+    "doc": "rubric.md",
+    "section": "rhythm",
+    "mode": "table",
+    "data": [
+      {
+        "Score": "10",
+        "Anchor": "Something new on every beat, layout changes on the bar, holds only where meaning needs them, sound hits land on picture."
+      },
+      {
+        "Score": "9",
+        "Anchor": "Same, with one beat that drags or rushes."
+      },
+      {
+        "Score": "8",
+        "Anchor": "Even pacing; a few soft spots."
+      },
+      {
+        "Score": "7",
+        "Anchor": "Pacing follows a grid mechanically; no variation in energy."
+      },
+      {
+        "Score": "5-6",
+        "Anchor": "Noticeable dead stretches or crowded bursts."
+      },
+      {
+        "Score": "3-4",
+        "Anchor": "Long still stretches; cuts unrelated to the beat."
+      },
+      {
+        "Score": "1-2",
+        "Anchor": "No discernible rhythm."
+      }
+    ]
+  },
+  {
+    "doc": "rubric.md",
+    "section": "finish",
+    "mode": "table",
+    "data": [
+      {
+        "Score": "10",
+        "Anchor": "Clean edges, consistent spacing and radii, no banding, no clipping, correct alpha edges, mixed loudness on target."
+      },
+      {
+        "Score": "9",
+        "Anchor": "One minor craft flaw visible only on close inspection."
+      },
+      {
+        "Score": "8",
+        "Anchor": "Two or three minor flaws."
+      },
+      {
+        "Score": "7",
+        "Anchor": "A flaw visible at normal viewing (misalignment, banding, harsh shadow)."
+      },
+      {
+        "Score": "5-6",
+        "Anchor": "Several visible flaws."
+      },
+      {
+        "Score": "3-4",
+        "Anchor": "Looks like a draft."
+      },
+      {
+        "Score": "1-2",
+        "Anchor": "Broken output."
+      }
+    ]
+  }
+]
