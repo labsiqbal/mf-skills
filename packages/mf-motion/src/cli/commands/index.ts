@@ -3,6 +3,7 @@
 // its own lines.
 import type { AnyCommand } from '../registry';
 import { doctorCommand } from './doctor';
+import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
 import { approveCommand, newCommand, noteCommand, statusCommand } from './project';
 import { schemaCommand } from './schema';
@@ -17,4 +18,5 @@ export const COMMANDS: readonly AnyCommand[] = [
   schemaCommand,
   migrateCommand,
   doctorCommand,
+  lintCommand,
 ];

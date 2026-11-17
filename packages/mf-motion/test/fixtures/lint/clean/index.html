@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  #main { position: relative; width: 1920px; height: 1080px; background: #0E0F1A; }
+  .title { font-size: 96px; color: #F4F2FF; }
+  
+</style>
+</head>
+<body>
+<div id="main" data-composition-id="main" data-width="1920" data-height="1080" data-duration="4" data-fps="30">
+  <section id="s01" class="clip" data-start="0" data-duration="4">
+    <img src="assets/logo.svg" alt="">
+    <h1 class="mf-line title" data-mf-in="rise@0.2" data-mf-out="fall@3.2">Signals, sorted.</h1>
+    
+  </section>
+</div>
+
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.to('#s01 .title', { y: -20, duration: 0.6 }, 0.5);
+  
+  window.__timelines = window.__timelines || {};
+  window.__timelines['main'] = tl;
+</script>
+</body>
+</html>

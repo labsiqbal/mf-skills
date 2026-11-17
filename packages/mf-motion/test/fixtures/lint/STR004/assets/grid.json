@@ -1,0 +1,22 @@
+{
+  "fps": "30",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "bars": 2,
+  "tailSec": 0,
+  "lengthSec": 4,
+  "cues": {},
+  "shots": [
+    {
+      "id": "s01",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 4,
+        "frame": 120
+      }
+    }
+  ]
+}

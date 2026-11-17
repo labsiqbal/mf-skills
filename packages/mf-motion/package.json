@@ -34,6 +34,10 @@
     "vitest": "5.1.0"
   },
   "dependencies": {
+    "acorn": "8.19.0",
+    "acorn-walk": "8.3.5",
+    "parse5": "8.1.1",
+    "postcss": "8.5.33",
     "valibot": "1.5.0"
   }
 }
