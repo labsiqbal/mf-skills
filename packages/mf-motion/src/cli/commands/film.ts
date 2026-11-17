@@ -1,5 +1,6 @@
 // Film commands. Later tickets add themes, theme, build and round here.
 import { BRIEF_KEYS, INTERVIEW_QUESTIONS, editBrief } from '../../film/brief';
+import { checkPlan } from '../../film/plan';
 import { findProjectRoot } from '../../paths/index';
 import { CLI_VERSION, defineCommand } from '../registry';
 
@@ -26,5 +27,26 @@ export const filmBriefCommand = defineCommand({
     const questions = INTERVIEW_QUESTIONS.filter((question) => question.fills.some((key) => (result.missing as string[]).includes(key))).map((question) => question.text);
     const next = result.missing.length > 0 ? ['mf-motion film brief --set <key>=<value> --check --json'] : [];
     return { data: { brief: result.brief, missing: result.missing, md: result.md, questions }, next };
+  },
+});
+
+export const planCheckCommand = defineCommand({
+  name: 'plan check',
+  summary: 'Validate plan/storylines.md (three storylines and a pick) and plan/spec.json (numbers and the BANNED list).',
+  flags: {},
+  dataSchema: {
+    type: 'object',
+    required: ['storylines', 'pick', 'spec', 'problems'],
+    properties: {
+      storylines: { type: 'array', items: { type: 'string' } },
+      pick: { type: ['object', 'null'] },
+      spec: { type: ['object', 'null'] },
+      problems: { type: 'array', items: { type: 'object', required: ['file', 'message'] } },
+    },
+  },
+  async handler({ cwd, global }) {
+    const result = checkPlan(findProjectRoot(cwd, global.project));
+    const next = result.problems.length > 0 ? ['Fix plan/storylines.md and plan/spec.json, then run `mf-motion plan check --json` again.'] : ['mf-motion beatgrid check --json'];
+    return { data: result, next };
   },
 });

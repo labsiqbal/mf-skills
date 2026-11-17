@@ -15,7 +15,7 @@ import {
 } from './brand';
 import { cloudDisableCommand, cloudEnableCommand, cloudListCommand } from './cloud';
 import { doctorCommand } from './doctor';
-import { filmBriefCommand } from './film';
+import { filmBriefCommand, planCheckCommand } from './film';
 import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
 import { approveCommand, newCommand, noteCommand, statusCommand } from './project';
@@ -45,4 +45,5 @@ export const COMMANDS: readonly AnyCommand[] = [
   cloudEnableCommand,
   cloudDisableCommand,
   filmBriefCommand,
+  planCheckCommand,
 ];

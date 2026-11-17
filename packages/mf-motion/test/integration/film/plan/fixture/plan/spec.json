@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kind": "spec",
+  "storyline": "a",
+  "numbers": {
+    "arriveSec": [0.5, 0.8],
+    "exitSec": [0.22, 0.3],
+    "cameraSec": 0.6,
+    "staggerMs": [60, 90],
+    "heroShare": 0.14,
+    "transitions": ["camera-push", "mask-wipe", "match-cut", "cut"],
+    "endCardHoldSec": 2.5
+  },
+  "banned": ["emoji", "dashes-in-copy", "three-card-row", "idle-loop", "custom:no lens flares"]
+}
