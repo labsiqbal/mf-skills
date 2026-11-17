@@ -190,6 +190,8 @@ export interface PlacedCue {
   atSec: number;
   /** Where the SFX buffer starts. */
   startSec: number;
+  /** End of the 300 ms bed window the rise is measured against (the start, or before the hit's dip). */
+  baselineSec: number;
   peakAtSec: number;
   gainDb: number;
 }
@@ -246,10 +248,13 @@ export function mixSfx(bed: [Float32Array, Float32Array], cues: SfxCueInput[], o
   const gainAt = new Float64Array(length).fill(1);
   for (const placement of placements) {
     if (placement.cue.role === 'hit') {
+      // The bed sits at mix.preHitDip.level for the whole 0.3 s before the hit, reached by a 30 ms ramp.
       const span = Math.round(dip.sec * sr);
-      for (let k = 0; k < span; k += 1) {
+      const fall = Math.round(0.03 * sr);
+      for (let k = -fall; k < span; k += 1) {
         const n = placement.peakAt - span + k;
-        if (n >= 0 && n < length) gainAt[n] = Math.min(gainAt[n] ?? 1, 1 - (1 - dip.level) * (k / span));
+        const g = k >= 0 ? dip.level : 1 - (1 - dip.level) * ((k + fall) / fall);
+        if (n >= 0 && n < length) gainAt[n] = Math.min(gainAt[n] ?? 1, g);
       }
     }
     if (!options.bedYielded) {
@@ -277,8 +282,10 @@ export function mixSfx(bed: [Float32Array, Float32Array], cues: SfxCueInput[], o
   const own = Math.round(0.02 * sr);
   const placed: PlacedCue[] = [];
   for (const placement of placements) {
-    // The local bed: the 300 ms before the SFX starts (long SFX such as risers build before their peak).
-    const onset = Math.max(0, placement.start);
+    // The local bed: the 300 ms before the SFX starts (long SFX such as risers build before their peak);
+    // for the hit, before its pre-hit dip, which is part of the hit's own staging.
+    const dipStart = placement.peakAt - Math.round(dip.sec * sr) - Math.round(0.03 * sr);
+    const onset = Math.max(0, placement.cue.role === 'hit' ? Math.min(placement.start, dipStart) : placement.start);
     const bedLevel = Math.max(bandRms(mono, onset - before, onset, sr), dbToGain(-60));
     // Measure the SFX alone over the same 40 ms window the rise is read in, silence before its first sample.
     const pad = Math.round(0.08 * sr);
@@ -304,6 +311,7 @@ export function mixSfx(bed: [Float32Array, Float32Array], cues: SfxCueInput[], o
       event: placement.cue.event,
       atSec: placement.cue.at.sec,
       startSec: Math.round((Math.max(0, placement.start) / sr) * 1e6) / 1e6,
+      baselineSec: Math.round((onset / sr) * 1e6) / 1e6,
       peakAtSec: Math.round((placement.peakAt / sr) * 1e6) / 1e6,
       gainDb: Math.round(toDb(gain) * 100) / 100,
     });
@@ -311,13 +319,13 @@ export function mixSfx(bed: [Float32Array, Float32Array], cues: SfxCueInput[], o
   return { channels: [left, right], bed: bedOut, cues: placed };
 }
 
-/** Measured rise: bed-band RMS around the peak over the 300 ms before the SFX starts, in dB. */
-export function measureRise(channels: [Float32Array, Float32Array], startSec: number, peakAtSec: number, sr: number): number {
+/** Measured rise: bed-band RMS around the peak over the 300 ms before `baselineSec` (a cue's baselineSec), in dB. */
+export function measureRise(channels: [Float32Array, Float32Array], baselineSec: number, peakAtSec: number, sr: number): number {
   const mono = new Float64Array(channels[0].length);
   for (let n = 0; n < mono.length; n += 1) mono[n] = ((channels[0][n] ?? 0) + (channels[1][n] ?? 0)) / 2;
   const peak = Math.round(peakAtSec * sr);
   const own = Math.round(0.02 * sr);
-  const onset = Math.round(startSec * sr);
+  const onset = Math.round(baselineSec * sr);
   return toDb(bandRms(mono, peak - own, peak + own, sr) / bandRms(mono, onset - Math.round(0.3 * sr), onset, sr));
 }
 

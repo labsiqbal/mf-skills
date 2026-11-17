@@ -84,7 +84,7 @@ describe('placement and gain', () => {
 
   it('measured rise is within 3-14 dB, with the hit above the others', () => {
     const channels: [Float32Array, Float32Array] = [Float32Array.from(final[0]), Float32Array.from(final[1])];
-    const rises = Object.fromEntries(mix.cues.map((cue) => [cue.role, measureRise(channels, cue.startSec, cue.peakAtSec, sr)]));
+    const rises = Object.fromEntries(mix.cues.map((cue) => [cue.role, measureRise(channels, cue.baselineSec, cue.peakAtSec, sr)]));
     for (const [role, rise] of Object.entries(rises)) {
       expect(rise, role).toBeGreaterThanOrEqual(NUMBERS['sfx.riseDb'].min);
       expect(rise, role).toBeLessThanOrEqual(NUMBERS['sfx.riseDb'].max);
@@ -102,13 +102,14 @@ describe('placement and gain', () => {
       return Math.sqrt(sum / Math.round((to - from) * sr));
     };
     const peakAt = hit?.peakAtSec ?? 0;
-    // Just before the hit the bed is at most half its undipped level; 0.4 s earlier it is untouched.
-    expect(level(mix.bed[0], peakAt - 0.08, peakAt - 0.01)).toBeLessThan(level(mix.undipped[0], peakAt - 0.08, peakAt - 0.01) * 0.5);
+    // Through the 0.3 s before the hit the bed is at mix.preHitDip.level of its undipped level; 0.4 s earlier it is untouched.
+    const dipped = level(mix.bed[0], peakAt - 0.29, peakAt - 0.01);
+    expect(dipped).toBeLessThanOrEqual(level(mix.undipped[0], peakAt - 0.29, peakAt - 0.01) * NUMBERS['mix.preHitDip'].level + 1e-9);
     expect(level(mix.bed[0], peakAt - 0.7, peakAt - 0.4)).toBeCloseTo(level(mix.undipped[0], peakAt - 0.7, peakAt - 0.4), 6);
     const file = writeSfxJson(mkdtempSync(path.join(tmpdir(), 'mfm-sfx-')), mix.cues);
     const written = JSON.parse(readFileSync(file, 'utf8'));
     expect(written.cues).toHaveLength(grid.sfx.length);
-    expect(written.cues[0]).toEqual({ role: 'click', event: 'cta-button', atSec: 1.3, startSec: expect.any(Number), peakAtSec: expect.closeTo(1.3 + 0.5 / 30, 4), gainDb: expect.any(Number) });
+    expect(written.cues[0]).toEqual({ role: 'click', event: 'cta-button', atSec: 1.3, startSec: expect.any(Number), baselineSec: expect.any(Number), peakAtSec: expect.closeTo(1.3 + 0.5 / 30, 4), gainDb: expect.any(Number) });
   });
 });
 
