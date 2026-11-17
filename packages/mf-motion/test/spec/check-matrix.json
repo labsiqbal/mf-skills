@@ -1,0 +1,200 @@
+{
+  "doc": "check-profiles.md",
+  "section": "Check matrix",
+  "mode": "table",
+  "code": "src/quality/profiles.ts#checkMatrix",
+  "data": [
+    {
+      "Check": "Lint errors ([lint.md](lint.md))",
+      "Key values": "-",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Engine check errors",
+      "Key values": "-",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Engine check warnings (3 or more)",
+      "Key values": "-",
+      "film": "C",
+      "broll": "C",
+      "overlay-alpha": "C",
+      "overlay-key": "C"
+    },
+    {
+      "Check": "Frame margin, spill, text overlap",
+      "Key values": "safe.frameMarginPx, audit.*",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Copy outside copy-safe box",
+      "Key values": "safe.copy.*",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Text in caption band",
+      "Key values": "safe.captionBand",
+      "film": "H when captions",
+      "broll": "-",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Text in face band",
+      "Key values": "safe.faceBand",
+      "film": "-",
+      "broll": "-",
+      "overlay-alpha": "C when avoidFace",
+      "overlay-key": "C when avoidFace"
+    },
+    {
+      "Check": "Entrance and exit on every line",
+      "Key values": "TXT001-TXT004",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Reading hold per line",
+      "Key values": "read.*",
+      "film": "C",
+      "broll": "C",
+      "overlay-alpha": "C",
+      "overlay-key": "C"
+    },
+    {
+      "Check": "Text below minimum size (measured)",
+      "Key values": "type.minReadablePx",
+      "film": "C",
+      "broll": "C",
+      "overlay-alpha": "C",
+      "overlay-key": "C"
+    },
+    {
+      "Check": "Contrast under 3.0:1",
+      "Key values": "contrast.hardMin",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H (worst plate)",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Contrast 3.0-4.5:1",
+      "Key values": "contrast.textMin",
+      "film": "C",
+      "broll": "C",
+      "overlay-alpha": "C (worst plate)",
+      "overlay-key": "C"
+    },
+    {
+      "Check": "Frame 0 ink",
+      "Key values": "frame0.inkMin",
+      "film": "C",
+      "broll": "C",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    },
+    {
+      "Check": "Overlay starts and ends empty, first ink time",
+      "Key values": "overlay.*",
+      "film": "-",
+      "broll": "-",
+      "overlay-alpha": "H",
+      "overlay-key": "H (key-coloured pixels count as empty)"
+    },
+    {
+      "Check": "Longest still stretch",
+      "Key values": "still.*",
+      "film": "C (end card exempt to still.endCardMaxSec)",
+      "broll": "C",
+      "overlay-alpha": "C (declared holds exempt to still.overlayHoldMaxSec)",
+      "overlay-key": "C (same)"
+    },
+    {
+      "Check": "Duration equals plan",
+      "Key values": "duration.toleranceFrames",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Timestamps regular",
+      "Key values": "timestamps.maxJitterMs",
+      "film": "H",
+      "broll": "H",
+      "overlay-alpha": "H",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Key colour purity",
+      "Key values": "key.*",
+      "film": "-",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "H"
+    },
+    {
+      "Check": "Integrated loudness",
+      "Key values": "audio.lufsTarget, audio.lufsTolerance",
+      "film": "C when audio",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    },
+    {
+      "Check": "True peak",
+      "Key values": "audio.truePeakMax",
+      "film": "H when audio",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    },
+    {
+      "Check": "SFX peak timing",
+      "Key values": "sfx.peakToleranceFrames",
+      "film": "C when audio",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    },
+    {
+      "Check": "SFX rise over bed",
+      "Key values": "sfx.riseDb",
+      "film": "C when audio",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    },
+    {
+      "Check": "Bed low-end share",
+      "Key values": "bed.lowShareMax",
+      "film": "C when audio",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    },
+    {
+      "Check": "Brand pieces (logo and real shots)",
+      "Key values": "brand.film.minRealPieces",
+      "film": "H (lint STR004)",
+      "broll": "-",
+      "overlay-alpha": "-",
+      "overlay-key": "-"
+    }
+  ]
+}
