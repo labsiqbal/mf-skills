@@ -15,6 +15,7 @@ import { BRAND_VERSION } from '../schemas/brand';
 import { writeDoc } from '../schemas/index';
 import { type BrandColors, type RoleInputs, deriveRoles } from './colors';
 import { BRAND_ID, brandSlug, registrableDomain } from './domain';
+import { buildCandidates } from './candidates';
 import { type FontRoles, fontOrigins, fontWarnings, mapFontRoles } from './fonts';
 import { rightsNotice } from './rights';
 import { TEXT_LIMITS, fenceSafe, plainText, sanitizeField, sanitizeLines, truncate } from './sanitize';
@@ -233,10 +234,9 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         .map((heading) => sanitizeField(heading.text, TEXT_LIMITS.heading, counter))
         .filter((text): text is string => text !== null);
       const name = brandName(typeof report.title === 'string' ? report.title : null, id, counter);
-      const video = await videoCandidates(captureDir, request.onWarn);
-      const rel = (file: string) => path.relative(dir, file).split(path.sep).join('/');
+      // Product video frames land in capture/frames/ as shot candidates.
+      await videoCandidates(captureDir, request.onWarn);
       const screenshots = walk(path.join(captureDir, 'screenshots')).filter((file) => /\.(png|jpe?g)$/i.test(file) && !/contact-sheet/i.test(file));
-      const logos = walk(path.join(captureDir, 'assets')).filter((file) => /\.(svg|png|jpe?g|webp)$/i.test(file) && !/contact-sheet/i.test(file));
       const viewports: Frame[] = [];
       for (const file of screenshots.filter((shot) => /scroll-\d+\.png$/i.test(shot))) {
         try {
@@ -259,6 +259,15 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
           : new Map<string, string>();
       const type = mapFontRoles({ brandDir: dir, captureDir, origins });
       const notice = rightsNotice(request.home, 'brand', { project: request.project ?? null });
+      const candidates = await buildCandidates({
+        brandDir: dir,
+        captureDir,
+        ground: colors.ground,
+        ...('localFile' in source ? { local: { file: source.localFile, root: source.localRoot } } : {}),
+        engine,
+        ...(request.browserPath ? { browserPath: request.browserPath } : {}),
+        ...(request.onWarn ? { onWarn: request.onWarn } : {}),
+      });
       const capturedAt = new Date().toISOString();
       const previous = path.join(dir, 'brand.prev.json');
       if (existsSync(brandFile)) renameSync(brandFile, previous);
@@ -280,12 +289,7 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         logo: null,
         mark: null,
         shots: [],
-        candidates: {
-          sheet: null,
-          logoSheet: null,
-          logos: logos.map(rel).sort(),
-          shots: [...screenshots, ...video.frames].map(rel).sort(),
-        },
+        candidates: { sheet: candidates.sheet, logoSheet: candidates.logoSheet, logos: candidates.logos, shots: candidates.shots },
         radiusPx: null,
         buttons: [],
         copy: { headline, cta, domain: 'url' in source ? new URL(source.url).hostname : null },
@@ -325,7 +329,18 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
       warnings.push(...fontNotes.warnings);
       const next = fontNotes.next;
       if (removed.length > 0) request.onProgress?.(`Removed agent-instruction files from the capture: ${removed.join(', ')}`);
-      return { brand: { id, status: 'draft', dir }, candidatesSheet: null, logoSheet: null, roles: colors, fonts: type, notice: notice.text, warnings, next, reused: false };
+      next.push(`mf-motion brand pick ${id} --logo <l> --shots <s1,s2,s3> --json`);
+      return {
+        brand: { id, status: 'draft', dir },
+        candidatesSheet: candidates.sheet ? path.join(dir, candidates.sheet) : null,
+        logoSheet: candidates.logoSheet ? path.join(dir, candidates.logoSheet) : null,
+        roles: colors,
+        fonts: type,
+        notice: notice.text,
+        warnings,
+        next,
+        reused: false,
+      };
     },
     { command: 'brand capture', ...(request.onWarn ? { onStale: request.onWarn } : {}) },
   );

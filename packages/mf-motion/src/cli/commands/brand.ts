@@ -2,7 +2,7 @@
 // pick, manual, from-brief, fonts, show, list, use and rm here.
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import { type FontRoles, captureBrand, substituteOfl } from '../../brand/index';
+import { type FontRoles, captureBrand, pickBrand, substituteOfl } from '../../brand/index';
 import { confine, dataHome, findProjectRoot, homeLayout, lockFile, withLock } from '../../paths/index';
 import { readDoc, writeDoc } from '../../schemas/index';
 import { MfmError } from '../errors';
@@ -119,5 +119,46 @@ export const brandFontsCommand = defineCommand({
       },
       { command: 'brand fonts', onStale: (message) => log.warn(message) },
     );
+  },
+});
+
+export const brandPickCommand = defineCommand({
+  name: 'brand pick',
+  summary: 'Pick the logo, optional mark and 3-6 shots from the candidate sheets; the brand becomes picked.',
+  positionals: [{ name: 'id', description: 'brand id in the library', required: true }],
+  flags: {
+    logo: { type: 'string', required: true, value: '<l>', description: 'logo candidate number from the logo sheet, for example l2' },
+    shots: { type: 'list', required: true, value: '<s1,s2,s3>', description: '3-6 shot candidate numbers from the candidates sheet' },
+    mark: { type: 'string', value: '<l>', description: 'optional mark (symbol) candidate from the logo sheet' },
+  },
+  dataSchema: {
+    type: 'object',
+    required: ['brand'],
+    properties: {
+      brand: {
+        type: 'object',
+        required: ['id', 'status', 'logo', 'mark', 'shots'],
+        properties: { id: { type: 'string' }, status: { const: 'picked' }, logo: { type: 'object' }, mark: { type: ['object', 'null'] }, shots: { type: 'array' } },
+      },
+    },
+  },
+  async handler({ args, flags, cwd, env, global, log }) {
+    const home = dataHome({ flag: global.home, env, cwd });
+    let project: string | null = null;
+    try {
+      project = findProjectRoot(cwd, global.project);
+    } catch {
+      project = null;
+    }
+    const result = await pickBrand({
+      home,
+      id: String(args.id),
+      logo: flags.logo,
+      shots: flags.shots,
+      ...(flags.mark !== undefined ? { mark: flags.mark } : {}),
+      project,
+      onWarn: (message) => log.warn(message),
+    });
+    return { data: result };
   },
 });

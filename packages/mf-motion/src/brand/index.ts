@@ -1,4 +1,6 @@
+export * from './candidates';
 export * from './capture';
+export * from './pick';
 export * from './colors';
 export * from './fontHosts';
 export * from './fonts';
