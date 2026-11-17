@@ -30,15 +30,15 @@ export const measureCommand = defineCommand({
   flags: {
     profile: { type: 'string', required: true, enum: PROFILE_LIST, value: '<profile>', description: 'film, broll, overlay-alpha or overlay-key' },
     expected: { type: 'number', value: '<sec>', description: 'planned length in seconds (default the file length)' },
-    sound: { type: 'string', value: '<sound.json>', description: 'the score description (audio metrics arrive with MFM-071)' },
+    sound: { type: 'string', value: '<sound.json>', description: 'sound/sound.json: SFX cues for timing and rise (films with audio)' },
     holds: { type: 'string', value: '<json>', description: 'overlay hold windows: JSON [{ "fromSec", "toSec" }] or a file' },
     out: { type: 'string', value: '<file>', description: 'where to write metrics.json (default beside the video)' },
   },
   dataSchema: { type: 'object', required: ['metrics'], properties: { metrics: { type: 'string' }, hard: { type: 'array' }, caps: { type: 'array' } } },
-  async handler({ args, flags, cwd, log }) {
+  async handler({ args, flags, cwd }) {
     const video = path.resolve(cwd, String(args.video));
-    if (flags.sound !== undefined) log.warn('--sound is accepted; audio metrics are added by a later release.');
     const metrics = await measure(video, {
+      ...(flags.sound !== undefined ? { soundFile: path.resolve(cwd, flags.sound) } : {}),
       profile: flags.profile as Profile,
       ...(flags.expected !== undefined ? { expectedSec: flags.expected } : {}),
       holds: parseHolds(flags.holds, cwd),

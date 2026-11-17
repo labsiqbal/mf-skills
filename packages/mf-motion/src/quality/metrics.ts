@@ -1,7 +1,8 @@
 // measure: metrics.json from a rendered file. Duration, timestamp regularity,
 // frame-0 ink, overlay coverage, still stretches, contrast and key purity,
 // with the hard results and caps of the file's profile, so the gate measures
-// nothing itself. The audio block stays null until MFM-071.
+// nothing itself. Films with audio also get loudness, true peak, low-end share
+// and SFX timing and rise (MFM-071).
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -9,6 +10,7 @@ import { MfmError } from '../cli/errors';
 import { NUMBERS } from '../kit/numbers';
 import { type Frame, alphaCoverage, changedFraction, frameAt, frames, inkFraction, relativeLuminance } from '../media/pixels';
 import { probe } from '../media/probe';
+import { audioMetrics } from './audioMetrics';
 import { type CheckId, type Profile, applies, modeOf } from './profiles';
 import { type CapMetrics, RUBRIC, capFor } from './rubric';
 
@@ -33,6 +35,8 @@ export interface MeasureOptions {
   /** audit.json and check.json beside the video are merged when present. */
   auditFile?: string | null;
   checkFile?: string | null;
+  /** sound/sound.json, for the SFX cues (audio metrics need the file's audio stream). */
+  soundFile?: string | null;
 }
 
 type Aspect = '16:9' | '9:16' | '1:1';
@@ -182,7 +186,9 @@ export async function measure(video: string, options: MeasureOptions): Promise<R
   const frameCount = times.length || info.video.frames || Math.round(info.durationSec * fps);
   const durationSec = round(frameCount * frameSec);
   const expectedSec = options.expectedSec ?? durationSec;
-  const ctx = { captions: options.captions === true, avoidFace: options.avoidFace !== false, hasAudio: false };
+  const ctx = { captions: options.captions === true, avoidFace: options.avoidFace !== false, hasAudio: info.hasAudio };
+  // Audio metrics apply to films only (moves are silent; check-profiles.md).
+  const audio = profile === 'film' ? await audioMetrics(video, { hasAudio: info.hasAudio, soundFile: options.soundFile ?? null, fps }) : null;
 
   // Timestamps: interval jitter against 1/fps.
   let irregular = 0;
@@ -275,6 +281,7 @@ export async function measure(video: string, options: MeasureOptions): Promise<R
     hard.push({ check: problem, pass: count === 0, value: count, limit: 0 });
   }
   if (check && isHard('engine-errors')) hard.push({ check: 'engine-errors', pass: (check.errors ?? 0) === 0, value: check.errors ?? 0, limit: 0 });
+  if (audio && isHard('true-peak')) hard.push({ check: 'true-peak', pass: audio.truePeak <= NUMBERS['audio.truePeakMax'], value: audio.truePeak, limit: NUMBERS['audio.truePeakMax'] });
 
   // Caps from the rubric, kept only where the profile applies the check.
   const capInput: CapMetrics = {
@@ -284,7 +291,7 @@ export async function measure(video: string, options: MeasureOptions): Promise<R
     contrast,
     audit: { hits: audit?.hits ?? [] },
     lines,
-    audio: null,
+    audio,
     engineCheck: { warnings: check?.warnings ?? 0 },
   };
   const caps = capFor(capInput).filter((cap) => {
@@ -314,7 +321,7 @@ export async function measure(video: string, options: MeasureOptions): Promise<R
     audit: { hits: audit?.hits ?? [] },
     lines,
     key,
-    audio: null,
+    audio,
     engineCheck: { errors: check?.errors ?? 0, warnings: check?.warnings ?? 0, findings: check?.findings ?? [] },
     hard,
     caps,
