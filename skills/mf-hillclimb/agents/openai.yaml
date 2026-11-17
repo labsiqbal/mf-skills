@@ -1,0 +1,6 @@
+interface:
+  display_name: "MF Hillclimb"
+  short_description: "Improve in rounds against a fixed metric"
+  default_prompt: "Use $mf-hillclimb to improve this against a fixed metric or rubric, keep before/after evidence, and report the best verified candidate."
+policy:
+  allow_implicit_invocation: true

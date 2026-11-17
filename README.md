@@ -1,54 +1,40 @@
 # MF Skills
 
-Agent skills by Iqbal for writing, product planning, web design, and coordinating project work.
+Agent skills by Iqbal for writing, product planning, web design, and iterative improvement.
 
 - **[mf-copywriting](skills/mf-copywriting/SKILL.md)**: English and Indonesian
   copywriting, source discussion, revision, and editorial review.
-- **[mf-orca](skills/mf-orca/SKILL.md)**: project routing, workflow selection,
-  bounded delegation, hill-climb evaluations, optional council reviews, and
-  evidence-based completion reports.
 - **[mf-design](skills/mf-design/SKILL.md)**: compare distinct HTML directions,
   choose one, and tune its CSS through a live panel with reset and export.
-
 - **[mf-masterplan](skills/mf-masterplan/SKILL.md)**: turn a product idea or
   existing source into a build-ready package with research, decisions, ticket
   contracts, and an offline HTML deck.
+- **[mf-hillclimb](skills/mf-hillclimb/SKILL.md)**: improve a product, UI,
+  prompt, or code in rounds against a fixed metric or rubric, keeping only
+  verified gains.
 
-## mf-orca capabilities
-
-`mf-orca` coordinates work through the skills and tools available in your harness.
-Project rules, the existing tracker, Git state, and runtime evidence guide its
-decisions. Workers own implementation, checks, and UI capture; the coordinator
-routes work, reviews evidence, and reports acceptance.
+## mf-hillclimb capabilities
 
 | Capability | Behavior |
 |---|---|
-| Routing and continuation | Select planning, prototyping, implementation, or review from current evidence; resume existing specs, tickets, and handoffs. |
-| Bounded delegation | Give each worker a defined scope, checkout, output, and acceptance checks; save worker IDs for continuation. |
-| Hill climb | Improve one candidate against a fixed baseline, workload, metric or rubric, and hard guards. Default: at most 3 candidate rounds; stop after 2 consecutive rounds without a qualifying improvement. |
-| Best-candidate retention | Promote only verified improvements, retain the previous best on regression, and report whether acceptance was met, progress stalled, or the budget ran out. |
+| Fixed evaluation contract | Bind baseline, workload, metric or rubric, hard guards, and the improvement rule before any candidate result. |
+| Round limits | At most 10 candidate rounds after baseline; stop early after 2 consecutive rounds without a qualifying improvement. Your limits win. |
+| Independent evaluation | Programmatic checks first; subjective judgments go to a separate read-only reviewer. The builder never scores its own candidate. |
+| Best-candidate retention | Promote only verified improvements, keep the previous best on regression, and report whether acceptance was met, progress stalled, or the budget ran out. |
 | UI evidence | Capture before/after on matching routes, data, states, viewport, theme, and zoom. Check interactions and accessibility separately where required. |
-| Council review | Off by default: review uses one separate reviewer. Only when you ask for a council, use 3 model families across distinct providers to independently review the same frozen candidate, evidence, and rubric. Preserve findings, uncertainty, and dissent. |
 
-Model and provider choices follow explicit owner and project instructions.
-Otherwise, `mf-orca` resolves available routes through the harness using supported
-session defaults. There is no fixed model roster. Record actual model, provider,
-and effort when exposed; report missing members and unknown values without
-silently substituting or claiming complete council coverage.
-
-The [hill-climb reference](skills/mf-orca/references/hill-climb.md) defines the
-evaluation contract, reviewer policy, evidence, and stop rules. Merge, release,
-and deployment follow the project's authorization and gates.
+Model and provider choices follow your instructions and project rules; there is
+no fixed model roster. Merge, release, and deployment follow the project's gates.
 
 ## Install
 
 Choose a skill with the Vercel Skills CLI:
 
 ```bash
-npx skills add labsiqbal/mf-skills --skill mf-orca -g
 npx skills add labsiqbal/mf-skills --skill mf-copywriting -g
 npx skills add labsiqbal/mf-skills --skill mf-design -g
 npx skills add labsiqbal/mf-skills --skill mf-masterplan -g
+npx skills add labsiqbal/mf-skills --skill mf-hillclimb -g
 ```
 
 If your installation uses a source registry, update that registry rather than
@@ -68,8 +54,8 @@ installation sources, not accounts you must use for your work.
 |---|---|---|
 | `mf-copywriting` | Read Markdown and work with the supplied brief | Updates use available retrieval tools or source exports; no named research skill is required. |
 | `mf-design` | Write HTML/CSS/JS or edit the existing app | Companion design skills and embedded preview are optional; open the files in a local browser for selection. Report unavailable automated checks. |
-| `mf-orca` | Dispatch bounded workers through the active harness | Companion methods are optional; put equivalent instructions in worker briefs. Without delegation, provide a coordination plan and report that execution is blocked. |
 | `mf-masterplan` | Read/write Markdown and resolve product decisions | Python 3.10+ runs stdlib helpers. Installed `mmdc` renders diagrams; authorized `--allow-download` enables pinned `npx`. Without rendering, use SVG fallback or report a text-only package. Independent review falls back to labeled self-review. |
+| `mf-hillclimb` | Run the chosen checks and edit the candidate | A separate builder or reviewer is optional; without delegation, evaluate by script or in a fresh context and label the review as same-agent. |
 
 Without Node or the Skills CLI, copy one complete `skills/<name>/` folder into
 your harness's documented skill directory. Keep its references, scripts, assets,
@@ -77,24 +63,6 @@ and `LICENSE` together. Restart or reload skill discovery as your harness requir
 Existing application tools and external trackers retain their own prerequisites.
 
 ## Use
-
-```text
-Use mf-orca. Inspect this project's existing task state and continue the next
-authorized step. Ask only for unresolved decisions that change the outcome.
-```
-
-```text
-Use mf-orca in hill-climb mode. Improve this UI against a fixed rubric, keep
-before/after evidence, and use a separate reviewer. Stop after at most 3 rounds
-and report the best verified candidate.
-```
-
-```text
-Use mf-orca in hill-climb mode with a council. Have 3 model families across
-distinct providers independently review the same candidate, evidence, and rubric.
-Honor my named model/provider choices; report unavailable members before claiming
-complete coverage. Keep before/after evidence and stop after at most 3 rounds.
-```
 
 ```text
 Use mf-copywriting. Rewrite this product description for beginner readers.
@@ -111,7 +79,12 @@ Use mf-masterplan. Turn this product idea into a build-ready package,
 resolve product decisions with me, and preserve the project's existing tracker.
 ```
 
-Explicit invocation syntax depends on the harness. Codex supports `$mf-orca`; Claude Code uses its native skill invocation.
+```text
+Use mf-hillclimb. Improve this UI against a fixed rubric, keep before/after
+evidence, and use a separate reviewer. Report the best verified candidate.
+```
+
+Explicit invocation syntax depends on the harness. Codex supports `$mf-hillclimb`; Claude Code uses its native skill invocation.
 Natural-language activation depends on native discovery and model behavior.
 
 ## Releases
@@ -132,7 +105,7 @@ The imported Masterplan package retains its original contributor notice in
 
 ## Credits
 
-The hill-climb and council workflow is informed by
+The mf-hillclimb workflow is informed by
 [Theo Browne (@t3dotgg)](https://github.com/t3dotgg) and his
 [tstack repository](https://github.com/t3dotgg/tstack).
 The reviewed Tstack revision is pinned in [source provenance](context.md#sources).

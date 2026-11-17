@@ -9,7 +9,7 @@ Maintain portable MF skills with independent versions.
 - Project decisions and source provenance: [context](context.md).
 - Copywriting package: [entrypoint](skills/mf-copywriting/SKILL.md).
 - HTML design exploration: [entrypoint](skills/mf-design/SKILL.md).
-- Work coordination package: [entrypoint](skills/mf-orca/SKILL.md).
+- Iterative improvement: [entrypoint](skills/mf-hillclimb/SKILL.md).
 - Product planning: [entrypoint](skills/mf-masterplan/SKILL.md),
   [overview](skills/mf-masterplan/README.md), [regression checks](tests/test_validate_package.py).
 - Current work: [backlog](backlog.md).

@@ -1,6 +1,0 @@
-interface:
-  display_name: "mf-orca"
-  short_description: "Route work and verify worker results"
-  default_prompt: "Use $mf-orca as coordinator: dispatch bounded work, wait for worker results, and report the next verified step."
-policy:
-  allow_implicit_invocation: true
