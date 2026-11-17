@@ -1,6 +1,7 @@
 // Build: node esbuild.config.mjs [--outdir <dir>]
 // Bundles src/cli/main.ts into one ESM entry, dist/cli.mjs, with code splitting
-// so lazily imported modules land in dist/chunks/.
+// so lazily imported modules land in dist/chunks/, and the composition runtime
+// src/kit/runtime/index.ts into dist/vendor/mf-runtime.js (IIFE, global `mf`).
 import { build } from 'esbuild';
 import { rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -33,4 +34,18 @@ await build({
       'const require = __mfmCreateRequire(import.meta.url);',
     ].join('\n'),
   },
+});
+
+await build({
+  absWorkingDir: root,
+  entryPoints: ['src/kit/runtime/index.ts'],
+  outfile: resolve(outdir, 'vendor', 'mf-runtime.js'),
+  bundle: true,
+  format: 'iife',
+  platform: 'browser',
+  target: 'chrome120',
+  sourcemap: false,
+  legalComments: 'none',
+  logLevel: 'warning',
+  banner: { js: '/* mf-motion composition runtime (MIT). Global: mf. */' },
 });
