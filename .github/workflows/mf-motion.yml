@@ -1,0 +1,101 @@
+name: mf-motion
+
+on:
+  push:
+    paths:
+      - 'skills/mf-motion/**'
+      - 'packages/mf-motion/**'
+      - '.github/workflows/mf-motion.yml'
+  pull_request:
+    paths:
+      - 'skills/mf-motion/**'
+      - 'packages/mf-motion/**'
+      - '.github/workflows/mf-motion.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mf-motion-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  MF_MOTION_CACHE: ${{ github.workspace }}/.cache/mf-motion
+  MF_MOTION_HOME: ${{ github.workspace }}/.cache/mf-motion-home
+  npm_config_cache: ${{ github.workspace }}/.cache/npm
+
+jobs:
+  unit:
+    name: unit + integration (${{ matrix.os }}, Node ${{ matrix.node }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+        node: [24]
+        include:
+          - os: ubuntu-24.04
+            node: 22
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/cache@v4
+        with:
+          path: .cache/npm
+          key: npm-${{ runner.os }}-${{ hashFiles('packages/mf-motion/package-lock.json') }}
+      - run: npm --prefix packages/mf-motion ci
+      - run: npm --prefix packages/mf-motion run typecheck
+      - run: npm --prefix packages/mf-motion run build
+      - run: npm --prefix packages/mf-motion run test:unit
+
+  render:
+    name: render, serial (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/cache@v4
+        with:
+          path: .cache/npm
+          key: npm-${{ runner.os }}-${{ hashFiles('packages/mf-motion/package-lock.json') }}
+      - run: npm --prefix packages/mf-motion ci
+      - run: npm --prefix packages/mf-motion run build
+      - run: npm --prefix packages/mf-motion run test:render -- --passWithNoTests
+
+  pack-check:
+    name: pack check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/cache@v4
+        with:
+          path: .cache/npm
+          key: npm-${{ runner.os }}-${{ hashFiles('packages/mf-motion/package-lock.json') }}
+      - run: npm --prefix packages/mf-motion ci
+      - run: npm --prefix packages/mf-motion run build
+      - run: npm --prefix packages/mf-motion run pack:check
+
+  licence-denylist:
+    name: licence denylist
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: npm --prefix packages/mf-motion run licence:check

@@ -1,0 +1,36 @@
+{
+  "name": "mf-motion",
+  "version": "1.0.0",
+  "description": "Motion-graphics director CLI for coding agents: brand capture, planned shots, local HyperFrames renders and a measured quality gate.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "mf-motion": "dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "assets",
+    "engine",
+    "LICENSE",
+    "THIRD_PARTY.md",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:render": "vitest run --project render",
+    "pack:check": "node scripts/pack-check.mjs",
+    "licence:check": "node scripts/licence-denylist.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}
