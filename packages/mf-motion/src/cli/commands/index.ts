@@ -19,7 +19,7 @@ import { filmBriefCommand, planCheckCommand } from './film';
 import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
 import { approveCommand, newCommand, noteCommand, statusCommand } from './project';
-import { measureCommand } from './quality';
+import { measureCommand, sheetsCommand } from './quality';
 import { schemaCommand } from './schema';
 import { scoreCommand } from './score';
 import { versionCommand } from './version';
@@ -50,4 +50,5 @@ export const COMMANDS: readonly AnyCommand[] = [
   planCheckCommand,
   scoreCommand,
   measureCommand,
+  sheetsCommand,
 ];
