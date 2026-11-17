@@ -154,3 +154,40 @@ describe('mix', () => {
     expect(readDoc('sound', path.join(dir, 'sound', 'sound.json')).doc.voice).toBe('sound/voice.wav');
   }, 300_000);
 });
+
+describe('loudness limiting', () => {
+  it('limits peaks before the linear pass without delaying them', async () => {
+    // A quiet steady tone with one loud 2 ms burst at 1.0 s: the gain to -14 LUFS forces the limiter.
+    const seconds = 3;
+    const signal: Stereo = [new Float32Array(seconds * sr), new Float32Array(seconds * sr)];
+    const burst = Math.round(1.0 * sr);
+    for (let n = 0; n < signal[0].length; n += 1) {
+      let v = 0.02 * sin((TWO_PI * 440 * n) / sr);
+      if (n >= burst && n < burst + Math.round(0.002 * sr)) v += 0.9 * sin((TWO_PI * 3000 * (n - burst)) / sr);
+      signal[0][n] = v;
+      signal[1][n] = v;
+    }
+    const work = mkdtempSync(path.join(tmpdir(), 'mfm-limit-test-'));
+    const input = path.join(work, 'in.wav');
+    writeFileSync(input, encodeWav24(signal, sr));
+    const output = path.join(work, 'out.wav');
+    const measured = await normaliseTo(input, output, NUMBERS['audio.lufsTarget']);
+    expect(measured.truePeak).toBeLessThanOrEqual(NUMBERS['audio.truePeakMax']);
+    const [left] = await decodeStereo(output, sr);
+    expect(left.length).toBe(signal[0].length);
+    // The lag where the output best matches the input around the burst: none, to within 0.25 ms.
+    const from = burst - Math.round(0.02 * sr);
+    const to = burst + Math.round(0.02 * sr);
+    let bestLag = 0;
+    let best = Number.NEGATIVE_INFINITY;
+    for (let lag = -Math.round(0.01 * sr); lag <= Math.round(0.01 * sr); lag += 1) {
+      let sum = 0;
+      for (let n = from; n < to; n += 1) sum += (signal[0][n] ?? 0) * (left[n + lag] ?? 0);
+      if (sum > best) {
+        best = sum;
+        bestLag = lag;
+      }
+    }
+    expect(Math.abs(bestLag) / sr).toBeLessThanOrEqual(0.00025);
+  }, 120_000);
+});

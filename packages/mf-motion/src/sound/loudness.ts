@@ -54,9 +54,10 @@ export async function normaliseTo(input: string, output: string, targetLufs: num
     const { tmpdir } = await import('node:os');
     const path = await import('node:path');
     source = path.join(mkdtempSync(path.join(tmpdir(), 'mfm-limit-')), 'limited.wav');
-    // Limited at 4x the sample rate, so inter-sample (true) peaks are caught too.
+    // Limited at 4x the sample rate, so inter-sample (true) peaks are caught too; latency=1
+    // removes the 5 ms lookahead delay so the audio stays in sync with the picture.
     const rate = NUMBERS['audio.sampleRate'];
-    await ffmpeg(['-y', '-i', input, '-af', `aresample=${rate * 4},alimiter=limit=${limit.toFixed(6)}:attack=5:release=60:level=0,aresample=${rate}`, '-c:a', 'pcm_f32le', source]);
+    await ffmpeg(['-y', '-i', input, '-af', `aresample=${rate * 4},alimiter=limit=${limit.toFixed(6)}:attack=5:release=60:level=0:latency=1,aresample=${rate}`, '-c:a', 'pcm_f32le', source]);
     measured = await measure(source);
   }
   const second = [
