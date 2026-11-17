@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 0,
+  "requestedSec": 20,
+  "seed": 5,
+  "genre": "driving-electronic",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "s0",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 2,
+        "frame": 60
+      },
+      "energy": 0.29,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s1",
+      "from": {
+        "sec": 2,
+        "frame": 60
+      },
+      "to": {
+        "sec": 4,
+        "frame": 120
+      },
+      "energy": 0.3,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s2",
+      "from": {
+        "sec": 4,
+        "frame": 120
+      },
+      "to": {
+        "sec": 6,
+        "frame": 180
+      },
+      "energy": 0.39,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s3",
+      "from": {
+        "sec": 6,
+        "frame": 180
+      },
+      "to": {
+        "sec": 8,
+        "frame": 240
+      },
+      "energy": 0.4,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s4",
+      "from": {
+        "sec": 8,
+        "frame": 240
+      },
+      "to": {
+        "sec": 10,
+        "frame": 300
+      },
+      "energy": 0.44,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s5",
+      "from": {
+        "sec": 10,
+        "frame": 300
+      },
+      "to": {
+        "sec": 12,
+        "frame": 360
+      },
+      "energy": 0.45,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s6",
+      "from": {
+        "sec": 12,
+        "frame": 360
+      },
+      "to": {
+        "sec": 14,
+        "frame": 420
+      },
+      "energy": 0.54,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s7",
+      "from": {
+        "sec": 14,
+        "frame": 420
+      },
+      "to": {
+        "sec": 16,
+        "frame": 480
+      },
+      "energy": 0.55,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s8",
+      "from": {
+        "sec": 16,
+        "frame": 480
+      },
+      "to": {
+        "sec": 18,
+        "frame": 540
+      },
+      "energy": 0.69,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "s9",
+      "from": {
+        "sec": 18,
+        "frame": 540
+      },
+      "to": {
+        "sec": 20,
+        "frame": 600
+      },
+      "energy": 0.7,
+      "riser": false,
+      "drop": false
+    }
+  ],
+  "shots": [],
+  "sfx": [],
+  "spb": 0.5,
+  "lengthSec": 20,
+  "frames": 600
+}

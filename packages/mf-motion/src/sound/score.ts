@@ -1,10 +1,12 @@
 // score: render sound/score-raw.wav for a project from its resolved beat grid,
-// seed and preset (the user-track and voice paths arrive in later tickets).
+// seed and genre preset (the user-track and voice paths arrive in later tickets).
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { MfmError } from '../cli/errors';
 import { readDoc } from '../schemas/index';
+import { arrange, renderArrangement } from './arrange';
+import { GENRE_PRESETS } from './presets/index';
 import { PRESETS, type Preset, SAMPLE_RATE, TEST_PRESET, encodeWav24, renderScore } from './synth/index';
 
 export interface ScoreResult {
@@ -28,12 +30,22 @@ export function scoreProject(project: string): ScoreResult {
   }
   const { doc: grid } = readDoc('beatgrid-resolved', file);
   const warnings: string[] = [];
+  const genre = GENRE_PRESETS[grid.genre];
   let preset: Preset | undefined = PRESETS[grid.genre];
-  if (!preset) {
-    preset = TEST_PRESET;
-    warnings.push(`Preset "${grid.genre}" is not available yet; the score uses the built-in ${TEST_PRESET.id} preset.`);
+  let channels: [Float32Array, Float32Array];
+  let presetId: string;
+  if (genre) {
+    // Genre presets (MFM-067): arranged from the grid's sections.
+    channels = renderArrangement(arrange(grid, genre, grid.seed, { key: grid.key }), genre, grid.seed).channels;
+    presetId = genre.id;
+  } else {
+    if (!preset) {
+      preset = TEST_PRESET;
+      warnings.push(`Preset "${grid.genre}" does not exist; the score uses the built-in ${TEST_PRESET.id} preset.`);
+    }
+    channels = renderScore(grid, { seed: grid.seed, preset });
+    presetId = preset.id;
   }
-  const channels = renderScore(grid, { seed: grid.seed, preset });
   const bytes = encodeWav24(channels, SAMPLE_RATE);
   const out = path.join(project, 'sound', 'score-raw.wav');
   mkdirSync(path.dirname(out), { recursive: true });
@@ -46,7 +58,7 @@ export function scoreProject(project: string): ScoreResult {
     bitDepth: 24,
     bpm: grid.bpm,
     seed: grid.seed,
-    preset: preset.id,
+    preset: presetId,
     sha256: createHash('sha256').update(bytes).digest('hex'),
     warnings,
   };

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 100,
+  "beatsPerBar": 4,
+  "bars": 6,
+  "tailSec": 0.8,
+  "requestedSec": 15,
+  "seed": 9,
+  "genre": "warm-house",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "open",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 9.6,
+        "frame": 288
+      },
+      "energy": 0.6,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "end-card",
+      "from": {
+        "sec": 9.6,
+        "frame": 288
+      },
+      "to": {
+        "sec": 14.4,
+        "frame": 432
+      },
+      "energy": 0.3,
+      "riser": false,
+      "drop": false
+    }
+  ],
+  "shots": [],
+  "sfx": [],
+  "spb": 0.6,
+  "lengthSec": 15.2,
+  "frames": 456
+}

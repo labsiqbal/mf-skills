@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 0,
+  "requestedSec": 20,
+  "seed": 3,
+  "genre": "driving-electronic",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "calm",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 6,
+        "frame": 180
+      },
+      "energy": 0.2,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "build",
+      "from": {
+        "sec": 6,
+        "frame": 180
+      },
+      "to": {
+        "sec": 12,
+        "frame": 360
+      },
+      "energy": 0.5,
+      "riser": true,
+      "drop": false
+    },
+    {
+      "name": "drop",
+      "from": {
+        "sec": 12,
+        "frame": 360
+      },
+      "to": {
+        "sec": 20,
+        "frame": 600
+      },
+      "energy": 0.9,
+      "riser": false,
+      "drop": true
+    }
+  ],
+  "shots": [],
+  "sfx": [],
+  "spb": 0.5,
+  "lengthSec": 20,
+  "frames": 600
+}
