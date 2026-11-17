@@ -1,6 +1,6 @@
 # Validation Rubric (red team)
 
-Run before writing the masterplan (phase 5). A **fresh agent with no conversation context** reviews the decision set. Send the decision summary below — **never the conversation transcript**; a validator that reads the conversation inherits its bias and its sunk-cost affection for the decisions.
+Run before writing the masterplan (phase 5). When delegation is available and authorized, a **fresh agent with no conversation context** reviews the decision set. Send the decision summary below — **never the conversation transcript**; a validator that reads the conversation inherits its bias and its sunk-cost affection for the decisions.
 
 ## Validator prompt template
 
@@ -54,4 +54,4 @@ For a revision, the validator receives only: the change request, the impact anal
 
 ## Fallback: no subagent support
 
-If the platform cannot spawn an independent agent, run the rubric yourself as a deliberate fresh-eyes pass in a clean context (a new conversation if possible): re-read only the decision summary — not your reasoning that produced it — and attack it with the five axes as if someone else wrote it. Weaker than a true fresh agent, but the gate still exists and the format still applies.
+If independent delegation is unavailable or unauthorized, review the decision summary in a separate pass using the same five axes. Use a new context only when the platform supports it. Label a same-context pass as self-review, state its limits, and keep the blocker gate and report format; never call it independent review.

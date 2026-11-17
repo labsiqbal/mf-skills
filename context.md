@@ -29,3 +29,9 @@ and `mf-masterplan`.
 - Packages retain independent versions and release tags.
 - Preserve the standalone copywriting repository and its prior releases.
 - Registry presence and native discovery are distinct from behavior acceptance.
+
+- Owner approved MIT licensing for the remaining packages on 2026-11-17. Each
+  installable package carries its own license; imported notices remain intact.
+- Skill payloads resolve project paths, tools, models, and authority from the
+  consuming environment. Companion skills are optional unless their capability
+  defines the workflow, such as worker dispatch for coordinator-only Orca.

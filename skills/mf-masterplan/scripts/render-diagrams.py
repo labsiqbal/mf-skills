@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Render a package's Mermaid blocks to SVG files for the HTML deck.
 
-Usage: render-diagrams.py <package-folder> [--dry-run]
+Usage: render-diagrams.py <package-folder> [--dry-run] [--allow-download]
 
 masterplan.md block n under "## 7." becomes references/diagrams/s7-<n>.svg;
 a block in any other document becomes <document-path-slug>-<n>.svg.
 --dry-run prints the mapping without rendering.
+--allow-download permits npx to fetch the pinned Mermaid CLI if mmdc is absent.
 
 Exit codes: 0 rendered (or dry run), 1 a block failed to render,
 2 no Mermaid renderer available (hand-author the deck SVGs instead).
 """
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import json
 import os
@@ -89,7 +91,7 @@ def plan(root: Path) -> list[tuple[Path, int, str, Path]]:
     return jobs
 
 
-def renderer() -> tuple[list[str], dict[str, str]] | None:
+def renderer(allow_download: bool = False) -> tuple[list[str], dict[str, str]] | None:
     env = dict(os.environ)
     if "PUPPETEER_EXECUTABLE_PATH" not in env:
         browser = next((shutil.which(name) for name in BROWSERS if shutil.which(name)), None)
@@ -97,30 +99,32 @@ def renderer() -> tuple[list[str], dict[str, str]] | None:
             env["PUPPETEER_EXECUTABLE_PATH"] = browser
     if shutil.which("mmdc"):
         return ["mmdc"], env
-    if shutil.which("npx"):
+    if allow_download and shutil.which("npx"):
         return ["npx", "-y", MERMAID_CLI], env
     return None
 
 
 def main(argv: list[str]) -> int:
-    if not argv or not Path(argv[0]).is_dir():
-        print(__doc__)
-        return 2
-    root = Path(argv[0]).resolve()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("package", type=Path)
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--allow-download", action="store_true")
+    args = parser.parse_args(argv)
+    if not args.package.is_dir():
+        parser.error("package must be an existing directory")
+    root = args.package.resolve()
     jobs = plan(root)
     for doc, line, _text, target in jobs:
         print(f"{doc.relative_to(root)}:{line} -> {target.relative_to(root)}")
-    if "--dry-run" in argv or not jobs:
+    if args.dry_run or not jobs:
         return 0
-    found = renderer()
+    found = renderer(args.allow_download)
     if found is None:
-        print("NO RENDERER: install Node (npx) or mermaid-cli (mmdc)")
+        print("NO RENDERER: use installed mmdc, authorize --allow-download with npx, or supply SVGs")
         return 2
     command, env = found
     failures = 0
     with tempfile.TemporaryDirectory() as scratch:
-        config = Path(scratch) / "puppeteer.json"
-        config.write_text(json.dumps({"args": ["--no-sandbox"]}), encoding="utf-8")
         theme = Path(scratch) / "mermaid.json"
         theme.write_text(json.dumps(THEME), encoding="utf-8")
         for doc, line, text, target in jobs:
@@ -128,7 +132,7 @@ def main(argv: list[str]) -> int:
             source.write_text(text, encoding="utf-8")
             target.parent.mkdir(parents=True, exist_ok=True)
             result = subprocess.run(
-                [*command, "-i", str(source), "-o", str(target), "-I", target.stem, "-c", str(theme), "-b", "transparent", "-p", str(config)],
+                [*command, "-i", str(source), "-o", str(target), "-I", target.stem, "-c", str(theme), "-b", "transparent"],
                 env=env,
                 capture_output=True,
                 text=True,

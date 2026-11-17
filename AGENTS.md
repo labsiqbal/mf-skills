@@ -9,7 +9,8 @@ for human-facing copy. Preserve imported attribution, source history, relative
 references, and invocation controls. Keep private evaluation logs, credentials,
 runtime configuration, and client artifacts outside this public repository.
 
-Run `python3 scripts/check.py` before delivery. `draft` is for development;
+Before delivery, run `python3 scripts/check.py`,
+`python3 tests/test_portability.py`, and `python3 tests/test_validate_package.py`. `draft` is for development;
 `ready` requires relevant validation; `released` requires a verified tag.
 Tag skills independently as `<skill-name>-v<version>`. Record resolved tag SHA
 in the release receipt, never inside the tagged skill itself.

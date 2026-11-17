@@ -184,7 +184,7 @@ Execution happens only under workflow binding. The implementation executor re-ve
 
 ## Model tier, research budget, and cadence
 
-Use the runtime's normal planning model for inventory, path mapping, and license collection. Use its stronger reasoning tier for cross-repository seam design. Escalate once to the strongest available tier only when a conflict across three or more repositories remains unresolved after one documented attempt; record why and the configured spend limit in `receipts/research-validation.md`. If the runtime has no model tiers, continue sequentially and record the limitation. Clone and analyze only direction-confirmed candidates (normally 3–5); expand the set only when none can supply a required component, with the reason recorded. Run once per initial masterplan and repeat only for affected sources during revise mode — no recurring scan or monitoring.
+Honor the user's model/provider choice and configured budget. Use the current model for inventory, mapping, licenses, and seam design; this workflow requires no tier changes. If an unresolved seam needs capabilities outside the authorized setup, record the conflict and ask for the missing decision rather than switching models or increasing spend automatically. Record actual model/effort when exposed and any limits in `receipts/research-validation.md`. Clone and analyze only direction-confirmed candidates (normally 3–5); expand the set only when none can supply a required component, with the reason recorded. Run once per initial masterplan and repeat only for affected sources during revise mode — no recurring scan or monitoring.
 
 ## Failure and rollback
 

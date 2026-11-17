@@ -1,8 +1,9 @@
 ---
 name: mf-orca
 description: Coordinate project work when the user invokes mf-orca or asks for orchestration. Route phases, delegate bounded work, and verify completion. Support requested hill climbs while keeping the coordinator out of implementation.
+license: MIT
 metadata:
-  version: "1.1.2"
+  version: "1.2.0"
   status: draft
   author: "Iqbal"
 ---
@@ -23,12 +24,14 @@ receive their bounded task, not this role.
 
 Identify current mode before changing anything:
 
-- At workspace root or with an unclear project: read `INDEX.md`, workspace
-  `AGENTS.md`, and applicable workspace standards. Resolve one owning project.
-- Inside a project or with a named project: read its `AGENTS.md`, `MAP.md`,
-  `context.md`, declared queue/ledger, and relevant task artifacts.
-- In a worktree, verify its Git common directory and load workspace rules
-  explicitly. An ancestor repository does not establish project ownership.
+- Resolve the project from the user's request, current directory, and available
+  project documentation. A workspace index can help when one exists.
+- Read applicable instructions and existing task artifacts, such as `AGENTS.md`,
+  `CLAUDE.md`, a README, specs, or the configured tracker. No particular filename
+  or workspace layout is required; use the current request when none exists.
+- In a Git worktree, verify its common directory and applicable instructions.
+  An ancestor repository does not establish project ownership. Non-Git work uses
+  its existing artifact home.
 
 If project ownership, task purpose, or writer ownership is ambiguous, inspect
 read-only and ask one targeted question. Do not guess.
@@ -37,14 +40,13 @@ read-only and ask one targeted question. Do not guess.
 
 Choose the smallest route that fits current evidence:
 
-- settled small change -> `implement`
-- unresolved project decisions -> `grill-with-docs`
-- runnable design question -> `prototype`
-- large or foggy effort -> `wayfinder`, then `to-spec`
-- settled multi-session effort -> `to-spec`, then `to-tickets`
-- ready ticket -> `implement` for one ticket
-- existing diff -> `code-review`
-- session friction or repeated mistake -> `retro`
+- settled small change or ready ticket: bounded implementation and checks
+- unresolved project decisions: clarify consequential choices
+- runnable design question: a scoped prototype
+- large or unclear effort: investigate, then specify the agreed scope
+- settled multi-session effort: use the existing spec and dependency-ready tickets
+- existing diff: review against project rules and the requested behavior
+- repeated friction: inspect its cause and propose a targeted process correction
 
 Reuse existing specs, tickets, decisions, commits, and handoffs. Do not restart
 planning because a new session started.
@@ -58,12 +60,14 @@ panel) runs only when the owner asks for one in the current task; a hill climb,
 high stakes, project history or an earlier council never adds one. For a
 requested council, read [Hill climb](references/hill-climb.md#assign-builder-and-evaluators).
 
-Load the selected skill and relevant references through the active harness.
-Honor explicit-only invocation controls. If a method is unavailable or requires
-user invocation, report that specific gap and offer the smallest valid next
-step; never claim it ran. Ops, research, copy, and design follow the project's
-own methods, not a mandatory coding ladder. Only create spec/tickets when the
-work needs them. Read before recommending setup or installing another skill.
+Use the project's methods and available skills through the active harness;
+no companion skill collection is required. For example, an installed `implement`
+or `code-review` can handle its matching phase. Otherwise put the method and
+acceptance checks directly in the worker brief. Honor explicit-only invocation
+controls and never claim an unavailable skill ran. Ops, research, copy, and
+design follow their own methods. Only create specs or tickets when needed;
+without a tracker, keep a compact checkpoint in the conversation or agreed
+artifact home. Installing tools or skills is a separate action.
 
 ## 3. Coordinator boundary
 
@@ -108,30 +112,22 @@ defaults and resolve available routes through the harness. Record actual model,
 provider and effort when exposed; report unavailable selections without silent
 substitution. Task choices do not change shared defaults or install providers.
 
-When the coordinator has `full-access` and the owner has authorized the task,
-check the coordinator's effective mode and inherited limits before dispatch,
-then give workers effective `full-access` as well. In T3 `delegate_task`, omit
-`runtimeMode` to inherit, or use the inheritance option allowed by the live tool
-contract. Use an explicit `full-access` option only when that contract permits it.
-Verify the worker's effective mode when exposed; report any restriction or
-unverifiable mode instead of silently downgrading to a supervised runtime.
-Honor explicit owner runtime choices over role defaults. Scouts and reviewers
-inherit runtime access while their task briefs remain read-only; runtime access
-does not authorize writes outside their task scope. Authorized dispatch and
-in-scope commands or file changes need no renewed owner approval. Reuse existing
-authority for gated actions; ask only for missing authority or unresolved
-decisions. Harness ceilings and enforced approvals still apply; runtime access
-does not expand project scope or action authority.
+Use the harness's supported permission inheritance and honor explicit user
+runtime choices. This skill requires no particular access-mode name and grants
+no permission escalation. Verify effective worker limits when exposed; report
+restrictions or unknown values that affect acceptance. Scouts and reviewers
+remain read-only by task scope even when their runtime allows writes. Authorized
+in-scope work needs no duplicate approval; ask only for missing authority or
+unresolved decisions. Harness ceilings and enforced approvals still apply.
 
-Use the active harness's native/T3 delegation contract. For asynchronous work,
+Use the active harness's native delegation contract. For asynchronous work,
 write a minimal open-worker checkpoint before dispatch with task, writer, scope,
 checkout, and expected artifact. Dispatch is complete only when the returned
 task ID is saved in that checkpoint as the next action, before any wait or
 further work. Keep that checkpoint for continuation.
-Follow the returned `next` instruction: in T3, end the turn when completion will
-wake it. Resume on that signal, inspect results, and dispatch the next authorized
-step. Use supported bounded waits for in-turn native workers. Never poll task
-status, sleep, or start watchers to keep the coordinator active while waiting.
+Follow the harness's returned continuation instructions. For completion-driven
+background tasks, yield and resume on their signal; for in-turn workers, use the
+supported bounded wait. Avoid status polling or artificial keep-alive loops.
 
 Root is working during routing and result review, and awaiting workers after
 yielding. Report actual harness state rather than promise a particular UI badge.

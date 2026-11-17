@@ -1,5 +1,19 @@
 # Backlog
 
+- [ ] MF-008 - Make all MF skill packages portable for public use.
+  State: Doing. Claim: mf-portability-20261117-c60a632d | active.
+  Session: NUC, T3/Codex; workspace thread c60a632d-c0b61cea2aefe4e0.
+  Checkout: `~/workspace/.worktrees/mf-skills-portability-20261117`, branch
+  `fix/public-skill-portability`; Git common-dir `mf-skills/.git`.
+  Scope: all four packages, public installation/dependency documentation and
+  portability checks; preserve MF-007 and its active import checkout.
+  Base: `d13f80f` / PR #7 (Masterplan import), not yet integrated into main.
+  Claimed: 2026-11-17T03:26:08.736485+00:00
+  Acceptance: no personal runtime/path prerequisites; optional methods have
+  fallbacks; package/regression checks pass; license coverage stated honestly.
+  Delivery: PR against import branch; no merge, release or runtime rollout.
+  Next: audit and patch; private evaluation evidence stays outside this repo.
+
 - [x] MF-007 - Move Masterplan into this monorepo as `mf-masterplan`.
   State: Done (PR delivery). Claim: mf-masterplan-20261117-t3-4d38d4b0 | released.
   Session: NUC (`LINC`), T3/Codex Linc; native session ID unavailable.

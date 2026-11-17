@@ -22,9 +22,9 @@ A six-phase pipeline with three review gates:
 
 1. **Intake** - clarifies an idea, or a given repo/product/workflow, until it locks into a confirmed pitch: what it is, who it's for, and the core action.
 2. **Research** - map first, adapt later. Idea-first scans 3-5 closest products then deep-dives. Artifact-first deep-dives the given source: pin the repo, walk first-party folders one by one into a tree-map, reconstruct logic, then decide absorption (*fork & adapt*, *assemble*, *differentiate*, or *fresh* - all build outcomes). Confirmed open-source that may contribute code is cloned into temporary isolation and statically excavated before any foreign code runs. The one brake: a request resting on a factually false premise stops honestly with an investigation record instead.
-3. **Interrogation** - asks the user product and business questions (multiple choice, with a "you decide" option on every one), challenging vague or contradicted choices with evidence from the research.
+3. **Interrogation** - asks unresolved product and business questions, offering choices the user can delegate and challenging vague or contradicted choices with research evidence.
 4. **Technical research** - compares 2–3 genuinely different stacks and recommends one for the resolved decision authority to ratify; decides data model and architecture; verifies external APIs; and completes code-absorption planning: path-level licenses, source→target mappings, every chimera seam, exhaustive implementation steps, validators, provenance, and rollback boundaries.
-5. **Validate** - a fresh agent with no prior context red-teams the decision set before anything is written; blockers must be cleared.
+5. **Validate** - an independent agent reviews the decision set when available and authorized; otherwise a labeled self-review uses the same rubric. Blockers must be cleared.
 6. **Write** - produces the package section by section, self-reviews, and hands it to the user for approval.
 
 ## The output package
@@ -59,9 +59,14 @@ Invoke `mf-masterplan` (Codex: `$mf-masterplan`). The legacy `/masterplan`
 phrase remains a natural-language trigger; native command names follow the
 installed package. Managed installations update their existing source registry.
 
-The text workflow uses Markdown. `scripts/build-deck.py` builds the offline
-HTML deck with Python's standard library. `scripts/render-diagrams.py` uses
-Mermaid CLI (`mmdc` or `npx`); hand-authored SVG is the documented fallback.
+The text workflow uses Markdown and needs no companion skills or subagents.
+Helpers require Python 3.10+ and its standard library. `scripts/build-deck.py`
+builds the offline HTML deck. `scripts/render-diagrams.py` uses installed Mermaid
+CLI (`mmdc`); pass `--allow-download` only when authorized to fetch the pinned CLI
+through `npx`. Set `PUPPETEER_EXECUTABLE_PATH` for a browser outside PATH. Browser
+sandboxing stays enabled; hand-authored SVG is the documented renderer fallback.
+Without Python or a browser, deliver the text package and report the missing
+checks and deck. Execution still needs the target project's tools and authority.
 
 ## Package layout
 

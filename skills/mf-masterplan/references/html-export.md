@@ -14,12 +14,10 @@ The Markdown stays the single source of truth. The HTML is a build output, regen
 3. **Build.** `python3 <skill>/scripts/build-deck.py <package>`. It renders the source document plus every package document under `references/` (evidence excluded) into one file with a hierarchical table of contents (masterplan sections, then documents by folder), turns local `.md` links into in-deck anchors, inlines each rendered SVG where its Mermaid block sits, and embeds local images. Exit 1 names what is wrong: a missing render, duplicate SVG ids, or an external request. Fix the source and rebuild until it prints `PASS: deck built`.
 4. **Look at it.** Screenshot the deck at desktop and phone width and read the screenshots: every diagram legible without zoom, no clipped nodes, tables readable, nothing overflowing the page.
 
-   ```bash
-   for size in 1280,900 390,844; do
-     google-chrome --headless --no-sandbox --hide-scrollbars --window-size=$size \
-       --screenshot=deck-${size%%,*}.png "file://$PWD/masterplan.html"
-   done
-   ```
+   Use the harness's authorized browser or the user's installed browser. Desktop
+   1280x900 and phone 390x844 are useful example viewports; project requirements
+   take precedence. No specific browser executable, OS, or public server is
+   required. Keep browser sandboxing enabled and report unavailable visual checks.
 
    To see every diagram at once, screenshot a copy with `section.block>:not(figure.diagram){display:none}nav{display:none}.layout{display:block}` appended to its `<style>`. A visual defect goes back to the Mermaid source (split the chart, switch direction), then re-render and rebuild. Record the check in `references/decisions.md` (Phase 6 block).
 

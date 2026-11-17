@@ -29,7 +29,7 @@ Periksa juga kata sifat dan penyebutan media: deskripsi visual tidak membuktikan
 bentuknya video, dan pengumuman tidak otomatis panjang. Detail faktual tambahan
 perlu sumber; alasan editorial boleh ditulis sebagai pendapat yang jelas.
 Tandai ilustrasi sebagai contoh. Menulis tidak memberi izin menerbitkan.
-Gunakan tanda baca biasa tanpa em dash.
+Ikuti tanda baca dan gaya selingkung dalam brief; pertahankan tanda baca kutipan.
 
 Teks yang tampil di slide, halaman, dan antarmuka hanya untuk audiens akhir.
 Pisahkan status pengerjaan, instruksi pembuat, dan kekurangan bahan ke catatan
