@@ -70,8 +70,11 @@ describe('lint behaviour', () => {
   });
 
   it('the CLI exits 1 on errors and 0 on a clean build', () => {
-    const cli = (dir: string) => spawnSync(process.execPath, [path.join(packageRoot, 'dist', 'cli.mjs'), 'lint', dir, '--json'], { encoding: 'utf8' });
-    const build = spawnSync(process.execPath, ['esbuild.config.mjs'], { cwd: packageRoot, encoding: 'utf8' });
+    // A private build inside the package (so packageRoot still resolves): the doctor
+    // test rebuilds dist/ in a parallel worker, and a shared dist/ raced with it.
+    const outdir = path.join(packageRoot, '.cache', 'test-dist', 'lint');
+    const cli = (dir: string) => spawnSync(process.execPath, [path.join(outdir, 'cli.mjs'), 'lint', dir, '--json'], { encoding: 'utf8' });
+    const build = spawnSync(process.execPath, ['esbuild.config.mjs', '--outdir', outdir], { cwd: packageRoot, encoding: 'utf8' });
     expect(build.status).toBe(0);
     const bad = cli(path.join(fixtures, 'OFF001'));
     expect(bad.status).toBe(1);
