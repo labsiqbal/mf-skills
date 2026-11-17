@@ -94,6 +94,55 @@ jobs:
       - run: npm --prefix packages/mf-motion run build
       - run: npm --prefix packages/mf-motion run test:render
 
+  synth-identity:
+    name: synth identity (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/cache@v4
+        with:
+          path: .cache/npm
+          key: npm-${{ runner.os }}-${{ hashFiles('packages/mf-motion/package-lock.json') }}
+      - run: npm --prefix packages/mf-motion ci
+      - name: Render the three fixture grids and record score-raw.wav hashes
+        run: npm --prefix packages/mf-motion run test:unit -- test/unit/sound/synth -t "renders the same grid"
+        env:
+          MFM_SYNTH_HASHES: ${{ github.workspace }}/synth-hashes-${{ matrix.os }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synth-hashes-${{ matrix.os }}
+          path: synth-hashes-${{ matrix.os }}.json
+
+  synth-identity-compare:
+    name: synth identity, all OSes agree
+    needs: synth-identity
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: synth-hashes-*
+          merge-multiple: true
+      - name: Compare hashes
+        run: |
+          node -e '
+            const fs = require("fs");
+            const files = fs.readdirSync(".").filter((f) => /^synth-hashes-.*\.json$/.test(f)).sort();
+            if (files.length !== 3) { console.error("expected 3 hash files, found " + files.length); process.exit(1); }
+            const all = files.map((f) => [f, JSON.parse(fs.readFileSync(f, "utf8"))]);
+            for (const [f, h] of all) console.log(f, JSON.stringify(h));
+            const first = JSON.stringify(all[0][1]);
+            const differ = all.filter(([, h]) => JSON.stringify(h) !== first).map(([f]) => f);
+            if (differ.length > 0) { console.error("score-raw.wav differs across OSes: " + differ.join(", ")); process.exit(1); }
+            console.log("all OSes agree");
+          '
+
   pack-check:
     name: pack check
     runs-on: ubuntu-24.04

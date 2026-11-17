@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 96,
+  "beatsPerBar": 4,
+  "bars": 8,
+  "tailSec": 0.8,
+  "requestedSec": 21,
+  "seed": 7,
+  "genre": "test-basic",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "open",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 10,
+        "frame": 300
+      },
+      "energy": 0.2,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "lift",
+      "from": {
+        "sec": 10,
+        "frame": 300
+      },
+      "to": {
+        "sec": 20,
+        "frame": 600
+      },
+      "energy": 0.5,
+      "riser": false,
+      "drop": false
+    }
+  ],
+  "shots": [],
+  "sfx": [],
+  "spb": 0.625,
+  "lengthSec": 20.8,
+  "frames": 624
+}

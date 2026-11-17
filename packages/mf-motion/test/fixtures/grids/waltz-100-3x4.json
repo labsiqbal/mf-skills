@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 100,
+  "beatsPerBar": 3,
+  "bars": 6,
+  "tailSec": 0.5,
+  "requestedSec": 11,
+  "seed": 42,
+  "genre": "test-basic",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "all",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 10.8,
+        "frame": 324
+      },
+      "energy": 0.65,
+      "riser": false,
+      "drop": false
+    }
+  ],
+  "shots": [],
+  "sfx": [],
+  "spb": 0.6,
+  "lengthSec": 11.3,
+  "frames": 339
+}

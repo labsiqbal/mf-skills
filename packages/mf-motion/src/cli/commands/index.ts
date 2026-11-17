@@ -20,6 +20,7 @@ import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
 import { approveCommand, newCommand, noteCommand, statusCommand } from './project';
 import { schemaCommand } from './schema';
+import { scoreCommand } from './score';
 import { versionCommand } from './version';
 
 export const COMMANDS: readonly AnyCommand[] = [
@@ -46,4 +47,5 @@ export const COMMANDS: readonly AnyCommand[] = [
   cloudDisableCommand,
   filmBriefCommand,
   planCheckCommand,
+  scoreCommand,
 ];

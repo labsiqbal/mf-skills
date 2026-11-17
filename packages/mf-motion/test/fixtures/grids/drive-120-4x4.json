@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid-resolved",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 0.8,
+  "requestedSec": 21,
+  "seed": 1,
+  "genre": "test-basic",
+  "key": null,
+  "track": null,
+  "cues": {},
+  "sections": [
+    {
+      "name": "intro",
+      "from": {
+        "sec": 0,
+        "frame": 0
+      },
+      "to": {
+        "sec": 8,
+        "frame": 240
+      },
+      "energy": 0.35,
+      "riser": false,
+      "drop": false
+    },
+    {
+      "name": "build",
+      "from": {
+        "sec": 8,
+        "frame": 240
+      },
+      "to": {
+        "sec": 12,
+        "frame": 360
+      },
+      "energy": 0.6,
+      "riser": true,
+      "drop": false
+    },
+    {
+      "name": "drop",
+      "from": {
+        "sec": 12,
+        "frame": 360
+      },
+      "to": {
+        "sec": 20,
+        "frame": 600
+      },
+      "energy": 0.85,
+      "riser": false,
+      "drop": true
+    }
+  ],
+  "shots": [],
+  "sfx": [],
+  "spb": 0.5,
+  "lengthSec": 20.8,
+  "frames": 624
+}
