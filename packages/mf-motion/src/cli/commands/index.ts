@@ -13,6 +13,7 @@ import {
   brandShowCommand,
   brandUseCommand,
 } from './brand';
+import { cloudDisableCommand, cloudEnableCommand, cloudListCommand } from './cloud';
 import { doctorCommand } from './doctor';
 import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
@@ -39,4 +40,7 @@ export const COMMANDS: readonly AnyCommand[] = [
   brandListCommand,
   brandUseCommand,
   brandRmCommand,
+  cloudListCommand,
+  cloudEnableCommand,
+  cloudDisableCommand,
 ];
