@@ -2,7 +2,7 @@
 // added here with one import and one entry, so reverting a ticket removes only
 // its own lines.
 import type { AnyCommand } from '../registry';
-import { brandCaptureCommand, brandFontsCommand, brandPickCommand } from './brand';
+import { brandCaptureCommand, brandFontsCommand, brandFromBriefCommand, brandManualCommand, brandPickCommand } from './brand';
 import { doctorCommand } from './doctor';
 import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
@@ -23,4 +23,6 @@ export const COMMANDS: readonly AnyCommand[] = [
   brandCaptureCommand,
   brandFontsCommand,
   brandPickCommand,
+  brandManualCommand,
+  brandFromBriefCommand,
 ];

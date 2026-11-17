@@ -1,10 +1,13 @@
 // Brand commands. Each subcommand is one registry entry; later tickets add
-// pick, manual, from-brief, fonts, show, list, use and rm here.
+// show, list, use and rm here.
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { type FontRoles, captureBrand, pickBrand, substituteOfl } from '../../brand/index';
 import { confine, dataHome, findProjectRoot, homeLayout, lockFile, withLock } from '../../paths/index';
 import { readDoc, writeDoc } from '../../schemas/index';
+import { briefBrand } from '../../brand/fromBrief';
+import { manualBrand } from '../../brand/manual';
+import { MOOD_NAMES } from '../../brand/moods';
 import { MfmError } from '../errors';
 import { defineCommand } from '../registry';
 
@@ -160,5 +163,92 @@ export const brandPickCommand = defineCommand({
       onWarn: (message) => log.warn(message),
     });
     return { data: result };
+  },
+});
+
+const libraryBrandSchema = {
+  type: 'object',
+  required: ['brand'],
+  properties: {
+    brand: {
+      type: 'object',
+      required: ['id', 'status', 'source', 'colors', 'type', 'logo', 'shots', 'dir'],
+      properties: { id: { type: 'string' }, status: { enum: ['draft', 'picked'] }, source: { type: 'object' }, colors: { type: 'object' }, dir: { type: 'string' } },
+    },
+    notice: { type: ['string', 'null'], description: 'the one-time rights notice to show the user' },
+  },
+};
+
+function openProject(cwd: string, flag: string | undefined): string | null {
+  try {
+    return findProjectRoot(cwd, flag);
+  } catch {
+    return null;
+  }
+}
+
+export const brandManualCommand = defineCommand({
+  name: 'brand manual',
+  summary: 'Build a brand from files and colours the user provides; picked with 3-6 shots, else draft.',
+  flags: {
+    name: { type: 'string', required: true, value: '<id>', description: 'brand id, a kebab-case slug' },
+    logo: { type: 'string', required: true, value: '<file>', description: 'logo file (SVG or PNG)' },
+    colors: { type: 'list', required: true, value: '<hex,...>', description: '2-5 brand colours; the lightest or darkest becomes ground' },
+    fonts: { type: 'list', value: '<file,...>', description: 'brand font files (TTF, OTF, WOFF, WOFF2); marked user-asserted' },
+    family: { type: 'string', value: '<bundled-id>', description: 'a bundled font family instead of font files (default inter)' },
+    shots: { type: 'list', value: '<file,...>', description: '3-6 screenshots or product images; without them the brand is a draft' },
+    tagline: { type: 'string', value: '<text>', description: 'the brand tagline' },
+  },
+  dataSchema: libraryBrandSchema,
+  async handler({ flags, cwd, env, global, log }) {
+    const home = dataHome({ flag: global.home, env, cwd });
+    const resolve = (file: string) => path.resolve(cwd, file);
+    const result = await manualBrand({
+      home,
+      id: flags.name,
+      logo: resolve(flags.logo),
+      colors: flags.colors,
+      ...(flags.fonts !== undefined ? { fonts: flags.fonts.map(resolve) } : {}),
+      ...(flags.family !== undefined ? { family: flags.family } : {}),
+      ...(flags.shots !== undefined ? { shots: flags.shots.map(resolve) } : {}),
+      ...(flags.tagline !== undefined ? { tagline: flags.tagline } : {}),
+      project: openProject(cwd, global.project),
+      onWarn: (message) => log.warn(message),
+    });
+    if (result.notice) log.warn(result.notice);
+    return { data: { brand: result.brand, notice: result.notice } };
+  },
+});
+
+export const brandFromBriefCommand = defineCommand({
+  name: 'brand from-brief',
+  summary: 'Generate a draft brand from 1-3 mood words: palette, bundled fonts and a wordmark logo.',
+  flags: {
+    name: { type: 'string', required: true, value: '<id>', description: 'brand id, a kebab-case slug; also the wordmark text' },
+    mood: { type: 'list', required: true, value: '<word,word,word>', description: `1-3 of: ${MOOD_NAMES.join(', ')}` },
+    accent: { type: 'string', value: '<hex>', description: 'use this accent colour instead of the mood accent' },
+    seed: { type: 'integer', value: '<n>', description: 'choose another accent variant (default 0)' },
+  },
+  dataSchema: {
+    ...libraryBrandSchema,
+    properties: {
+      ...libraryBrandSchema.properties,
+      moods: { type: 'array', items: { type: 'string' } },
+      pairs: { type: 'array', description: 'text colour pairs and their contrast ratios' },
+    },
+  },
+  async handler({ flags, cwd, env, global, log }) {
+    const home = dataHome({ flag: global.home, env, cwd });
+    const result = await briefBrand({
+      home,
+      id: flags.name,
+      moods: flags.mood,
+      ...(flags.accent !== undefined ? { accent: flags.accent } : {}),
+      ...(flags.seed !== undefined ? { seed: flags.seed } : {}),
+      project: openProject(cwd, global.project),
+      onWarn: (message) => log.warn(message),
+    });
+    if (result.notice) log.warn(result.notice);
+    return { data: { brand: result.brand, moods: result.moods, pairs: result.pairs, notice: result.notice } };
   },
 });
