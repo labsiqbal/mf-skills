@@ -12,7 +12,11 @@
   Acceptance: no personal runtime/path prerequisites; optional methods have
   fallbacks; package/regression checks pass; license coverage stated honestly.
   Delivery: PR against import branch; no merge, release or runtime rollout.
-  Next: audit and patch; private evaluation evidence stays outside this repo.
+  Checks: four skill validators, package/portability/regression suites and diff
+  checks pass. Standards/Spec reviews clean after aligning question-bank rules.
+  Owner selected MIT; license included in each package.
+  Source: `4dc566f`; all skill versions remain draft pending field validation.
+  Next: publish PR; no runtime installation or release tag claimed.
 
 - [x] MF-007 - Move Masterplan into this monorepo as `mf-masterplan`.
   State: Done (PR delivery). Claim: mf-masterplan-20261117-t3-4d38d4b0 | released.
