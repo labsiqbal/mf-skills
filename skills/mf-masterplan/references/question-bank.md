@@ -1,10 +1,10 @@
 # Question Bank
 
-A **menu, not a script**. Phase 1 uses only what the idea dump leaves unclear; aim for ~12 questions in the phase-3 interrogation. Let every answer eliminate later questions. One question per turn. Multiple choice wherever the answer space allows — mark a recommended option with a one-line reason, and **every question ends with the escape hatch**:
+A **menu, not a script**. Phase 1 uses only what the idea dump leaves unclear; depth follows scope in Phase 3. Follow the [question style](../SKILL.md#question-style-phases-1-and-3): reuse answers, group related questions when useful, and offer delegation only within the authority actually given. An optional answer for a delegable choice:
 
 > **You decide** — make the call and record your rationale in the masterplan.
 
-Choosing it is a real answer: decide yourself, record it as an agent decision with rationale in `references/decisions.md` and the owning masterplan section, and move on.
+Choosing it delegates that choice. Record the decision and rationale in `references/decisions.md` and the owning masterplan section, then continue with unresolved decisions. It does not delegate the rest of the interview.
 
 Rephrase questions naturally in context — these are patterns, not scripts to read verbatim. Questions are challenges, not a survey: where evidence (phase-2 findings, the target itself) contradicts an answer, say so plainly and resolve it into a recorded decision. Never ask the user for a fact you can look up yourself — the user's job is decisions.
 
@@ -53,5 +53,4 @@ Use only what the idea dump leaves unclear; skip anything already answered.
 - **Fate = "internal, just me"** → skip 13, 15–16 become optional, marketing-ish questions never asked; security scales down (masterplan §12 notes it).
 - **False-premise stop (phase 2)** → the pipeline stopped before interrogation; no phase-3 questions exist to ask. If the user corrects course to a different, real premise, restart at phase 1 with the corrected pitch.
 - **Budget = ~0** → phase 4 constrains to free tiers; flag any feature that can't survive that before continuing.
-- **User picked "you decide" ≥3 times in a row** → stop asking; decide the rest yourself, list all agent decisions at GATE C for one batch review.
 - **Answer already present in the idea dump** → never ask it again; record it as confirmed.

@@ -26,7 +26,7 @@ Check descriptive modifiers and medium labels too: a visual description does not
 establish video, and a notice is not necessarily long. Added factual detail needs
 support; editorial reasoning can be stated clearly as opinion.
 Identify illustrations as examples. Writing does not authorize publishing.
-Use ordinary punctuation without em dashes.
+Follow the brief's punctuation and house style; preserve punctuation in quotations.
 
 Visible slide, page, and interface text addresses the end audience. Put production
 status, builder instructions, and missing-material notes in a separate handoff.

@@ -51,10 +51,30 @@ npx skills add labsiqbal/mf-skills --skill mf-design -g
 npx skills add labsiqbal/mf-skills --skill mf-masterplan -g
 ```
 
-Managed installations should update their existing source registry rather than
-overwrite an active package. The standalone
+If your installation uses a source registry, update that registry rather than
+overwrite an active package. No registry is required for ordinary installation.
+The standalone
 [mf-copywriting repository](https://github.com/labsiqbal/mf-copywriting) remains
 available; its history is preserved in this monorepo.
+
+## Requirements and portability
+
+No package requires the author's account, filesystem paths, workspace layout,
+source registry, or model/provider roster. Project instructions and your request
+choose those. Author credits and public repository URLs identify provenance and
+installation sources, not accounts you must use for your work.
+
+| Skill | Required capability | Optional capability and fallback |
+|---|---|---|
+| `mf-copywriting` | Read Markdown and work with the supplied brief | Updates use available retrieval tools or source exports; no named research skill is required. |
+| `mf-design` | Write HTML/CSS/JS or edit the existing app | Companion design skills and embedded preview are optional; open the files in a local browser for selection. Report unavailable automated checks. |
+| `mf-orca` | Dispatch bounded workers through the active harness | Companion methods are optional; put equivalent instructions in worker briefs. Without delegation, provide a coordination plan and report that execution is blocked. |
+| `mf-masterplan` | Read/write Markdown and resolve product decisions | Python 3.10+ runs stdlib helpers. Installed `mmdc` renders diagrams; authorized `--allow-download` enables pinned `npx`. Without rendering, use SVG fallback or report a text-only package. Independent review falls back to labeled self-review. |
+
+Without Node or the Skills CLI, copy one complete `skills/<name>/` folder into
+your harness's documented skill directory. Keep its references, scripts, assets,
+and `LICENSE` together. Restart or reload skill discovery as your harness requires.
+Existing application tools and external trackers retain their own prerequisites.
 
 ## Use
 
@@ -99,8 +119,16 @@ Natural-language activation depends on native discovery and model behavior.
 Skills carry independent versions. A `released` skill has a verified
 `<skill-name>-v<version>` tag.
 
-Supported harnesses currently include Codex/T3 and Claude Code. Other harnesses
-may install packages through their native skill mechanism.
+Packages use Markdown skill instructions with optional Codex UI metadata.
+Invocation and tool availability vary by harness; installation alone does not
+prove workflow quality. Current validation status lives in each `SKILL.md`;
+versions marked `draft` remain under evaluation.
+
+## License
+
+[MIT](LICENSE). Each independently installable package includes its license.
+The imported Masterplan package retains its original contributor notice in
+[its license](skills/mf-masterplan/LICENSE).
 
 ## Credits
 

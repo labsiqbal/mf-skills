@@ -1,10 +1,27 @@
 # Backlog
 
+- [x] MF-008 - Make all MF skill packages portable for public use.
+  State: Done (PR delivery). Claim: mf-portability-20261117-c60a632d | released.
+  Session: development session; checkout and branch are tracked by the repository host.
+  Scope: all four packages, public installation/dependency documentation and
+  portability checks; preserve MF-007 and its active import checkout.
+  Start base: `d13f80f` / PR #7 (Masterplan import), now merged into main.
+  Claimed: 2026-11-17T03:26:08.736485+00:00
+  Acceptance: no personal runtime/path prerequisites; optional methods have
+  fallbacks; package/regression checks pass; license coverage stated honestly.
+  Delivery: https://github.com/labsiqbal/mf-skills/pull/8 (against main).
+  Checks: four skill validators, package/portability/regression suites and diff
+  checks pass. Standards/Spec reviews clean after aligning question-bank rules.
+  Owner selected MIT; license included in each package.
+  Source: `4dc566f`; all skill versions remain draft pending field validation.
+  PR checks: none configured/reported; local checks pass at `a817fa1`.
+  Next: review/merge PR; retain task checkout until integration.
+  No runtime installation, merge, or release tag claimed.
+
 - [x] MF-007 - Move Masterplan into this monorepo as `mf-masterplan`.
   State: Done (PR delivery). Claim: mf-masterplan-20261117-t3-4d38d4b0 | released.
-  Session: NUC (`LINC`), T3/Codex Linc; native session ID unavailable.
-  Checkout: `~/workspace/tools/skills-lab/mf-skills`, branch
-  `chore/import-mf-masterplan`; Git common-dir `.git`.
+  Session: development session; native session ID unavailable.
+  Checkout: repository task branch `chore/import-mf-masterplan`.
   Scope: import full source history, package, tests and license; rename skill;
   migrate registered host bindings and workspace routes.
   Claimed: 2026-11-17T03:17:25.278794+00:00
@@ -16,21 +33,19 @@
   PR awaits integration; next: merge with history retained, then return to main.
   Evidence: package/skill validators and imported regression suite pass; full
   Git history and MIT license retained. Seven existing host links migrated;
-  Codex main/Linc, Hermes, Pi and Grok native discovery returns enabled
-  `mf-masterplan` only; Claude Code binding/source readback passes.
+  Selected native discovery and binding checks pass for the recorded harnesses;
+  other harnesses remain unverified.
 
 - [x] MF-006 - Add `mf-design` for comparing HTML directions and tuning one
   selection. Renamed from owner-authored `design-directions`; source delivered
-  on `feat/mf-design-html-workflow`. Package/skill checks and Codex main/Linc
-  native discovery pass; version 0.1.0 remains draft pending a real design brief.
+  on `feat/mf-design-html-workflow`. Package/skill checks and selected native discovery pass; version 0.1.0 remains draft pending a real design brief.
   Source integration follows PR review; no release tag.
 
 - [x] MF-005 - Add conversational copywriting and persuasive storytelling to
   mf-copywriting 0.3.0, including flexible practical ebook chapters in both
   languages. Package validator, skill validator, reference and installed-link
   checks pass; editorial diff reviewed without an independent writing trial.
-  Execution: LINC, `~/workspace/tools/skills-lab/mf-skills`, branch
-  `feat/copywriting-conversational-storytelling`, base `25dfe0e`.
+  Execution: repository task branch `feat/copywriting-conversational-storytelling`, base `25dfe0e`.
   Existing symlinks read this source. Delivery: PR #5; no release tag.
 
 - [x] MF-001 - Import both skills, publish public monorepo, migrate existing

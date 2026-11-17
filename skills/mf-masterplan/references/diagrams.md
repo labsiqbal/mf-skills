@@ -53,7 +53,7 @@ Record method + outcome in `references/decisions.md` (Phase 6 block). A diagram 
 
 ## Rendering for the deck
 
-Run `python3 <skill>/scripts/render-diagrams.py <package>`. It writes one SVG per block into `references/diagrams/`: masterplan blocks as `s<section>-<n>.svg`, other documents as `<path-slug>-<n>.svg`; `--dry-run` prints the mapping. It uses `mmdc` from PATH, else `npx` with a pinned mermaid-cli, and a system Chrome/Chromium when present. Exit 2 means no renderer exists in this runtime: hand-author the deck SVGs instead (below).
+Run `python3 <skill>/scripts/render-diagrams.py <package>`. It writes one SVG per block into `references/diagrams/`: masterplan blocks as `s<section>-<n>.svg`, other documents as `<path-slug>-<n>.svg`; `--dry-run` prints the mapping. It uses installed `mmdc` from PATH and honors `PUPPETEER_EXECUTABLE_PATH`, otherwise detecting a system Chrome/Chromium. If dependencies may be downloaded under the user/project policy, pass `--allow-download` to enable `npx` with a pinned Mermaid CLI; default execution downloads nothing. Browser sandboxing stays enabled. Exit 2 means no authorized renderer is available: hand-author the deck SVGs instead (below).
 
 ### Hand-authored SVG fallback
 

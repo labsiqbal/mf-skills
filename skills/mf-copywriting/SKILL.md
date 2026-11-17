@@ -8,9 +8,10 @@ description: >-
   menilai tulisan, memakai mf-copywriting, atau memanggil mf-copywriting-update
   untuk memperbarui referensi tren bahasa, gaya komunikasi, dan pola copywriting. Jangan aktif hanya karena bahasa
   percakapan, pembahasan pemasaran, atau permintaan penilaian buku.
+license: MIT
 metadata:
-  version: "0.3.0"
-  status: ready
+  version: "0.4.0"
+  status: draft
   author: "Iqbal"
 ---
 

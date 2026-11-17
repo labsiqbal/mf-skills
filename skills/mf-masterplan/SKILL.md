@@ -7,7 +7,7 @@ description: >
   version of X.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
   status: draft
   author: Hermes
   adapted-by: Iqbal
@@ -64,10 +64,10 @@ Phases 1 and 3 *are* the interrogation: while masterplan is active, run no separ
 
 ### Question style (Phases 1 and 3)
 
-- One question per turn; let each answer steer or eliminate later questions.
+- Reuse supplied answers. Ask only unresolved decisions; use one question or a small related group as the user prefers, letting answers eliminate later questions.
 - Multiple choice where the answer space allows, through the platform's question UI when available, else numbered options.
 - Mark a recommended option with a one-line reason.
-- Every question ends with a **"you decide"** hatch. Choosing it is a real answer: decide, and record it as an agent decision with rationale in `references/decisions.md` and in the owning masterplan section. After "you decide" three times in a row, decide the rest yourself and list every agent decision at Gate C.
+- Offer **"you decide"** for choices the user can delegate. Record each delegated decision and rationale in `references/decisions.md` and the owning section. Delegating one choice does not delegate later decisions; reuse only the authority actually given and list agent decisions at Gate C.
 - Look facts up yourself, from the target or your own knowledge; the user's job is decisions, not research.
 
 ## Phase 1 — Intake + clarification loop
@@ -123,7 +123,7 @@ The user may describe the flows they want in their own words. Grill with evidenc
 
 Make the technical decisions by the values in principle 5, verify them against reality, and challenge the easy default: will it scale, will it stay maintainable?
 
-- **Design the stack twice; the authority decides.** Generate 2-3 genuinely different viable stacks, via parallel subagents where available so they are not one idea reskinned. Without subagents, generate them in deliberately separate passes (a different architecture family per pass) and record the single-designer caveat in `references/decisions.md`. Compare on product-framed axes (quality, scalability, maintainability, ecosystem/lock-in), give one opinionated recommendation, and put the call to the authority with the "you decide" hatch (which returns it to your recommendation). §10 records the one chosen stack; runner-ups and why they lost go to §20. Design-it-twice covers the stack and architecture only.
+- **Design the stack twice; the authority decides.** Generate 2-3 genuinely different viable stacks, via independent subagents when available and authorized so they are not one idea reskinned. Without authorized subagents, generate them in deliberately separate passes (a different architecture family per pass) and record the single-designer caveat in `references/decisions.md`. Compare on product-framed axes (quality, scalability, maintainability, ecosystem/lock-in), give one opinionated recommendation, and put the call to the authority with the "you decide" hatch (which returns it to your recommendation). §10 records the one chosen stack; runner-ups and why they lost go to §20. Design-it-twice covers the stack and architecture only.
 - **Verify external APIs are alive** and their current pricing fits the stated budget.
 - **Build the per-component reference map**: "video timeline → adapt pattern from repo X (MIT)". Check licenses with the evidence order in `references/research-playbook.md`; never guess a license from a name, and never absorb incompatible code (e.g. GPL into a closed-source product). When Phase 2 chose Fork & adapt or Assemble, or any row says `Code — adapt`, complete `references/code-absorption.md` Stages 4-7 on top of Stages 1-3 (they fail closed without the tree-map INDEX and logic analysis): absorption units, source→target maps, chimera seam contracts, exhaustive implementation steps.
 - **Decide the testing strategy**: tests target external behavior at acceptance level, never implementation, so they survive refactors. Map the §4 acceptance criteria and primary flows into §18 and each owning ticket's acceptance criteria and validation commands.
@@ -132,11 +132,11 @@ Present the architecture and data model as Mermaid diagrams where they help revi
 
 ## Phase 5 — Validate (red team)
 
-Before writing, submit the decision set to a **fresh agent with no conversation context**, per `references/validation-rubric.md`. Send the decision summary (pitch, absorption map, features, flows, technical decisions with rationale, reference map, proposed ticket graph). **Never send the conversation transcript**: a validator that reads it inherits its bias. The mandate is to find what is wrong across completeness, consistency, feasibility, optimization, and risk, reported as 🔴 Blocker / 🟡 Improvement / 🟢 Nice-to-have.
+Before writing, when delegation is available and authorized, submit the decision set to a **fresh agent with no conversation context**, per `references/validation-rubric.md`. Send the decision summary (pitch, absorption map, features, flows, technical decisions with rationale, reference map, proposed ticket graph). **Never send the conversation transcript**: a validator that reads it inherits its bias. The mandate is to find what is wrong across completeness, consistency, feasibility, optimization, and risk, reported as 🔴 Blocker / 🟡 Improvement / 🟢 Nice-to-have.
 
 Blockers return to their owning phase. Improvements are decided with the authority. Rejected suggestions go to §20 so the executor won't "fix" deliberate choices. Save the report as package `references/validation-report.md`, present it in the same format, and collect one disposition per finding (fix / decide-with-user / reject→§20).
 
-**GATE B — No masterplan while blockers remain.** Validation runs by default; the authority may skip it for a tiny project. Without subagents, run the rubric yourself in a clean context: weaker, but the gate still exists.
+**GATE B — No masterplan while blockers remain.** Validation runs by default; the authority may skip it for a tiny project. Without authorized subagents, run a separate self-review from the decision summary and label it as non-independent; do not claim a fresh context unless one exists. The same blocker gate applies.
 
 ## Phase 6 — Write the package
 
@@ -159,7 +159,7 @@ masterplan-<slug>/
 2. **Tickets**: decompose §18 per `references/ticket-contract.md` into `references/tickets/INDEX.md` plus one `<ID>.md` per execution unit. §18 lists every catalog ticket once with matching milestone and no unknown IDs; every stable ID maps into canonical task state. Each ticket links enough context to execute without the whole masterplan.
 3. **`STATUS.md`**: canonical mutable status when no project queue exists, otherwise a durable read-only export of it; ticket prose lives only in the contracts.
 4. **UI baseline**: a product with any user-facing UI gets `references/ui-baseline.md` copied verbatim. Headless API / library / CLI: note "No UI — interaction baseline N/A" in §6.
-5. **`masterplan.html`**: per `references/html-export.md`, write `references/deck-theme.css` from §15, render the diagrams with this skill's `scripts/render-diagrams.py <package>` (exit 2 = no renderer: hand-author the deck SVGs per `references/diagrams.md`), build with `scripts/build-deck.py <package>`, and screenshot the result at desktop and phone width.
+5. **`masterplan.html`**: per `references/html-export.md`, write `references/deck-theme.css` from §15, render the diagrams with this skill's `scripts/render-diagrams.py <package>` (uses installed `mmdc`; `--allow-download` enables pinned `npx` only when authorized; exit 2 = no authorized renderer: hand-author the deck SVGs per `references/diagrams.md`), build with `scripts/build-deck.py <package>`, and screenshot the result at desktop and phone width.
 6. **Validate**: run this skill's `python3 scripts/validate-package.py <package>`. It checks required artifacts, placeholders, internal links, Mermaid block structure (closed, non-empty, known type; full syntax is proven by rendering), SVG XML, detail-doc indexing, the ticket schema, catalog, dependency graph and status mapping, and absorption state.
 7. **Self-review**:
    - **Placeholders**: no "TBD", "TODO", or vague requirement anywhere.

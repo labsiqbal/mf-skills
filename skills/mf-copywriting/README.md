@@ -4,7 +4,7 @@ A bilingual copywriting skill for natural, context-aware human-facing content in
 
 Natural does not have to mean casual. Copy can stay clear, professional, or technical without sounding translated, templated, or machine-written.
 
-**Author:** Iqbal · **Version:** 0.3.0 · **Status:** ready
+**Author:** Iqbal. Version and validation status: [`SKILL.md`](SKILL.md).
 
 ## What it covers
 
@@ -22,31 +22,39 @@ Natural does not have to mean casual. Copy can stay clear, professional, or tech
 
 The main entrypoint is [`SKILL.md`](SKILL.md). English guidance lives in [`en/guide.md`](en/guide.md). Indonesian guidance is optional in [`id/panduan.md`](id/panduan.md).
 
-For agent instructions, use `writing-for-agents`. This skill handles human-facing language and editorial quality; it does not replace technical instruction design.
+For agent instructions, use a relevant instruction-writing skill such as
+`writing-for-agents` when available; the bundled instruction-language guides
+remain usable without it. This skill handles human-facing language and editorial
+quality; it does not replace technical instruction design.
 
 ## Install with `npx`
 
 Install globally with the Vercel Skills CLI:
 
 ```bash
-npx skills add labsiqbal/mf-copywriting -g
+npx skills add labsiqbal/mf-skills --skill mf-copywriting -g
 ```
 
 Install for a specific supported agent:
 
 ```bash
-npx skills add labsiqbal/mf-copywriting -g --agent claude-code
+npx skills add labsiqbal/mf-skills --skill mf-copywriting -g --agent claude-code
 ```
 
-The CLI detects the root `SKILL.md` and keeps the language references with it. Check the CLI's supported agent names with `npx skills add --help`.
+Install the complete `mf-copywriting` folder, including both language branches.
+Check the CLI's supported agent names with `npx skills add --help`.
 
 To install from a local clone instead:
 
 ```bash
-git clone https://github.com/labsiqbal/mf-copywriting.git
+git clone https://github.com/labsiqbal/mf-skills.git
 ```
 
-Installation and activation behavior depends on the agent harness. Existing local installations should be checked before replacement.
+Then copy `skills/mf-copywriting/` into your harness's documented skill directory.
+Installation and activation depend on the harness. Check existing installations
+before replacement. No source registry or named research tool is required.
+Online updates need retrieval access or supplied exports; ordinary writing uses
+the brief and bundled references without network access.
 
 ## Use it
 
@@ -116,6 +124,11 @@ The update mode researches language, communication style, and copywriting patter
 
 ## Status
 
-Version 0.3.0 is ready for draft and revision work with final human review.
+Public portability is checked statically; writing quality and automatic
+activation still depend on the task, model, and harness. Review final copy.
 
 Version and author metadata live in [`SKILL.md`](SKILL.md).
+
+## License
+
+MIT - see [LICENSE](LICENSE).
