@@ -574,6 +574,32 @@ def test_source_provenance_url_and_all_or_none_are_enforced() -> None:
         assert "source provenance must be all active or all N/A" in failed.stdout
 
 
+def test_local_repository_provenance_accepts_absolute_file_uri_only() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        base_package(root)
+        content = ticket("MP-001")
+        content = content.replace("N/A — no source repository", "`abcdef1`", 1)
+        content = content.replace("N/A — no source repository", "`src/core.py:run`", 1)
+        content = content.replace("N/A — no absorbed code", "MIT; preserve LICENSE")
+        for source, accepted in (
+            ((root / "source checkout").as_uri(), True),
+            ("file:relative/repo", False),
+            ("file:///", False),
+            ("file://remote/repo", False),
+            ("file:///repo?branch=main", False),
+            ("file:///repo#main", False),
+            ("file:///source checkout", False),
+        ):
+            write(root, "references/tickets/MP-001.md", content.replace(
+                "N/A — no source code absorption", source
+            ))
+            result = run(root)
+            assert result.returncode == (0 if accepted else 1), result.stdout
+            if not accepted:
+                assert "Source repository must be valid" in result.stdout
+
+
 def test_contract_status_is_exact_immutable_declaration() -> None:
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
@@ -857,6 +883,7 @@ if __name__ == "__main__":
     test_invalid_status_data_row_id_fails()
     test_ticket_actionability_requires_structured_values()
     test_source_provenance_url_and_all_or_none_are_enforced()
+    test_local_repository_provenance_accepts_absolute_file_uri_only()
     test_contract_status_is_exact_immutable_declaration()
     test_ticket_doc_links_support_titles_and_reject_directories_and_escapes()
     test_workflow_status_binding_parity_and_external_metadata()

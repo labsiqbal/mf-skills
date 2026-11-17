@@ -57,6 +57,10 @@ duplikat/repost sebagai bukti independen. Jika pertama kali, hasilnya baseline; 
 bisa menyimpulkan pergeseran. Jika data periode lalu tidak ada, simpan hasil pertama
 sebagai baseline tanpa mengarang data periode sebelumnya.
 
+Untuk setiap pola yang dihitung, tulis ID sumber yang cocok sebelum menghitung
+jumlah dan total sampel. Bedakan frasa yang persis berulang dari fungsi yang
+lebih luas; periksa semua item sampel dengan definisi itu.
+
 Pisahkan status: baru teramati, masih teramati, indikasi meningkat/menurun, atau bukti
 belum cukup. Status meningkat/menurun perlu perbandingan yang sebanding, jumlah
 kemunculan serta total sampel, bukan kesan atau total like. Tidak ditemukan bukan

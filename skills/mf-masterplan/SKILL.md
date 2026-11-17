@@ -7,7 +7,7 @@ description: >
   version of X.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
   status: draft
   author: Hermes
   adapted-by: Iqbal

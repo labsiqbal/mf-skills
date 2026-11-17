@@ -54,6 +54,10 @@ sampling method; disclose differences. Deduplicate reposts and repeated comments
 The first run creates a baseline, not evidence of a shift. Missing historical
 data cannot be replaced by invented past frequencies.
 
+For every quantified pattern, list matching source IDs before calculating the
+count and denominator. Distinguish an exact repeated phrase from its broader
+function; check all sampled items against that definition.
+
 Separate newly observed, still observed, indications of growth/decline, and
 insufficient evidence. Growth/decline needs comparable occurrence counts and
 sample denominators, not impressions or likes. Absence in a sample does not mean

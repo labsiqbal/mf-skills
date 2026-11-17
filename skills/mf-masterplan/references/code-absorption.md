@@ -29,7 +29,12 @@ references/absorption/
 
 ## Stage 1 — Acquire safely
 
-Clone only candidates confirmed at the Phase-2 direction check. Use a temporary/sandbox location allowed by workflow binding. Pin the inspected commit:
+For a supplied local checkout, record its absolute hostless file URI and inspected
+commit without cloning or inventing an upstream. Record inspection date and mark
+clone date as not applicable in `repo-lock.json`; rebind the local locator before
+execution on another host. Keep commit, source paths and license evidence.
+
+Clone only remote candidates confirmed at the Phase-2 direction check. Use a temporary/sandbox location allowed by workflow binding. Pin the inspected commit:
 
 ```bash
 git clone --filter=blob:none --no-checkout <url> <temporary-path>
