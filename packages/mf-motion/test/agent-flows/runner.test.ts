@@ -4,7 +4,8 @@
 //
 // Scenario format (a small YAML subset):
 //   name: <flow>
-//   env:                      optional; "{tmp}" becomes a fresh temporary folder
+//   env:                      optional; "{tmp}" becomes a fresh temporary folder,
+//                             "{cache}" the private test cache with the engine and Chrome
 //     KEY: "value"
 //   steps:
 //     - run: mf-motion <command> ... --json
@@ -18,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { COMMANDS } from '../../src/cli/commands/index';
 import { splitLine } from '../unit/skill/skill-files';
+import { testBrowser, testCacheRoot } from '../helpers/engine';
 import { runIn } from '../unit/cli/harness';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -123,16 +125,28 @@ describe('agent-flow scenarios', () => {
       const scenario = parseScenario(readFileSync(path.join(here, file), 'utf8'));
       expect(scenario.name).toBe(file.replace(/\.yaml$/, ''));
       const tmp = mkdtempSync(path.join(tmpdir(), `mfm-flow-${scenario.name}-`));
-      const env = Object.fromEntries(Object.entries(scenario.env).map(([key, value]) => [key, value.replace('{tmp}', tmp)]));
-      for (const [i, step] of scenario.steps.entries()) {
-        const argv = splitLine(step.run);
-        expect(argv[0], `step ${i + 1} runs mf-motion`).toBe('mf-motion');
-        const result = await runIn(argv.slice(1), COMMANDS, { NO_COLOR: '1', PATH: process.env.PATH, ...env });
-        expect(result.code, `step ${i + 1} (${step.run}) exit: ${result.stdout.slice(0, 400)}`).toBe(step.exit);
-        const envelope = JSON.parse(result.stdout) as unknown;
-        const failures = step.expect.map((assertion) => check(envelope, assertion)).filter((message) => message !== null);
-        expect(failures, `step ${i + 1} (${step.run})`).toEqual([]);
+      if (Object.values(scenario.env).some((value) => value.includes('{cache}'))) await testBrowser();
+      const env = Object.fromEntries(Object.entries(scenario.env).map(([key, value]) => [key, value.replace('{tmp}', tmp).replace('{cache}', testCacheRoot())]));
+      // Commands run in process; some modules read process.env, so the scenario's
+      // variables apply there too for the scenario's duration.
+      const saved = Object.fromEntries(Object.keys(env).map((key) => [key, process.env[key]]));
+      Object.assign(process.env, env);
+      try {
+        for (const [i, step] of scenario.steps.entries()) {
+          const argv = splitLine(step.run);
+          expect(argv[0], `step ${i + 1} runs mf-motion`).toBe('mf-motion');
+          const result = await runIn(argv.slice(1), COMMANDS, { NO_COLOR: '1', PATH: process.env.PATH, ...env });
+          expect(result.code, `step ${i + 1} (${step.run}) exit: ${result.stdout.slice(0, 400)}`).toBe(step.exit);
+          const envelope = JSON.parse(result.stdout) as unknown;
+          const failures = step.expect.map((assertion) => check(envelope, assertion)).filter((message) => message !== null);
+          expect(failures, `step ${i + 1} (${step.run})`).toEqual([]);
+        }
+      } finally {
+        for (const [key, value] of Object.entries(saved)) {
+          if (value === undefined) delete process.env[key];
+          else process.env[key] = value;
+        }
       }
-    }, 300_000);
+    }, 900_000);
   }
 });
