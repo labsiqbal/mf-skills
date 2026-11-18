@@ -16,6 +16,11 @@ packages it is built, tested or run with, at the exact versions it pins.
 | source-map-js | 1.2.2 | BSD-3-Clause | used by postcss |
 | acorn | 8.19.0 | MIT | lint: JavaScript parsing |
 | acorn-walk | 8.3.5 | MIT | lint: JavaScript syntax tree walking |
+| wavefile | 11.0.0 | MIT | WAV reading and writing |
+| music-tempo | 1.0.3 | MIT | user-track fallback: tempo and beats |
+| meyda | 5.6.2 | MIT | user-track fallback: RMS and spectra |
+| dct | 0.1.0 | MIT | used by meyda |
+| fftjs | 0.0.4 | MIT | used by meyda |
 
 The BSD and ISC licence texts of the bundled packages follow at the end of this file.
 

@@ -80,6 +80,17 @@ describe('analyseTrack', () => {
     expect(analysis.sections.length).toBeGreaterThanOrEqual(2);
     console.log(`fallback: bpm ${analysis.bpm}, drop ${JSON.stringify(analysis.drop)}, downbeats ${analysis.downbeats.slice(0, 3).join(',')}`);
   }, 300_000);
+
+  // The fallback's meyda features must not move when the meyda pin changes
+  // (MFM-096). The snapshot was recorded on Linux; FFmpeg's decode differs in
+  // the last bits elsewhere, where the tolerance checks above still apply.
+  it.skipIf(process.platform !== 'linux')('through the forced fallback: BPM, beats, downbeats, drop and sections equal the recorded snapshot', async () => {
+    const analysis = await analyseTrack(track, { engine, forceFallback: true, relPath: 'sound/track.wav' });
+    const result = { bpm: analysis.bpm, meter: analysis.meter, beats: analysis.beats, downbeats: analysis.downbeats, drop: analysis.drop, sections: analysis.sections };
+    const snapshot = path.join(packageRoot, 'test', 'render', 'sound', 'track', 'fallback-analysis.json');
+    if (process.env.MFM_TRACK_SNAPSHOT === 'write') writeFileSync(snapshot, `${JSON.stringify(result, null, 2)}\n`);
+    expect(result).toEqual(JSON.parse(readFileSync(snapshot, 'utf8')));
+  }, 300_000);
 });
 
 describe('score --track', () => {

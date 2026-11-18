@@ -192,6 +192,8 @@ jobs:
       - run: npm --prefix packages/mf-motion ci
       - run: npm --prefix packages/mf-motion run build
       - run: npm --prefix packages/mf-motion run pack:check
+      - name: No high-severity advisory in the runtime dependencies
+        run: npm --prefix packages/mf-motion audit --omit=dev --audit-level=high
 
   licence-denylist:
     name: licence denylist
