@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "beatgrid",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "bars": 10,
+  "tailSec": 0.8,
+  "requestedSec": 20,
+  "seed": 1,
+  "genre": "driving-electronic",
+  "key": null,
+  "track": null,
+  "cues": {
+    "reveal": "bar3",
+    "fail": "@reveal+4b",
+    "fix": "bar6",
+    "logo": "bar9"
+  },
+  "sections": [
+    { "name": "calm", "from": "start", "to": "bar3", "energy": 0.3, "riser": false, "drop": false },
+    { "name": "build", "from": "bar3", "to": "bar6", "energy": 0.55, "riser": true, "drop": false },
+    { "name": "drop", "from": "bar6", "to": "bar9", "energy": 0.9, "riser": false, "drop": true },
+    { "name": "end", "from": "bar9", "to": "end", "energy": 0.4, "riser": false, "drop": false }
+  ],
+  "shots": [
+    { "id": "hook", "from": "start", "to": "@reveal", "intent": "Headline types in over the trace timeline", "scene": "title", "motion": "type-on, then hold", "sound": "pad" },
+    { "id": "trace", "from": "@reveal", "to": "@fix", "intent": "The trace tree opens; the failing step turns red", "scene": "screen", "motion": "push in on the failing span", "sound": "build, click on the span" },
+    { "id": "fix", "from": "@fix", "to": "@logo", "intent": "The fix lands and the eval score climbs", "scene": "stat", "motion": "counter rolls to 96.4%", "sound": "drop with hit" },
+    { "id": "end", "from": "@logo", "to": "end", "intent": "Logo and Start tracing", "scene": "end-card", "motion": "mark settles", "sound": "pad tail, shimmer" }
+  ],
+  "sfx": [
+    { "role": "click", "at": "@fail", "event": "failing-span" },
+    { "role": "hit", "at": "@fix", "event": "score" },
+    { "role": "shimmer", "at": "@logo+2b", "event": "logo" }
+  ]
+}

@@ -1,7 +1,8 @@
 // Film commands. Later tickets add themes, theme, build and round here.
+import { checkBeatgrid } from '../../film/beatgrid';
 import { BRIEF_KEYS, INTERVIEW_QUESTIONS, editBrief } from '../../film/brief';
 import { checkPlan } from '../../film/plan';
-import { findProjectRoot } from '../../paths/index';
+import { findProjectRoot, readProject } from '../../paths/index';
 import { CLI_VERSION, defineCommand } from '../registry';
 
 export const filmBriefCommand = defineCommand({
@@ -48,5 +49,31 @@ export const planCheckCommand = defineCommand({
     const result = checkPlan(findProjectRoot(cwd, global.project));
     const next = result.problems.length > 0 ? ['Fix plan/storylines.md and plan/spec.json, then run `mf-motion plan check --json` again.'] : ['mf-motion beatgrid check --json'];
     return { data: result, next };
+  },
+});
+
+export const beatgridCheckCommand = defineCommand({
+  name: 'beatgrid check',
+  summary: 'Validate plan/beatgrid.json (G001-G008), resolve every time spec, write the approval table and show it for approval.',
+  flags: {},
+  dataSchema: {
+    type: 'object',
+    required: ['resolved', 'table', 'lengthSec', 'problems', 'planHash'],
+    properties: {
+      resolved: { type: ['string', 'null'] },
+      table: { type: 'string' },
+      lengthSec: { type: 'number' },
+      problems: { type: 'array', items: { type: 'object', required: ['code', 'at', 'message'] } },
+      planHash: { type: 'string' },
+    },
+  },
+  async handler({ cwd, global, cli, log }) {
+    const project = findProjectRoot(cwd, global.project);
+    const { theme } = readProject(project, cli);
+    const { warnings: _warnings, ...result } = checkBeatgrid(project, { theme, onWarn: (message) => log.warn(message) });
+    if (result.problems.length > 0) {
+      return { data: result, exitCode: 1, next: ['Fix plan/beatgrid.json, then run `mf-motion beatgrid check --json` again.'] };
+    }
+    return { data: result, next: ['Show plan/beatgrid.md to the user, then `mf-motion approve --subject beatgrid --text "<their words>" --json`.'] };
   },
 });

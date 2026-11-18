@@ -27,6 +27,7 @@ import {
   readEvents,
   readProject,
   shellArg,
+  staleApprovals,
   withLock,
   writeJsonAtomic,
 } from '../../paths/index';
@@ -285,9 +286,10 @@ export const statusCommand = defineCommand({
     const root = findProjectRoot(cwd, global.project);
     const project = readProject(root, cli);
     const events = readEvents(root);
-    const phase = projectPhase(events);
+    const stale = staleApprovals(root, events);
+    const phase = projectPhase(events, root);
     return {
-      data: { project, phase, last: events[events.length - 1] ?? null, nextAllowed: nextAllowed(project.type, phase) },
+      data: { project, phase, last: events[events.length - 1] ?? null, nextAllowed: nextAllowed(project.type, phase, stale) },
     };
   },
 });

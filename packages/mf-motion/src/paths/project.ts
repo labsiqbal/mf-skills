@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { MfmError } from '../cli/errors';
 import type { ProjectEvent } from './events';
+import { APPROVAL_SUBJECTS, type ApprovalSubject, PLAN_FILES, planHash } from './plan';
 
 export const PROJECT_SCHEMA_VERSION = 1;
 export const ID_MAX = 48;
@@ -151,8 +152,52 @@ export type Phase =
   | 'gated'
   | 'delivered';
 
-/** Phase from the last phase-bearing event; notes, consents and housekeeping do not move it. */
-export function projectPhase(events: ProjectEvent[]): Phase {
+/** Commands an approval of each subject unlocks; a stale approval locks them again. */
+export const APPROVAL_GATES: Record<ApprovalSubject, readonly string[]> = {
+  beatgrid: ['score', 'film build'],
+  placement: ['moves render'],
+  theme: ['film build'],
+  'extra-round': ['film round'],
+  'library-add': [],
+};
+
+/** The command that shows a subject's plan again for approval. */
+const RECHECK: Partial<Record<ApprovalSubject, string>> = { beatgrid: 'beatgrid check', placement: 'placement check', theme: 'film themes' };
+
+/**
+ * Approved subjects whose plan file no longer has the hash the latest
+ * approval.recorded holds (edited or removed since). Subjects without a single
+ * plan file are never stale here.
+ */
+export function staleApprovals(root: string, events: ProjectEvent[]): ApprovalSubject[] {
+  const stale: ApprovalSubject[] = [];
+  for (const subject of APPROVAL_SUBJECTS) {
+    const relative = PLAN_FILES[subject];
+    if (relative === null) continue;
+    let approved: string | null = null;
+    for (let i = events.length - 1; i >= 0 && approved === null; i -= 1) {
+      const event = events[i];
+      if (event?.type === 'approval.recorded' && event.data.subject === subject) approved = String(event.data.planHash ?? '');
+    }
+    if (approved === null) continue;
+    const file = path.join(root, relative);
+    if (!existsSync(file) || planHash(file) !== approved) stale.push(subject);
+  }
+  return stale;
+}
+
+/**
+ * Phase from the last phase-bearing event; notes, consents and housekeeping do
+ * not move it. With the project root, an approval whose plan file changed since
+ * (staleApprovals) returns an `approved` project to `awaiting-approval`.
+ */
+export function projectPhase(events: ProjectEvent[], root?: string): Phase {
+  const phase = eventPhase(events);
+  if (root !== undefined && phase === 'approved' && staleApprovals(root, events).length > 0) return 'awaiting-approval';
+  return phase;
+}
+
+function eventPhase(events: ProjectEvent[]): Phase {
   for (let i = events.length - 1; i >= 0; i -= 1) {
     switch (events[i]?.type) {
       case 'delivered':
@@ -179,8 +224,21 @@ export function projectPhase(events: ProjectEvent[]): Phase {
   return 'created';
 }
 
-/** Commands that fit the phase, as command names (flags vary by project). */
-export function nextAllowed(type: ProjectType, phase: Phase): string[] {
+/**
+ * Commands that fit the phase, as command names (flags vary by project). Stale
+ * approvals drop the commands they gated and offer the re-check and `approve`.
+ */
+export function nextAllowed(type: ProjectType, phase: Phase, stale: readonly ApprovalSubject[] = []): string[] {
+  const base = phaseCommands(type, phase);
+  if (stale.length === 0) return base;
+  const gated = new Set(stale.flatMap((subject) => APPROVAL_GATES[subject]));
+  const recheck = stale.map((subject) => RECHECK[subject]).filter((command): command is string => command !== undefined);
+  const out = base.filter((command) => !gated.has(command));
+  for (const command of ['approve', ...recheck]) if (!out.includes(command)) out.unshift(command);
+  return out;
+}
+
+function phaseCommands(type: ProjectType, phase: Phase): string[] {
   const film: Record<Phase, string[]> = {
     created: ['film brief', 'brand use', 'brand capture', 'film themes', 'ref fetch', 'plan check', 'beatgrid check', 'note', 'status'],
     'awaiting-approval': ['approve', 'beatgrid check', 'film themes', 'note', 'status'],
