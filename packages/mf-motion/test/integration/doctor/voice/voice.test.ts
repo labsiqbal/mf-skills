@@ -6,7 +6,7 @@
 // Needs Python 3.11-3.13 and, on the first run, the network (about 500 MB).
 // Without such a Python the suite is skipped, unless MFM_VOICE_REQUIRED=1 (CI).
 import { spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readSync, readdirSync, statSync, writeFileSync, writeSync } from 'node:fs';
+import { closeSync, cpSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readSync, readdirSync, statSync, writeFileSync, writeSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +18,7 @@ import { probe } from '../../../../src/media/probe';
 import { testBrowser, testCacheRoot, testEngine } from '../../../helpers/engine';
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-const cli = path.join(packageRoot, 'dist', 'cli.mjs');
+let cli = '';
 const cacheRoot = testCacheRoot();
 const scratch = mkdtempSync(path.join(tmpdir(), 'mfm-voice-probe-'));
 const python = await findPython(scratch, process.env);
@@ -40,9 +40,18 @@ function doctor(...args: string[]) {
 describe.skipIf(!python && !required)('local voice runtime', () => {
   beforeAll(async () => {
     expect(python, 'Python 3.11-3.13 on PATH (MFM_VOICE_REQUIRED=1)').not.toBeNull();
-    expect(spawnSync(process.execPath, ['esbuild.config.mjs'], { cwd: packageRoot, encoding: 'utf8' }).status).toBe(0);
-    const packDir = mkdtempSync(path.join(tmpdir(), 'mfm-pack-'));
-    const pack = spawnSync(process.execPath, [npmCli(), 'pack', '--pack-destination', packDir, '--ignore-scripts'], { cwd: packageRoot, encoding: 'utf8' });
+    const packDir = mkdtempSync(path.join(tmpdir(), 'mfm-doctor-package-'));
+    const dist = path.join(packDir, 'dist');
+    // The scratch CLI and tarball use the same package layout as the installed CLI.
+    const { files } = JSON.parse(readFileSync(path.join(packageRoot, 'package.json'), 'utf8')) as { files: string[] };
+    for (const entry of ['package.json', ...files]) {
+      const source = path.join(packageRoot, entry);
+      if (entry !== 'dist' && existsSync(source)) cpSync(source, path.join(packDir, entry), { recursive: true });
+    }
+    const build = spawnSync(process.execPath, ['esbuild.config.mjs', '--outdir', dist], { cwd: packageRoot, encoding: 'utf8' });
+    expect(build.status, build.stderr).toBe(0);
+    cli = path.join(dist, 'cli.mjs');
+    const pack = spawnSync(process.execPath, [npmCli(), 'pack', '--ignore-scripts'], { cwd: packDir, encoding: 'utf8' });
     expect(pack.status, pack.stderr).toBe(0);
     tarball = path.join(packDir, readdirSync(packDir).find((name) => name.endsWith('.tgz')) ?? '');
     await testBrowser();

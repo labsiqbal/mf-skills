@@ -1,6 +1,6 @@
 // doctor through the built CLI: report, --fix from a local tarball, then --offline.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readdirSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,8 +9,7 @@ import { npmCli } from '../../../src/proc/npmBin';
 import { testBrowser, testCacheRoot } from '../../helpers/engine';
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-// The package's own dist/: doctor reads assets/ and engine/ beside it.
-const cli = path.join(packageRoot, 'dist', 'cli.mjs');
+let cli = '';
 let tarball = '';
 
 function doctor(env: NodeJS.ProcessEnv, ...args: string[]) {
@@ -19,11 +18,19 @@ function doctor(env: NodeJS.ProcessEnv, ...args: string[]) {
 }
 
 beforeAll(async () => {
-  const build = spawnSync(process.execPath, ['esbuild.config.mjs'], { cwd: packageRoot, encoding: 'utf8' });
-  expect(build.status).toBe(0);
-  const packDir = mkdtempSync(path.join(tmpdir(), 'mfm-pack-'));
-  const pack = spawnSync(process.execPath, [npmCli(), 'pack', '--pack-destination', packDir, '--ignore-scripts'], { cwd: packageRoot, encoding: 'utf8' });
-  expect(pack.status).toBe(0);
+  const packDir = mkdtempSync(path.join(tmpdir(), 'mfm-doctor-package-'));
+  const dist = path.join(packDir, 'dist');
+  // The scratch CLI and tarball use the same package layout as the installed CLI.
+  const { files } = JSON.parse(readFileSync(path.join(packageRoot, 'package.json'), 'utf8')) as { files: string[] };
+  for (const entry of ['package.json', ...files]) {
+    const source = path.join(packageRoot, entry);
+    if (entry !== 'dist' && existsSync(source)) cpSync(source, path.join(packDir, entry), { recursive: true });
+  }
+  const build = spawnSync(process.execPath, ['esbuild.config.mjs', '--outdir', dist], { cwd: packageRoot, encoding: 'utf8' });
+  expect(build.status, build.stderr).toBe(0);
+  cli = path.join(dist, 'cli.mjs');
+  const pack = spawnSync(process.execPath, [npmCli(), 'pack', '--ignore-scripts'], { cwd: packDir, encoding: 'utf8' });
+  expect(pack.status, pack.stderr).toBe(0);
   tarball = path.join(packDir, readdirSync(packDir).find((name) => name.endsWith('.tgz')) ?? '');
   await testBrowser();
 }, 900_000);
