@@ -122,6 +122,40 @@ function inContainer(): boolean {
   }
 }
 
+// Sonames whose Debian package does not follow the generic rule of aptPackage().
+const APT_PACKAGES: Array<[RegExp, string]> = [
+  [/^lib(nss3|nssutil3|smime3|softokn3)\.so/, 'libnss3'],
+  [/^lib(nspr4|plc4|plds4)\.so/, 'libnspr4'],
+  [/^lib(glib|gobject|gio|gmodule|gthread)-2\.0\.so/, 'libglib2.0-0'],
+  [/^libatk-1\.0\.so/, 'libatk1.0-0'],
+  [/^libatk-bridge-2\.0\.so/, 'libatk-bridge2.0-0'],
+  [/^libatspi\.so/, 'libatspi2.0-0'],
+];
+
+/**
+ * The Debian package that ships a shared library: a known name, else the
+ * soname lowercased with its major version appended (`libXdamage.so.1` is
+ * `libxdamage1`, `libX11.so.6` is `libx11-6`).
+ */
+export function aptPackage(library: string): string {
+  if (!library.includes('.so')) return library;
+  const known = APT_PACKAGES.find(([pattern]) => pattern.test(library));
+  if (known) return known[1];
+  const match = library.match(/^(lib[^.]+(?:\.\d+)*?)\.so(?:\.(\d+))?/);
+  if (!match?.[1]) return library;
+  const base = match[1].toLowerCase();
+  const major = match[2] ?? '';
+  return /\d$/.test(base) && major ? `${base}-${major}` : `${base}${major}`;
+}
+
+/** The Debian Chrome-libraries line plus any further package the launch named. */
+export function chromeAptLine(base: string, libraries: string[]): string {
+  const have = new Set(base.split(/\s+/));
+  if (have.has('libasound2t64')) have.add('libasound2');
+  const extra = [...new Set(libraries.map(aptPackage))].filter((name) => !have.has(name));
+  return extra.length > 0 ? `${base} ${extra.join(' ')}` : base;
+}
+
 function lastLines(text: string, count: number): string {
   return text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).slice(-count).join(' | ');
 }
@@ -333,6 +367,12 @@ export async function runDoctor(options: DoctorOptions = {}): Promise<DoctorData
   } else if (!engine || !browserPath || !existsSync(browserPath)) {
     add({ id: 'chrome', status: 'missing', found: null, need: 'Chrome headless shell from the engine', fix: 'mf-motion doctor --fix --json' });
   } else {
+    const chromeFix = (libraries: string[]): string => {
+      if (platform !== 'linux') return 'mf-motion doctor --fix --json';
+      const line = fixFor('chrome-libs');
+      if (!line) return 'mf-motion doctor --fix --json';
+      return os === 'debian' ? chromeAptLine(line, libraries) : line;
+    };
     const launch = await chromeLaunch(engine, browserPath);
     if (launch.ok) {
       chromeVersion = launch.version;
@@ -353,7 +393,7 @@ export async function runDoctor(options: DoctorOptions = {}): Promise<DoctorData
         status: 'missing',
         found: libraries.length > 0 ? `missing libraries: ${libraries.join(', ')}` : [launch.error.split('\n')[0], lastLines(diagnosis, 6)].filter(Boolean).join(' | ') || null,
         need: 'Chrome headless shell that launches',
-        fix: libraries.length > 0 || platform === 'linux' ? (fixFor('chrome-libs') ?? 'mf-motion doctor --fix --json') : 'mf-motion doctor --fix --json',
+        fix: chromeFix(libraries),
       });
     }
   }

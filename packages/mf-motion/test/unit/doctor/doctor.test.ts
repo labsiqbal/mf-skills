@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { detectFixOs, fixLine, fixTableSpec } from '../../../src/doctor/fixes';
-import { missingLibraries, parseEncoders, parseFilters, runDoctor } from '../../../src/doctor/index';
+import { aptPackage, chromeAptLine, missingLibraries, parseEncoders, parseFilters, runDoctor } from '../../../src/doctor/index';
 
 const ENCODERS = `Encoders:
  V..... = Video
@@ -47,6 +47,15 @@ describe('ffmpeg capability parsing', () => {
       '\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f)',
     ].join('\n');
     expect(missingLibraries(ldd)).toEqual(['libnss3', 'libasound2']);
+  });
+
+  it('maps unresolved libraries to Debian packages and extends the apt line with them', () => {
+    expect(['libXcomposite.so.1', 'libXdamage.so.1', 'libX11.so.6', 'libpango-1.0.so.0', 'libdbus-1.so.3', 'libgobject-2.0.so.0', 'libatk-1.0.so.0', 'libnspr4.so', 'libgbm1'].map(aptPackage)).toEqual([
+      'libxcomposite1', 'libxdamage1', 'libx11-6', 'libpango-1.0-0', 'libdbus-1-3', 'libglib2.0-0', 'libatk1.0-0', 'libnspr4', 'libgbm1',
+    ]);
+    const base = 'sudo apt-get install -y libnss3 libgbm1 libasound2t64 libatk-bridge2.0-0 libxkbcommon0 libdrm2';
+    expect(chromeAptLine(base, ['libnss3', 'libasound2', 'libXcomposite.so.1', 'libXdamage.so.1'])).toBe(`${base} libxcomposite1 libxdamage1`);
+    expect(chromeAptLine(base, [])).toBe(base);
   });
 });
 
