@@ -9,6 +9,7 @@ import { meta as revenueStep } from './business/revenue-step/meta';
 import { meta as followerMilestone } from './creator/follower-milestone/meta';
 import { meta as rankedBars } from './data/ranked-bars/meta';
 import { meta as terminalRun } from './dev/terminal-run/meta';
+import { meta as inkUnderline } from './paper/ink-underline/meta';
 import { meta as taskCheckoff } from './productivity/task-checkoff/meta';
 import { meta as messageCascade } from './social/message-cascade/meta';
 
@@ -27,4 +28,5 @@ export const LIBRARY_MOVES: LibraryMove[] = [
   move(taskCheckoff, () => import('./productivity/task-checkoff/index')),
   move(revenueStep, () => import('./business/revenue-step/index')),
   move(rankedBars, () => import('./data/ranked-bars/index')),
+  move(inkUnderline, () => import('./paper/ink-underline/index')),
 ];
