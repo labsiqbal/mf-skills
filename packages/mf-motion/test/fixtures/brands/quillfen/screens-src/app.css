@@ -1,0 +1,67 @@
+/* The Quillfen Review reading app: brand tokens only. Desktop 1440x900, phone 390x844. */
+@font-face {
+  font-family: "Noto Serif";
+  src: url("../site/assets/fonts/NotoSerif.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../site/assets/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Noto Naskh Arabic";
+  src: url("../site/assets/fonts/NotoNaskhArabic.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+}
+:root {
+  --ground: #F4EFE6;
+  --surface: #FFFDF8;
+  --ink: #141414;
+  --muted: #6E6658;
+  --accent: #C8382B;
+  --accent2: #1D3A5F;
+  --line: #E2D9C9;
+  --paper: #EBE3D4;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Noto Serif", serif;
+  font-size: 17px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+h1, h2, h3 { font-weight: 700; font-stretch: 87.5%; margin: 0; line-height: 1.1; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.label { font-family: "Inter", sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; color: var(--accent); }
+.top { display: flex; align-items: center; justify-content: space-between; height: 68px; padding: 0 40px; border-bottom: 1px solid var(--line); background: var(--ground); flex: none; }
+.top img { height: 30px; width: auto; display: block; }
+.top nav { display: flex; gap: 26px; }
+.top nav a { font-family: "Inter", sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+.top nav a.on { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); padding-bottom: 6px; }
+.main { flex: 1; min-height: 0; overflow: hidden; }
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 4px; background: var(--accent); color: var(--surface); text-decoration: none; font-family: "Inter", sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.btn.alt { background: var(--accent2); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+.tabs { display: none; }
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .top { height: 58px; padding: 0 20px; }
+  .top img { height: 22px; }
+  .top nav { display: none; }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 10px 6px 22px; flex: none; }
+  .tabs a { display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: "Inter", sans-serif; font-size: 11px; font-weight: 600; color: var(--muted); text-decoration: none; }
+  .tabs a.on { color: var(--accent); }
+  .tabs svg { width: 22px; height: 22px; }
+  .wide-only { display: none !important; }
+}

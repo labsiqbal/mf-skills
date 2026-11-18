@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Quillfen Review - Library</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.lib { padding: 36px 72px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; height: 100%; }
+.lib h1 { font-size: 40px; margin: 6px 0 22px; }
+.going { display: flex; flex-direction: column; gap: 14px; }
+.story { display: grid; grid-template-columns: 64px 1fr 120px; gap: 20px; align-items: center; padding: 18px 20px; }
+.story .thumb { width: 64px; height: 80px; border-radius: 2px; }
+.story h3 { font-size: 21px; }
+.story p { font-size: 14px; margin-top: 4px; }
+.meter { height: 6px; border-radius: 3px; background: var(--paper); position: relative; overflow: hidden; margin-top: 10px; }
+.meter i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; }
+.story .pct { font-family: "Inter", sans-serif; font-weight: 600; font-size: 13px; text-align: right; }
+.marks { padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; align-self: start; }
+.marks h2 { font-size: 22px; }
+.mark { border-left: 3px solid var(--accent2); padding-left: 14px; }
+.mark q { font-size: 16px; line-height: 1.5; }
+.mark p { font-family: "Inter", sans-serif; font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+@media (max-width: 600px) {
+  .lib { grid-template-columns: 1fr; padding: 18px 20px; gap: 18px; }
+  .lib h1 { font-size: 28px; margin: 4px 0 12px; }
+  .story { grid-template-columns: 48px 1fr; gap: 14px; padding: 14px; }
+  .story .thumb { width: 48px; height: 60px; }
+  .story .pct { display: none; }
+  .story h3 { font-size: 17px; }
+  .marks { padding: 16px 18px; }
+}
+</style>
+</head>
+<body>
+<header class="top"><img src="../site/assets/logo.svg" alt="The Quillfen Review" width="569" height="80"><nav><a href="#">This issue</a><a href="#">Features</a><a href="#" class="on">Library</a><a href="#">Audio edition</a></nav></header>
+<main class="main">
+<div class="lib">
+  <div class="going">
+    <p class="label">Library</p>
+    <h1>Pick up where you left off.</h1>
+    <div class="card story"><span class="thumb" style="background:#1D3A5F"></span><div><h3>The cartographers of fog</h3><p class="muted">Issue 31 · 21 min left</p><div class="meter"><i style="width:38%"></i></div></div><span class="pct">38%</span></div><div class="card story"><span class="thumb" style="background:#C8382B"></span><div><h3>Night ferry</h3><p class="muted">Issue 31 · 9 min left</p><div class="meter"><i style="width:78%"></i></div></div><span class="pct">78%</span></div><div class="card story"><span class="thumb" style="background:#6E6658"></span><div><h3>What the archivist kept</h3><p class="muted">Issue 30 · 26 min left</p><div class="meter"><i style="width:7%"></i></div></div><span class="pct">7%</span></div><div class="card story"><span class="thumb" style="background:#B9A98C"></span><div><h3>A short history of the long lunch</h3><p class="muted">Issue 31 · finished</p><div class="meter"><i style="width:100%"></i></div></div><span class="pct">100%</span></div>
+  </div>
+  <div class="card marks wide-only">
+    <h2>Bookmarks</h2>
+    <div class="mark"><q>A map is a promise. The sea has never signed one.</q><p>The cartographers of fog · p. 14</p></div>
+    <div class="mark"><q>Nobody on the ferry admitted to being lost, which is how you could tell.</q><p>Night ferry · p. 3</p></div>
+    <div class="mark"><q>Lunch, properly done, is a small act of disobedience.</q><p>A short history of the long lunch · p. 22</p></div>
+  </div>
+</div>
+</main>
+<nav class="tabs"><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="3" width="12" height="15" rx="1" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M7 7h6M7 10h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Issue</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12M4 8h12M4 12h12M4 16h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Read</a><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3h8v15l-4-3-4 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/></svg>Library</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 12v-2a6 6 0 0 1 12 0v2" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="3" y="11" width="4" height="6" rx="1.5" fill="currentColor"/><rect x="13" y="11" width="4" height="6" rx="1.5" fill="currentColor"/></svg>Listen</a></nav>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{
+  "message-cascade": {
+    "messages": [
+      { "from": "user", "text": "Is the winter issue worth the wait?" },
+      { "from": "brand", "text": "We would say so, but we are biased. It has fog, a ferry and a very long lunch." },
+      { "from": "user", "text": "Can I listen to it on the train?" },
+      { "from": "brand", "text": "Every feature is read in full in the audio edition. The train is optional." }
+    ]
+  },
+  "follower-milestone": {
+    "handle": "@quillfenreview",
+    "from": 48500,
+    "to": 50000,
+    "label": "readers who take their time"
+  },
+  "prompt-to-result": {
+    "prompt": "Find me something under 30 minutes about the sea.",
+    "result": {
+      "title": "The cartographers of fog",
+      "body": "Three surveyors and a coastline that refuses to stay put. Start with part two if you are short of time.",
+      "meta": "Issue 31 · 28 min left in the audio edition"
+    }
+  },
+  "terminal-run": {
+    "command": "quillfen issue export --number 31",
+    "lines": ["cartographers-of-fog ...... 34 min", "long-lunch ................ 22 min", "night-ferry ............... 41 min"],
+    "result": "Issue 31 ready for print, app and audio"
+  },
+  "task-checkoff": {
+    "title": "A slow Sunday",
+    "items": ["Make a large pot of coffee", "Finish Night ferry", "Bookmark the line about maps", "Ignore the phone, mostly"],
+    "progressLabel": "Pages turned"
+  },
+  "revenue-step": {
+    "title": "Subscribers, by season",
+    "unit": "readers",
+    "series": [
+      { "label": "Spring", "value": 31200 },
+      { "label": "Summer", "value": 36800 },
+      { "label": "Autumn", "value": 42500 },
+      { "label": "Winter", "value": 50100 }
+    ],
+    "delta": "+18%"
+  },
+  "ranked-bars": {
+    "title": "Most finished stories this year",
+    "unit": "readers",
+    "items": [
+      { "label": "Night ferry", "value": 18400 },
+      { "label": "The cartographers of fog", "value": 16900 },
+      { "label": "What the archivist kept", "value": 12300 },
+      { "label": "A short history of the long lunch", "value": 11700 },
+      { "label": "The last lighthouse keeper", "value": 9800 }
+    ]
+  },
+  "ink-underline": {
+    "text": "Some stories deserve the whole afternoon",
+    "keyword": "afternoon",
+    "shape": "underline"
+  },
+  "title-lockup": {
+    "headline": "Slow stories for fast times.",
+    "subline": "Subscribe"
+  },
+  "three-step-flow": {
+    "steps": [
+      { "title": "Subscribe", "body": "Four printed issues a year, posted in a plain brown sleeve." },
+      { "title": "Read anywhere", "body": "The app keeps your place, so the story waits for you." },
+      { "title": "Listen in", "body": "Every feature, read in full, for the long walk home." }
+    ],
+    "highlight": 1
+  }
+}

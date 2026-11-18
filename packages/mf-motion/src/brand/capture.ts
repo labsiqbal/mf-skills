@@ -4,6 +4,7 @@
 // brand.md whose captured text is fenced as data.
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { parse } from 'parse5';
 import { MfmError } from '../cli/errors';
 import type { Warning } from '../cli/output';
 import { type Engine, capture, ensureBrowser, ensureEngine, readOk } from '../engine/index';
@@ -93,6 +94,50 @@ function visibleLines(captureDir: string): string[] {
   return readFileSync(file, 'utf8')
     .split(/\r?\n/)
     .map((line) => line.replace(/^\s*\[[a-z0-9-]+\]\s*/i, ''));
+}
+
+interface HtmlNode {
+  nodeName: string;
+  value?: string;
+  attrs?: Array<{ name: string; value: string }>;
+  childNodes?: HtmlNode[];
+  content?: HtmlNode;
+}
+
+const NO_TEXT = new Set(['script', 'style', 'template', 'noscript', 'svg']);
+
+/**
+ * The text of every element that holds text itself and reads right to left:
+ * its own `dir` is `rtl`, or the nearest ancestor with a `dir` says so.
+ * Whitespace collapses as in brand.md, so lines compare by plainText().
+ */
+export function rtlTexts(html: string): Set<string> {
+  const found = new Set<string>();
+  const textContent = (node: HtmlNode): string =>
+    node.nodeName === '#text' ? (node.value ?? '') : NO_TEXT.has(node.nodeName) ? '' : (node.childNodes ?? []).map(textContent).join('');
+  const visit = (node: HtmlNode, rtl: boolean) => {
+    if (NO_TEXT.has(node.nodeName)) return;
+    const dir = node.attrs?.find((attr) => attr.name === 'dir')?.value.trim().toLowerCase();
+    const here = dir === 'rtl' ? true : dir === 'ltr' ? false : rtl;
+    const children = node.childNodes ?? [];
+    if (here && children.some((child) => child.nodeName === '#text' && (child.value ?? '').trim() !== '')) {
+      const text = plainText(textContent(node));
+      if (text) {
+        // One block per element: inline children belong to this line.
+        found.add(text);
+        return;
+      }
+    }
+    for (const child of children) visit(child, here);
+  };
+  visit(parse(html) as unknown as HtmlNode, false);
+  return found;
+}
+
+/** A brand.md text line, marked `[dir="rtl"]` when the page shows it right to left. */
+export function directedLine(line: string, rtl: ReadonlySet<string>): string {
+  const text = fenceSafe(truncate(plainText(line), TEXT_LIMITS.line));
+  return rtl.has(plainText(line)) ? `[dir="rtl"] ${text}` : text;
 }
 
 function brandName(title: string | null, fallback: string, counter: { dropped: number }): string {
@@ -308,9 +353,11 @@ export async function captureBrand(request: CaptureRequest): Promise<CaptureResu
         rights: { noticeShownAt: notice.shownAt, oflSubstituted: false },
       });
 
+      const pageHtml = path.join(captureDir, 'extracted', 'page.html');
+      const rtl = existsSync(pageHtml) ? rtlTexts(readFileSync(pageHtml, 'utf8')) : new Set<string>();
       const fenced = [...(headline ? [headline] : []), ...headingLines.filter((line) => line !== headline), ...sanitized.kept]
         .filter((line, index, all) => all.indexOf(line) === index)
-        .map((line) => fenceSafe(truncate(plainText(line), TEXT_LIMITS.line)));
+        .map((line) => directedLine(line, rtl));
       const md = [
         `# Brand ${id}`,
         '',

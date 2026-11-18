@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "kind": "brand",
+  "id": "quillfen",
+  "name": "The Quillfen Review",
+  "tagline": "Long reads, printed quarterly, read anywhere.",
+  "status": "picked",
+  "source": {
+    "mode": "capture-local",
+    "url": null,
+    "capturedAt": null,
+    "engine": "0.9.61"
+  },
+  "colors": {
+    "ground": "#F4EFE6",
+    "ink": "#141414",
+    "accent": "#C8382B",
+    "accent2": "#1D3A5F",
+    "surface": "#FFFDF8",
+    "muted": "#6E6658",
+    "palette": [
+      "#F4EFE6",
+      "#141414",
+      "#C8382B",
+      "#1D3A5F",
+      "#6E6658"
+    ],
+    "evidence": {
+      "ground": {
+        "method": "area",
+        "share": 0.963,
+        "contrast": null
+      },
+      "ink": {
+        "method": "text-use",
+        "share": 0.491,
+        "contrast": 16.085
+      },
+      "accent": {
+        "method": "button-fill",
+        "share": null,
+        "contrast": 4.52
+      },
+      "surface": {
+        "method": "area",
+        "share": 0.818,
+        "contrast": null
+      },
+      "muted": {
+        "method": "text-use",
+        "share": 0.473,
+        "contrast": 4.95
+      }
+    }
+  },
+  "type": {
+    "display": {
+      "family": "Noto Serif",
+      "weight": 700,
+      "sizePx": 76,
+      "letterSpacingEm": -0.01,
+      "lineHeight": 1.08,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSerif.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSerif.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "noto-serif"
+    },
+    "heading": {
+      "family": "Noto Serif",
+      "weight": 700,
+      "sizePx": 44,
+      "letterSpacingEm": null,
+      "lineHeight": 1.08,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSerif.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSerif.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "noto-serif"
+    },
+    "body": {
+      "family": "Noto Serif",
+      "weight": 400,
+      "sizePx": 23,
+      "letterSpacingEm": null,
+      "lineHeight": 1.6,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSerif.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSerif.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "noto-serif"
+    },
+    "mono": null
+  },
+  "logo": {
+    "path": "logo.svg",
+    "kind": "svg",
+    "w": 569,
+    "h": 80
+  },
+  "mark": {
+    "path": "mark.svg",
+    "kind": "svg",
+    "w": 80,
+    "h": 80
+  },
+  "shots": [
+    {
+      "path": "shots/shot-1.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s2.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-2.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s1.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-3.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s3.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-4.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s4.png",
+      "note": null
+    }
+  ],
+  "candidates": {
+    "sheet": null,
+    "logoSheet": null,
+    "logos": [],
+    "shots": []
+  },
+  "radiusPx": null,
+  "buttons": [],
+  "copy": {
+    "headline": "Slow stories for fast times.",
+    "cta": "Subscribe",
+    "domain": null
+  },
+  "rights": {
+    "noticeShownAt": null,
+    "oflSubstituted": false
+  }
+}

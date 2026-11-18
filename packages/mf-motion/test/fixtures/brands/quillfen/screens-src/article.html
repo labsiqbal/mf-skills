@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Quillfen Review - Article</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.reader { display: grid; grid-template-columns: 1fr 680px 1fr; padding: 44px 0; height: 100%; }
+.col { grid-column: 2; display: flex; flex-direction: column; gap: 18px; }
+.col h1 { font-size: 48px; line-height: 1.04; }
+.col .dek { font-size: 21px; color: var(--muted); }
+.col .by { font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.col p.body { font-size: 18px; line-height: 1.7; }
+.drop::first-letter { float: left; font-weight: 700; font-stretch: 87.5%; font-size: 84px; line-height: 0.82; padding: 8px 10px 0 0; color: var(--accent); }
+.pull { margin: 6px 0; padding: 18px 0 18px 26px; border-left: 3px solid var(--accent); font-weight: 700; font-stretch: 87.5%; font-size: 28px; line-height: 1.25; color: var(--accent2); }
+.side { grid-column: 3; padding: 0 40px; display: flex; flex-direction: column; gap: 10px; font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted); }
+.side .bar { width: 4px; height: 160px; background: var(--line); border-radius: 2px; position: relative; }
+.side .bar i { position: absolute; left: 0; top: 0; width: 4px; height: 38%; background: var(--accent); border-radius: 2px; }
+@media (max-width: 600px) {
+  .reader { grid-template-columns: 1fr; padding: 18px 22px; }
+  .col { grid-column: 1; gap: 14px; }
+  .col h1 { font-size: 32px; }
+  .col .dek { font-size: 17px; }
+  .col p.body { font-size: 16px; }
+  .drop::first-letter { font-size: 64px; }
+  .pull { font-size: 21px; padding: 12px 0 12px 18px; }
+  .side { display: none; }
+}
+</style>
+</head>
+<body>
+<header class="top"><img src="../site/assets/logo.svg" alt="The Quillfen Review" width="569" height="80"><nav><a href="#">This issue</a><a href="#" class="on">Features</a><a href="#">Library</a><a href="#">Audio edition</a></nav></header>
+<main class="main">
+<div class="reader">
+  <article class="col">
+    <p class="label">Feature · Issue 31</p>
+    <h1>The cartographers of fog</h1>
+    <p class="dek">Three surveyors, one coastline that refuses to stay put, and the maps they keep redrawing anyway.</p>
+    <p class="by">By our coastal correspondent · 34 min</p>
+    <p class="body drop">On the morning the fog came in for good, the survey team had already measured the bay four times. Each time the shore had moved: not far, a stride or two, but enough to make a liar of every map in the harbour office.</p>
+    <blockquote class="pull">“A map is a promise. The sea has never signed one.”</blockquote>
+    <p class="body">The eldest of the three keeps the old sheets in a drawer that sticks. She does not throw them away. She calls them drafts, as if the coast were still deciding what it wanted to be.</p>
+    <p class="body">The harbour master would prefer a final version. He has asked for one every spring for eleven years, and every spring he receives a polite letter explaining, at some length, why the sea has other plans.</p>
+  </article>
+  <aside class="side wide-only"><span>38% read</span><span class="bar"><i></i></span><span>21 min left</span></aside>
+</div>
+</main>
+<nav class="tabs"><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="3" width="12" height="15" rx="1" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M7 7h6M7 10h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Issue</a><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12M4 8h12M4 12h12M4 16h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Read</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3h8v15l-4-3-4 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/></svg>Library</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 12v-2a6 6 0 0 1 12 0v2" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="3" y="11" width="4" height="6" rx="1.5" fill="currentColor"/><rect x="13" y="11" width="4" height="6" rx="1.5" fill="currentColor"/></svg>Listen</a></nav>
+</body>
+</html>

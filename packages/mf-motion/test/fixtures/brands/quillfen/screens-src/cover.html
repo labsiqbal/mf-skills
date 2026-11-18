@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Quillfen Review - Issue</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.issue { display: grid; grid-template-columns: 520px 1fr; gap: 56px; padding: 40px 72px; height: 100%; }
+.cover { background: var(--accent2); color: var(--surface); border-radius: 4px; padding: 36px 34px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 18px 40px rgba(20, 20, 20, 0.18); }
+.cover .mast { font-weight: 700; font-stretch: 87.5%; font-size: 30px; letter-spacing: 0.01em; }
+.cover .no { font-family: "Inter", sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; margin-top: 6px; }
+.cover .art { flex: 1; position: relative; margin: 24px -34px; }
+.cover .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cover h1 { font-size: 46px; line-height: 1.04; }
+.cover .by { margin-top: 12px; font-size: 16px; opacity: 0.85; }
+.contents { display: flex; flex-direction: column; gap: 22px; padding-top: 8px; }
+.contents h2 { font-size: 34px; }
+.toc { display: flex; flex-direction: column; }
+.toc .item { display: grid; grid-template-columns: 44px 1fr 90px; gap: 18px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.toc .n { font-family: "Inter", sans-serif; font-weight: 600; font-size: 13px; color: var(--accent); }
+.toc h3 { font-size: 22px; }
+.toc p { font-size: 15px; margin-top: 4px; }
+.toc .min { font-family: "Inter", sans-serif; font-size: 12px; color: var(--muted); text-align: right; }
+@media (max-width: 600px) {
+  .issue { grid-template-columns: 1fr; padding: 18px 20px; gap: 18px; }
+  .cover { height: 470px; padding: 26px 24px; }
+  .cover .art { margin: 16px -24px; }
+  .cover h1 { font-size: 36px; }
+  .contents h2 { font-size: 24px; }
+  .toc .item { grid-template-columns: 30px 1fr; padding: 12px 0; }
+  .toc .min, .toc p { display: none; }
+  .toc h3 { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+<header class="top"><img src="../site/assets/logo.svg" alt="The Quillfen Review" width="569" height="80"><nav><a href="#" class="on">This issue</a><a href="#">Features</a><a href="#">Library</a><a href="#">Audio edition</a></nav></header>
+<main class="main">
+<div class="issue">
+  <div class="cover">
+    <div class="mast">The Quillfen Review</div>
+    <div class="no">Issue 31 · Winter 2026 · £14</div>
+    <div class="art"><svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 210 Q100 160 200 196 T400 180 V300 H0Z" fill="#F4EFE6" opacity="0.16"/><path d="M0 240 Q120 200 230 232 T400 222 V300 H0Z" fill="#F4EFE6" opacity="0.24"/><path d="M0 270 Q140 240 260 262 T400 256 V300 H0Z" fill="#F4EFE6" opacity="0.34"/><path d="M60 196 L120 120 L150 150 L210 70 L280 170 L320 140 L380 200" stroke="#F4EFE6" stroke-width="2" fill="none" opacity="0.7"/><circle cx="300" cy="64" r="26" fill="#C8382B"/><path d="M40 60h70M40 72h46M40 84h58" stroke="#F4EFE6" stroke-width="1.5" opacity="0.5"/></svg></div>
+    <h1>The cartographers of fog</h1>
+    <p class="by">and other slow stories</p>
+  </div>
+  <div class="contents">
+    <p class="label">In this issue</p>
+    <h2>Five stories, none of them in a hurry.</h2>
+    <div class="toc"><div class="item"><span class="n">01</span><div><h3>The cartographers of fog</h3><p class="muted">Three surveyors, one coastline that refuses to stay put.</p></div><span class="min">34 min</span></div><div class="item"><span class="n">02</span><div><h3>A short history of the long lunch</h3><p class="muted">On the meal that ate the afternoon, and why we miss it.</p></div><span class="min">22 min</span></div><div class="item"><span class="n">03</span><div><h3>Night ferry</h3><p class="muted">Fiction. Four strangers, one crossing, no phone signal.</p></div><span class="min">41 min</span></div><div class="item"><span class="n">04</span><div><h3>What the archivist kept</h3><p class="muted">A library of letters nobody was meant to read.</p></div><span class="min">28 min</span></div><div class="item"><span class="n">05</span><div><h3 dir="rtl" lang="ar" style="font-family:&quot;Noto Naskh Arabic&quot;,serif;text-align:left">قصص هادئة لزمن سريع</h3><p class="muted">Our Arabic edition, introduced by its translator.</p></div><span class="min">12 min</span></div></div>
+    <div class="wide-only" style="display:flex;gap:12px;margin-top:6px"><a class="btn" href="#">Start reading</a><a class="btn alt" href="#">Listen</a></div>
+  </div>
+</div>
+</main>
+<nav class="tabs"><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="3" width="12" height="15" rx="1" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M7 7h6M7 10h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Issue</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12M4 8h12M4 12h12M4 16h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Read</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3h8v15l-4-3-4 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/></svg>Library</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 12v-2a6 6 0 0 1 12 0v2" stroke="currentColor" stroke-width="1.8" fill="none"/><rect x="3" y="11" width="4" height="6" rx="1.5" fill="currentColor"/><rect x="13" y="11" width="4" height="6" rx="1.5" fill="currentColor"/></svg>Listen</a></nav>
+</body>
+</html>

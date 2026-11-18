@@ -1,0 +1,4 @@
+{
+  "fonts": { "noto-serif": "NotoSerif.woff2", "inter": "Inter.woff2", "noto-naskh-arabic": "NotoNaskhArabic.woff2" },
+  "pick": { "logo": "l1", "mark": "l2", "shots": ["s2", "s1", "s3", "s4"] }
+}

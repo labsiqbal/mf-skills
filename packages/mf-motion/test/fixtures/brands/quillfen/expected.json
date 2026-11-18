@@ -1,0 +1,24 @@
+{
+  "id": "quillfen",
+  "colors": {
+    "ground": "#F4EFE6",
+    "surface": "#FFFDF8",
+    "ink": "#141414",
+    "muted": "#6E6658",
+    "accent": "#C8382B",
+    "accent2": "#1D3A5F"
+  },
+  "type": {
+    "display": { "family": "Noto Serif", "weight": 700, "files": [{ "path": "capture/assets/fonts/NotoSerif.woff2", "licenceHint": "ofl" }] },
+    "heading": { "family": "Noto Serif", "weight": 700, "files": [{ "path": "capture/assets/fonts/NotoSerif.woff2", "licenceHint": "ofl" }] },
+    "body": { "family": "Noto Serif", "weight": 400, "files": [{ "path": "capture/assets/fonts/NotoSerif.woff2", "licenceHint": "ofl" }] },
+    "mono": null
+  },
+  "candidates": { "logos": 2, "shots": 7 },
+  "copy": {
+    "headline": "Slow stories for fast times.",
+    "tagline": "Long reads, printed quarterly, read anywhere.",
+    "cta": "Subscribe"
+  },
+  "rtl": ["قصص هادئة لزمن سريع"]
+}
