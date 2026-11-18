@@ -118,7 +118,8 @@ describe('move contract', () => {
         for (const lineReport of report.lines) {
           // Lines enter (nothing readable on frame 0); first ink by overlay.firstInkSec is measured on the render (MFM-042 --gate).
           expect(lineReport.inSec, `${subject.meta.id} ${lineReport.elementId}`).toBeGreaterThan(0);
-          expect(lineReport.outSec).toBeLessThanOrEqual(result.durationSec - NUMBERS['overlay.exitWindowSec'].min);
+          // Overlays end empty: their lines leave before the exit window; b-roll lines may stay to the end.
+          if (mode !== 'full') expect(lineReport.outSec).toBeLessThanOrEqual(result.durationSec - NUMBERS['overlay.exitWindowSec'].min);
         }
       }
     }
