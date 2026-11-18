@@ -1,0 +1,32 @@
+# references/quality.md followed literally on a fixture round: build the
+# packet; an agent without vision gates with --no-vision (PASS-MEASURED); a
+# fresh judge's scores give PASS; the building session's own scores PASS-SELF.
+name: quality
+env:
+  MF_MOTION_HOME: "{tmp}/home"
+copy:
+  - test/fixtures/projects/film -> film
+  - test/agent-flows/fixtures/quality/round -> film/rounds/1
+steps:
+  - run: mf-motion packet --project {tmp}/film --json
+    exit: 0
+    save: packet
+    expect:
+      - data.files.length == 6
+      - data.dropped == []
+  - run: mf-motion gate --project {tmp}/film --no-vision --json
+    exit: 0
+    expect:
+      - data.level == "PASS-MEASURED"
+  - write: film/rounds/1/scores.json
+    from: test/agent-flows/fixtures/quality/scores-fresh.json
+  - run: mf-motion gate --project {tmp}/film --json
+    exit: 0
+    expect:
+      - data.level == "PASS"
+  - write: film/rounds/1/scores.json
+    from: test/agent-flows/fixtures/quality/scores-self.json
+  - run: mf-motion gate --project {tmp}/film --json
+    exit: 0
+    expect:
+      - data.level == "PASS-SELF"

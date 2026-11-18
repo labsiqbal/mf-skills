@@ -46,7 +46,7 @@ You direct; the `mf-motion` CLI builds, renders, measures and gates every film, 
 | to capture, pick, fix or reuse a brand | brand | [references/brand.md](references/brand.md) |
 | music, sound effects or a voiceover | sound | `references/sound.md` |
 | a look taken from a reference video or image | reference style | `references/reference-style.md` |
-| to know whether a render is good enough, or a verdict explained | quality | `references/quality.md` |
+| to know whether a render is good enough, or a verdict explained | quality | [references/quality.md](references/quality.md) |
 | a cloud voice, avatar or background removal | cloud | `references/cloud.md` |
 | help with an error code | troubleshooting | [references/troubleshooting.md](references/troubleshooting.md) |
 
