@@ -105,7 +105,7 @@ describe('move contract', () => {
     }
   }, 300_000);
 
-  it('rules 3 and 5: the maxChars W string fits at every aspect, and every text line enters after the first ink and leaves before the end', async () => {
+  it('rules 3 and 5: the maxChars W string fits at every aspect, and every text line enters and leaves before the exit window', async () => {
     for (const subject of subjects()) {
       const longest = maxCharsVars(subject.meta);
       for (const aspect of subject.meta.aspects) {
@@ -115,7 +115,8 @@ describe('move contract', () => {
         expect(report.hits, `${subject.meta.id} ${aspect}`).toEqual([]);
         expect(report.lines.length).toBeGreaterThan(0);
         for (const lineReport of report.lines) {
-          expect(lineReport.inSec, `${subject.meta.id} ${lineReport.elementId}`).toBeGreaterThanOrEqual(NUMBERS['overlay.firstInkSec']);
+          // Lines enter (nothing readable on frame 0); first ink by overlay.firstInkSec is measured on the render (MFM-042 --gate).
+          expect(lineReport.inSec, `${subject.meta.id} ${lineReport.elementId}`).toBeGreaterThan(0);
           expect(lineReport.outSec).toBeLessThanOrEqual(result.durationSec - NUMBERS['overlay.exitWindowSec'].min);
         }
       }
@@ -210,12 +211,12 @@ describe('move info and move render', () => {
     expect(data.examples.quillfen).toEqual({ title: 'Essays', value: 12 });
   });
 
-  it('move render --aspect 9:16 --mode alpha writes a linted build/index.html with the vars inlined', async () => {
+  // Rendering and encoding (MFM-042) run in the serial render project: test/render/moves/encode.
+  it('the move render build path writes a linted build/index.html with the vars inlined', async () => {
     const out = temp('render');
-    const result = await runIn(['move', 'render', 'fixture-card', '--brand', 'demo:mossmallow', '--aspect', '9:16', '--mode', 'alpha', '--vars', '{"value": 64}', '--out', out, '--json'], COMMANDS, env());
-    expect(result.code, result.stdout).toBe(0);
-    const { data } = JSON.parse(result.stdout);
-    expect(data).toMatchObject({ master: null, outputs: [], keyColor: null, verdict: null, build: path.join(out, 'build') });
+    const result = await buildMove({ id: 'fixture-card', brand: 'demo:mossmallow', aspect: '9:16', mode: 'alpha', vars: { value: 64 }, out, home, engine });
+    expect(result.build).toBe(path.join(out, 'build'));
+    expect(result.keyColor).toBeNull();
     const page = readFileSync(path.join(out, 'build', 'index.html'), 'utf8');
     const inline = page.slice(page.indexOf(VARS_TAG.open) + VARS_TAG.open.length, page.indexOf(VARS_TAG.close, page.indexOf(VARS_TAG.open)));
     const vars = JSON.parse(inline);
@@ -228,10 +229,9 @@ describe('move info and move render', () => {
     expect(JSON.parse(lint.stdout).data.errors).toEqual([]);
   }, 120_000);
 
-  it('key mode reports the key colour; an undeclared aspect fails ASPECT_UNSUPPORTED', async () => {
-    const result = await runIn(['move', 'render', 'fixture-card', '--brand', 'demo:quillfen', '--aspect', '16:9', '--mode', 'key', '--out', temp('key'), '--json'], COMMANDS, env());
-    expect(result.code, result.stdout).toBe(0);
-    expect(JSON.parse(result.stdout).data.keyColor).toMatch(/^#[0-9A-F]{6}$/);
+  it('key mode has a key colour; an undeclared aspect fails ASPECT_UNSUPPORTED', async () => {
+    const key = await buildMove({ id: 'fixture-card', brand: 'demo:quillfen', aspect: '16:9', mode: 'key', out: temp('key'), home, engine });
+    expect(key.keyColor).toMatch(/^#[0-9A-F]{6}$/);
     const square = await runIn(['move', 'render', 'fixture-card', '--brand', 'demo:quillfen', '--aspect', '1:1', '--mode', 'key', '--out', temp('square'), '--json'], COMMANDS, env());
     expect(square.code).toBe(2);
     expect(JSON.parse(square.stdout).error.code).toBe('ASPECT_UNSUPPORTED');

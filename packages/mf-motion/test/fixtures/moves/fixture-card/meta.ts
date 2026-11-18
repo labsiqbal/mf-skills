@@ -13,8 +13,9 @@ export const meta: MoveMeta = {
   // 1:1 leaves no room beside the face band for a card at a readable size.
   aspects: ['16:9', '9:16'],
   modes: ['full', 'alpha', 'key'],
-  durationSec: { min: 2.5, default: 3.5, max: 5 },
-  holds: [{ from: 0.4, to: 0.8 }],
+  durationSec: { min: 4, default: 4.5, max: 6 },
+  // The card holds while the number counts (too few pixels change to read as motion).
+  holds: [{ from: 0.15, to: 0.9 }],
   avoidFace: true,
   say: ['a number worth showing', 'a short headline'],
   tags: ['fixture', 'card'],
