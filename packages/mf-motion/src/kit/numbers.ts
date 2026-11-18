@@ -80,6 +80,7 @@ const numbers = {
   'type.heroHeightShare': { min: 0.09, max: 0.21 },
   'type.verticalTitleScale': 1.35,
   'type.maxWordsPerLine.9:16': 5,
+  'type.squareOverlayMinLineChars': 16,
   'type.trackingFloorEm': -0.025,
   'type.clipFloorEm': 0.42,
   'type.splitComplexScripts': { scripts: ['Arabic', 'Hebrew', 'Devanagari', 'Bengali', 'Thai'], split: ['word', 'line'] },

@@ -41,7 +41,8 @@ const overlayOnly = (id: string, category: string): SeedRow => ({ id, category, 
  * meta updates its row in the same commit (the seed-matrix unit test checks it).
  */
 export const SEED_TABLE: readonly SeedRow[] = [
-  overlayAndBroll('message-cascade', 'social'),
+  // MFM-099: 1:1 overlay lines of 2-11 graphemes beside the face band; 1:1 is b-roll only.
+  { ...overlayAndBroll('message-cascade', 'social'), overlayAspects: ['16:9', '9:16'] },
   overlayAndBroll('follower-milestone', 'creator'),
   brollOnly('prompt-to-result', 'ai'),
   brollOnly('terminal-run', 'dev'),

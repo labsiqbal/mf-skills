@@ -61,7 +61,7 @@ describe('NUMBERS', () => {
   it('is keyed exactly by the doc keys, in doc order, and matches the spec snapshot', () => {
     expect(numberKeys()).toEqual(keyedRows.map((entry) => entry.key));
     expect(numberKeys()).toEqual(specKeys);
-    expect(keyedRows).toHaveLength(137);
+    expect(keyedRows).toHaveLength(138);
   });
 
   it('is frozen all the way down', () => {

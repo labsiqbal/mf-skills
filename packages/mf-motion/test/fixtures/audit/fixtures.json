@@ -163,5 +163,33 @@
         "min-size"
       ]
     }
+  },
+  "short-line": {
+    "about": "A 1:1 overlay sentence wrapping to about 10-grapheme lines in a 190u column beside the face band, plus a one-line label: one short-line hit at 1:1, none at 16:9.",
+    "aspect": "1:1",
+    "layer": "overlay",
+    "mode": "alpha",
+    "profile": "overlay-alpha",
+    "html": "<div class=\"mf-line mf-role-body t col\" id=\"wrap\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\">Tiny words fold into a thin column of short lines</div><div class=\"mf-line mf-role-body t lab\" id=\"label\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\">Inbox</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-body); font-size: calc(var(--mf-u) * 30); line-height: 1.3; font-weight: 400; color: var(--mf-ink); } #mf-root .col { top: calc(var(--mf-u) * 260); width: calc(var(--mf-u) * 190); } #mf-root .lab { top: calc(var(--mf-u) * 640); white-space: nowrap; } #mf-root.is-square .t { left: calc(var(--mf-u) * 78); } #mf-root.is-landscape .t { left: calc(var(--mf-u) * 140); }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "short-line"
+      ],
+      "elements": [
+        "wrap"
+      ],
+      "hits": 1
+    },
+    "alsoAt": [
+      {
+        "aspect": "16:9",
+        "expect": {
+          "problems": [],
+          "hits": 0
+        }
+      }
+    ]
   }
 }

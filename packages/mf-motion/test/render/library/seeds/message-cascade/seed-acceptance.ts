@@ -11,7 +11,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { CLI_VERSION } from '../../../../../src/cli/registry';
 import { type Engine, enginePins, packageRoot } from '../../../../../src/engine/index';
 import { NUMBERS } from '../../../../../src/kit/numbers';
-import { DEMOS } from '../../../../../src/library/contract';
+import { DEMOS, overlayAspectsOf } from '../../../../../src/library/contract';
 import { findMove, libraryMoves } from '../../../../../src/library/registry';
 import { renderMove } from '../../../../../src/moves/render';
 import { gate } from '../../../../../src/quality/gate';
@@ -31,11 +31,18 @@ export function seedAcceptance(id: string, expected: { category: string; uses: s
   }, 900_000);
 
   describe(`${id}: meta`, () => {
-    it('is a seed of its category with its uses, every aspect and the demo examples', () => {
+    it('is a seed of its category with its uses, its aspects and the demo examples', () => {
       expect(meta.status).toBe('seed');
       expect(meta.category).toBe(expected.category);
       expect([...meta.uses].sort()).toEqual([...expected.uses].sort());
-      expect([...meta.aspects].sort()).toEqual(['16:9', '1:1', '9:16']);
+      // A move with b-roll keeps all three aspects; overlays build in 16:9 and 9:16 at least
+      // (1:1 only when its lines keep type.squareOverlayMinLineChars), and an overlay-only
+      // move declares aspects equal to its overlay aspects (v1.2).
+      if (meta.uses.includes('broll')) expect([...meta.aspects].sort()).toEqual(['16:9', '1:1', '9:16']);
+      if (meta.uses.includes('overlay')) {
+        expect(overlayAspectsOf(meta)).toEqual(expect.arrayContaining(['16:9', '9:16']));
+        if (!meta.uses.includes('broll')) expect([...meta.aspects].sort()).toEqual([...overlayAspectsOf(meta)].sort());
+      }
       const range = NUMBERS['move.durationSec'];
       expect(meta.durationSec.min).toBeGreaterThanOrEqual(range.min);
       expect(meta.durationSec.max).toBeLessThanOrEqual(range.max);

@@ -79,6 +79,15 @@ describe('move meta', () => {
     expect(rejected('move-meta', { ...meta, say: ['ok', 'y'.repeat(81)] })).toBe(true);
   });
 
+  it('takes overlayAspects only as a subset of aspects on a move with overlay in uses (v1.2)', () => {
+    const meta = fixture('move-meta.valid.json');
+    expect(parseDoc('move-meta', { ...meta, overlayAspects: ['16:9', '9:16'] }).doc.overlayAspects).toEqual(['16:9', '9:16']);
+    expect(parseDoc('move-meta', meta).doc.overlayAspects).toBeUndefined();
+    expect(rejected('move-meta', { ...meta, aspects: ['16:9', '9:16'], overlayAspects: ['16:9', '1:1'] })).toBe(true);
+    expect(rejected('move-meta', { ...meta, uses: ['broll'], modes: ['full'], overlayAspects: ['16:9'] })).toBe(true);
+    expect(rejected('move-meta', { ...meta, overlayAspects: [] })).toBe(true);
+  });
+
   it('checks durations, holds, enums and list items', () => {
     const meta = fixture('move-meta.valid.json');
     expect(rejected('move-meta', { ...meta, durationSec: { min: 3, default: 2, max: 5 } })).toBe(true);

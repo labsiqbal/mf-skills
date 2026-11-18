@@ -7,6 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { AXES, type CapMetrics, RUBRIC, type Rubric, capFor, capsTable, rubricHash, rubricMarkdown } from '../../../../src/quality/rubric';
 import { NUMBERS } from '../../../../src/kit/numbers';
+import { parseDoc } from '../../../../src/schemas/index';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(here, '../../../..');
@@ -162,5 +163,17 @@ describe('capFor', () => {
     ]);
     // Contrast below contrast.hardMin is a hard failure, not a cap.
     expect(capFor(metrics((m) => m.contrast.push({ atSec: 1, elementId: 'x', ratio: 2.4 })))).toEqual([]);
+  });
+
+  it('a 1:1 overlay short-line hit validates in metrics.json and caps like min-size (v1.2)', () => {
+    const doc = JSON.parse(JSON.stringify(metricsFixture)) as Record<string, any>;
+    doc.audit.hits.push({ fromSec: 0.2, toSec: 5.7, elementId: 'mc-first', problem: 'short-line' });
+    expect(parseDoc('metrics', doc).doc.audit.hits.at(-1)?.problem).toBe('short-line');
+    const short = capFor(metrics((m) => m.audit.hits.push({ fromSec: 0.2, elementId: 'mc-first', problem: 'short-line' })));
+    const small = capFor(metrics((m) => m.audit.hits.push({ fromSec: 0.2, elementId: 'mc-first', problem: 'min-size' })));
+    expect(short).toEqual(small);
+    expect(short.map(({ axis, cap }) => `${axis}:${cap}`)).toEqual([`${RUBRIC.caps[3]?.axis}:${RUBRIC.caps[3]?.cap}`]);
+    // One cap per defect: a min-size and a short-line hit together still cap once.
+    expect(capFor(metrics((m) => m.audit.hits.push({ fromSec: 1, elementId: 'a', problem: 'short-line' }, { fromSec: 2, elementId: 'b', problem: 'min-size' })))).toHaveLength(1);
   });
 });

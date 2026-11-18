@@ -69,7 +69,7 @@ describe('doc-table.mjs', () => {
     expect(status).toBe(0);
     expect(json.data.map((row: Record<string, string>) => row.Package)).toEqual([
       'valibot', 'wavefile', 'music-tempo', 'meyda', 'parse5', 'postcss',
-      'acorn, acorn-walk', 'puppeteer-core', 'onnxruntime-node / -web',
+      'acorn, acorn-walk', 'puppeteer-core', 'onnxruntime-node / -web', 'Python voice runtime (kokoro-onnx, soundfile and their resolved set)',
     ]);
     for (const row of json.data) expect(Object.keys(row)).toEqual(['Package', 'Version', 'Licence', 'Use']);
   });

@@ -8,7 +8,7 @@ const count = v.pipe(v.number(), v.integer(), v.minValue(0));
 const fraction = v.pipe(v.number(), v.minValue(0), v.maxValue(1));
 const limitValue = v.union([v.number(), v.string()]);
 
-export const AUDIT_PROBLEMS = ['frame-margin', 'copy-safe', 'spill', 'overlap', 'caption-band', 'face-band', 'min-size'] as const;
+export const AUDIT_PROBLEMS = ['frame-margin', 'copy-safe', 'spill', 'overlap', 'caption-band', 'face-band', 'min-size', 'short-line'] as const;
 
 export const metricsSchema = documentSchema('metrics', 1, {
   file: v.pipe(v.string(), v.minLength(1)),

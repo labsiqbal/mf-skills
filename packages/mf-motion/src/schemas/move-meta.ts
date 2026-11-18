@@ -54,6 +54,8 @@ export const moveMetaSchema = v.pipe(
     uses: nonEmpty(v.picklist(['overlay', 'broll'])),
     aspects: nonEmpty(Aspect),
     modes: nonEmpty(v.picklist(['full', 'alpha', 'key'])),
+    /** Aspects the alpha and key modes support (v1.2): a subset of aspects, only with uses overlay; absent means every aspect in aspects. */
+    overlayAspects: v.optional(nonEmpty(Aspect)),
     durationSec: v.strictObject({
       min: v.pipe(v.number(), v.minValue(0)),
       default: v.pipe(v.number(), v.minValue(0)),
@@ -84,5 +86,7 @@ export const moveMetaSchema = v.pipe(
   }),
   v.check((meta) => meta.durationSec.min <= meta.durationSec.default && meta.durationSec.default <= meta.durationSec.max, 'durationSec min <= default <= max'),
   v.check((meta) => meta.holds.every((hold) => hold.from < hold.to), 'every hold ends after it starts'),
+  v.check((meta) => meta.overlayAspects === undefined || meta.uses.includes('overlay'), 'overlayAspects needs overlay in uses'),
+  v.check((meta) => meta.overlayAspects === undefined || meta.overlayAspects.every((aspect) => meta.aspects.includes(aspect)), 'overlayAspects is a subset of aspects'),
 );
 

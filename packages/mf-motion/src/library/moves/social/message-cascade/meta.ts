@@ -13,6 +13,9 @@ export const meta: MoveMeta = {
   uses: ['overlay', 'broll'],
   aspects: ['16:9', '9:16', '1:1'],
   modes: ['full', 'alpha', 'key'],
+  // The 1:1 columns beside the face band (194 px) wrap a bubble to 2-11 graphemes a line, under
+  // type.squareOverlayMinLineChars: 1:1 is offered as b-roll only (v1.2, MFM-099).
+  overlayAspects: ['16:9', '9:16'],
   // The last message needs read.lastLineMinSec before the exit window.
   durationSec: { min: 5.6, default: 6, max: 6 },
   // Overlays hold still once the last message has landed.

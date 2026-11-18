@@ -38,6 +38,7 @@
     "type.heroHeightShare",
     "type.verticalTitleScale",
     "type.maxWordsPerLine.9:16",
+    "type.squareOverlayMinLineChars",
     "type.trackingFloorEm",
     "type.clipFloorEm",
     "type.splitComplexScripts",

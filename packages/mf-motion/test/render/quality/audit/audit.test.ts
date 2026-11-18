@@ -1,5 +1,7 @@
 // The frame audit on seeded-defect compositions: one per problem, a clean one,
-// a short hold and a moving headline that is exempt from the frame margin.
+// a short hold and a moving headline that is exempt from the frame margin. An
+// entry's alsoAt renders the same composition at another aspect (short-line:
+// 1:1 and 16:9).
 import { existsSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -14,24 +16,38 @@ import { testBrowser, testCacheRoot } from '../../../helpers/engine';
 import { runIn } from '../../../unit/cli/harness';
 import { buildRuntime, packageRoot } from '../../kit/type/page';
 
+type FixtureAspect = '16:9' | '9:16' | '1:1';
+
+interface FixtureExpect {
+  problems: string[];
+  elements?: string[];
+  /** Exact number of merged hits. */
+  hits?: number;
+  range?: { elementId: string; problem: string; fromMin: number; fromMax: number; toMin: number; toMax: number };
+  line?: { elementId: string; holdSec: number; words: number; needSec: number; ok: boolean };
+}
+
 interface Fixture {
   about: string;
-  aspect: '16:9' | '9:16';
+  aspect: FixtureAspect;
   layer: 'overlay' | 'broll';
   mode: 'full' | 'alpha';
   profile: Profile;
   html: string;
   css: string;
   script: string;
-  expect: {
-    problems: string[];
-    elements?: string[];
-    range?: { elementId: string; problem: string; fromMin: number; fromMax: number; toMin: number; toMax: number };
-    line?: { elementId: string; holdSec: number; words: number; needSec: number; ok: boolean };
-  };
+  expect: FixtureExpect;
+  alsoAt?: Array<{ aspect: FixtureAspect; expect: FixtureExpect }>;
 }
 
-const fixtures = JSON.parse(readFileSync(path.join(packageRoot, 'test', 'fixtures', 'audit', 'fixtures.json'), 'utf8')) as Record<string, Fixture>;
+const raw = JSON.parse(readFileSync(path.join(packageRoot, 'test', 'fixtures', 'audit', 'fixtures.json'), 'utf8')) as Record<string, Fixture>;
+// One case per fixture and per alsoAt aspect ("short-line@16:9").
+const fixtures: Record<string, Fixture> = Object.fromEntries(
+  Object.entries(raw).flatMap(([name, fixture]) => [
+    [name, fixture] as const,
+    ...(fixture.alsoAt ?? []).map((variant) => [`${name}@${variant.aspect}`, { ...fixture, aspect: variant.aspect, expect: variant.expect }] as const),
+  ]),
+);
 const mossmallow = JSON.parse(readFileSync(path.join(packageRoot, 'assets', 'demo-brands', 'mossmallow', 'brand.json'), 'utf8'));
 
 let engine: Engine;
@@ -44,8 +60,8 @@ beforeAll(async () => {
   ({ engine, browserPath } = await testBrowser());
   for (const [name, fixture] of Object.entries(fixtures)) {
     const ctx = moveCtx({ aspect: fixture.aspect, mode: fixture.mode, layer: fixture.layer, brand: mossmallow, seed: 1, durationSec: 4 });
-    const dir = mkdtempSync(path.join(tmpdir(), `mfm-audit-${name}-`));
-    writeMoveBuild(dir, ctx, { id: name, html: trusted(fixture.html), css: fixture.css, script: fixture.script, assets: [], needsThree: false, holds: [] }, {}, { engineDir: engine.dir });
+    const dir = mkdtempSync(path.join(tmpdir(), `mfm-audit-${name.replace(/[^a-z0-9-]/gi, '-')}-`));
+    writeMoveBuild(dir, ctx, { id: name.split('@')[0] as string, html: trusted(fixture.html), css: fixture.css, script: fixture.script, assets: [], needsThree: false, holds: [] }, {}, { engineDir: engine.dir });
     builds[name] = dir;
   }
 }, 900_000);
@@ -61,6 +77,7 @@ describe('frame audit', () => {
     it(`${name}: ${fixture.about}`, async () => {
       const result = await run(name);
       expect(problems(result), JSON.stringify(result.hits)).toEqual([...fixture.expect.problems].sort());
+      if (fixture.expect.hits !== undefined) expect(result.hits, JSON.stringify(result.hits)).toHaveLength(fixture.expect.hits);
       if (fixture.expect.elements) {
         expect([...new Set(result.hits.map((hit) => hit.elementId))].sort()).toEqual([...fixture.expect.elements].sort());
       }

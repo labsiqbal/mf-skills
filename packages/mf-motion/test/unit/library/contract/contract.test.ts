@@ -13,7 +13,7 @@ import type { Engine } from '../../../../src/engine/index';
 import { type MoveMode, moveCtx, moveProfile, VARS_TAG } from '../../../../src/kit/build/move';
 import type { AspectKey } from '../../../../src/kit/numbers';
 import { NUMBERS } from '../../../../src/kit/numbers';
-import { DEMOS, type MoveModule, checkAssets, checkVars, maxCharsVars, resolveVars, scanComposition, validateMeta, varsJsonSchema } from '../../../../src/library/contract';
+import { DEMOS, type MoveMeta, type MoveModule, checkAssets, checkVars, maxCharsVars, overlayAspectsOf, resolveVars, scanComposition, validateMeta, varsJsonSchema } from '../../../../src/library/contract';
 import { type RegistryEntry, allMoves, findMove, libraryMoves, mergeUser, registerMoves } from '../../../../src/library/registry';
 import { brandFor, buildMove } from '../../../../src/moves/build';
 import { audit } from '../../../../src/quality/audit';
@@ -26,7 +26,9 @@ import * as fixtureCard from '../../../fixtures/moves/fixture-card/index';
 
 const FIXTURES = path.join(packageRoot(), 'test', 'fixtures', 'moves');
 const entry = (module: MoveModule, folder: string): RegistryEntry => ({ meta: module.meta, source: 'user', dir: path.join(FIXTURES, folder), load: async () => module });
-const FIXTURE_ENTRIES = [entry(fixtureCard, 'fixture-card'), entry(badColor, 'bad-color'), entry(badRandom, 'bad-random')];
+// fixture-card-wide: the fixture card with a 1:1 b-roll and overlays in 16:9 and 9:16 only (overlayAspects, v1.2).
+const wideCard: MoveModule = { ...fixtureCard, meta: { ...fixtureCard.meta, id: 'fixture-card-wide', aspects: ['16:9', '9:16', '1:1'], overlayAspects: ['16:9', '9:16'] }, build: (ctx, vars) => ({ ...fixtureCard.build(ctx, vars), id: 'fixture-card-wide' }) };
+const FIXTURE_ENTRIES = [entry(fixtureCard, 'fixture-card'), entry(badColor, 'bad-color'), entry(badRandom, 'bad-random'), entry(wideCard, 'fixture-card')];
 
 let engine: Engine;
 let browserPath = '';
@@ -44,6 +46,9 @@ afterAll(() => registerMoves([]));
 const subjects = () => [...libraryMoves(), ...FIXTURE_ENTRIES.slice(0, 1)];
 
 const sha = (text: string) => createHash('sha256').update(text).digest('hex');
+
+/** The modes a move builds in at one aspect: full in every aspect, alpha and key in its overlay aspects (rule 4, v1.2). */
+const modesAt = (meta: MoveMeta, aspect: AspectKey): MoveMode[] => meta.modes.filter((mode) => mode === 'full' || overlayAspectsOf(meta).includes(aspect));
 
 describe('move contract', () => {
   it('runs over every library move and the fixture move', () => {
@@ -72,7 +77,7 @@ describe('move contract', () => {
       const module = await subject.load();
       const brand = brandFor(home, 'demo:mossmallow');
       for (const aspect of subject.meta.aspects) {
-        for (const mode of subject.meta.modes) {
+        for (const mode of modesAt(subject.meta, aspect)) {
           const ctx = moveCtx({ aspect, mode, layer: subject.meta.uses.includes('overlay') ? 'overlay' : 'broll', brand: brand.doc as never, seed: 1, durationSec: subject.meta.durationSec.default });
           expect(scanComposition(module.build(ctx, resolveVars(subject.meta, null, 'mossmallow'))), `${subject.meta.id} ${aspect} ${mode}`).toEqual([]);
         }
@@ -83,7 +88,7 @@ describe('move contract', () => {
   it('rules 4 and 6: every declared aspect and mode builds and passes lint (no network, clocks or unseeded randomness)', async () => {
     for (const subject of subjects()) {
       for (const aspect of subject.meta.aspects) {
-        for (const mode of subject.meta.modes) {
+        for (const mode of modesAt(subject.meta, aspect)) {
           const out = temp('aspects');
           const result = await buildMove({ id: subject.meta.id, brand: 'demo:tessarine', aspect, mode, out, home, engine });
           expect(result.lint.errors, `${subject.meta.id} ${aspect} ${mode}`).toEqual([]);
@@ -110,7 +115,8 @@ describe('move contract', () => {
     for (const subject of subjects()) {
       const longest = maxCharsVars(subject.meta);
       for (const aspect of subject.meta.aspects) {
-        const mode = subject.meta.modes.includes('alpha') ? 'alpha' : (subject.meta.modes[0] as MoveMode);
+        const modes = modesAt(subject.meta, aspect);
+        const mode = modes.includes('alpha') ? 'alpha' : (modes[0] as MoveMode);
         const result = await buildMove({ id: subject.meta.id, brand: 'demo:tessarine', aspect, mode, vars: longest, out: temp('maxchars'), home, engine });
         const report = await audit(result.build, { profile: result.profile as never, aspect, avoidFace: subject.meta.avoidFace, engine, browserPath });
         expect(report.hits, `${subject.meta.id} ${aspect}`).toEqual([]);
@@ -160,6 +166,19 @@ describe('move contract', () => {
     expect(scanComposition({ css: '.a { font-family: "Inter", sans-serif; margin: 12px; background: rgb(0, 0, 0); }', script: "tl.to(x, { color: '#fff' })" }).map((hit) => hit.reason).sort()).toEqual(['font name', 'hex colour', 'pixel size', 'rgb colour']);
   });
 
+  it('rule 4: alpha and key outside the overlay aspects fail ASPECT_UNSUPPORTED; full still builds there', async () => {
+    for (const mode of ['alpha', 'key'] as const) {
+      const error = await buildMove({ id: 'fixture-card-wide', brand: 'demo:tessarine', aspect: '1:1', mode, out: temp('overlay-aspects'), home, engine }).catch((caught: unknown) => caught);
+      expect(isMfmError(error) && error.code, mode).toBe('ASPECT_UNSUPPORTED');
+      expect((error as { details: Record<string, unknown> }).details).toMatchObject({ move: 'fixture-card-wide', aspect: '1:1', mode, overlayAspects: ['16:9', '9:16'] });
+    }
+    const full = await buildMove({ id: 'fixture-card-wide', brand: 'demo:tessarine', aspect: '1:1', mode: 'full', out: temp('overlay-aspects'), home, engine });
+    expect(full.lint.errors).toEqual([]);
+    const alpha = await buildMove({ id: 'fixture-card-wide', brand: 'demo:tessarine', aspect: '9:16', mode: 'alpha', out: temp('overlay-aspects'), home, engine });
+    expect(alpha.lint.errors).toEqual([]);
+    expect(overlayAspectsOf(fixtureCard.meta)).toEqual(['16:9', '9:16']);
+  }, 120_000);
+
   it('rule 6 bites: Math.random fails lint', async () => {
     const error = await buildMove({ id: 'fixture-bad-random', brand: 'demo:tessarine', aspect: '16:9', mode: 'alpha', out: temp('random'), home, engine }).catch((caught: unknown) => caught);
     expect(isMfmError(error) && error.code).toBe('LINT_FAILED');
@@ -180,6 +199,15 @@ describe('move registry', () => {
     })();
     expect(isMfmError(error) && error.code).toBe('MOVE_NOT_FOUND');
     expect(allMoves().warnings).toEqual([]);
+  });
+
+  it('rejects overlayAspects outside aspects or on a move without overlay in uses', () => {
+    const wide = wideCard.meta;
+    expect(validateMeta(wide, 'fixture').overlayAspects).toEqual(['16:9', '9:16']);
+    expect(() => validateMeta({ ...wide, aspects: ['16:9', '1:1'], overlayAspects: ['16:9', '9:16'] }, 'fixture')).toThrowError(/subset of aspects/);
+    expect(() => validateMeta({ ...wide, uses: ['broll'], modes: ['full'], overlayAspects: ['16:9'] }, 'fixture')).toThrowError(/needs overlay in uses/);
+    expect(() => registerMoves([{ ...(FIXTURE_ENTRIES[3] as RegistryEntry), meta: { ...wide, overlayAspects: ['1:1', '4:3' as never] } }])).toThrowError();
+    registerMoves(FIXTURE_ENTRIES);
   });
 
   it('keeps the library move when a user move has the same id', () => {

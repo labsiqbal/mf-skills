@@ -1,8 +1,9 @@
 // The frame audit (verification.md, Frame audit): open a composition in the
 // page driver, seek every audit.stepSec plus each line's landing and exit
 // start, measure every visible text node's ink box with Range.getClientRects()
-// and record frame-margin, copy-safe, spill, overlap, caption-band, face-band
-// and min-size hits; read window.MF_REPORT.lines for the hold rule.
+// and record frame-margin, copy-safe, spill, overlap, caption-band, face-band,
+// min-size and (1:1 overlays) short-line hits; read window.MF_REPORT.lines for
+// the hold rule.
 /// <reference lib="dom" />
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { MfmError } from '../cli/errors';
@@ -13,10 +14,10 @@ import { type AspectKey, NUMBERS } from '../kit/numbers';
 import { type Rect, safeBoxes } from '../kit/safe';
 import { type CheckId, type Profile, modeOf } from './profiles';
 
-export const AUDIT_PROBLEMS = ['frame-margin', 'copy-safe', 'spill', 'overlap', 'caption-band', 'face-band', 'min-size'] as const;
+export const AUDIT_PROBLEMS = ['frame-margin', 'copy-safe', 'spill', 'overlap', 'caption-band', 'face-band', 'min-size', 'short-line'] as const;
 export type AuditProblem = (typeof AUDIT_PROBLEMS)[number];
 
-/** The profile check each problem belongs to (check-profiles.md: spill and overlap sit with the frame margin). */
+/** The profile check each problem belongs to (check-profiles.md: spill and overlap sit with the frame margin; short-line with min-size). */
 export const PROBLEM_CHECK: Record<AuditProblem, CheckId> = {
   'frame-margin': 'frame-margin',
   'copy-safe': 'copy-safe',
@@ -25,6 +26,7 @@ export const PROBLEM_CHECK: Record<AuditProblem, CheckId> = {
   'caption-band': 'caption-band',
   'face-band': 'face-band',
   'min-size': 'min-size',
+  'short-line': 'min-size',
 };
 
 export interface AuditHit {
@@ -86,6 +88,8 @@ interface Sample {
   container: Rect | null;
   /** Smallest rendered font size of its text, in px. */
   fontPx: number;
+  /** mf-line owners, when asked: graphemes on each visual line, top to bottom (trailing whitespace dropped). */
+  visualLines?: number[];
 }
 
 interface PageReport {
@@ -115,7 +119,7 @@ function pageReport(): PageReport {
 }
 
 /** Every visible text owner's ink box at the current frame (runs in the page). */
-function measure(opacityMin: number): Sample[] {
+function measure({ opacityMin, lineChars }: { opacityMin: number; lineChars: boolean }): Sample[] {
   const root = document.querySelector('[data-composition-id]') as HTMLElement;
   const origin = root.getBoundingClientRect();
   const owners = new Map<Element, Sample>();
@@ -137,6 +141,31 @@ function measure(opacityMin: number): Sample[] {
     const clear = background === 'transparent' || /rgba\([^)]*,\s*0\)$/.test(background);
     const border = ['Top', 'Right', 'Bottom', 'Left'].some((side) => parseFloat(style.getPropertyValue(`border-${side.toLowerCase()}-width`)) > 0 && style.getPropertyValue(`border-${side.toLowerCase()}-style`) !== 'none');
     return !clear || style.backgroundImage !== 'none' || border;
+  };
+  // Graphemes per visual line of one mf-line: each grapheme's first client rect,
+  // a new visual line where its top moves more than 2 px from the line's top.
+  const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+  const visualLines = (line: Element): number[] => {
+    const rows: Array<{ top: number; text: string }> = [];
+    const texts = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
+    for (let text = texts.nextNode(); text; text = texts.nextNode()) {
+      const value = text.textContent ?? '';
+      for (const { segment, index } of segmenter.segment(value)) {
+        const range = document.createRange();
+        range.setStart(text, index);
+        range.setEnd(text, index + segment.length);
+        const rect = Array.from(range.getClientRects()).find((r) => r.height > 0);
+        const current = rows[rows.length - 1];
+        // Collapsed whitespace has no box: it stays with the line it follows.
+        if (!rect) {
+          if (current) current.text += segment;
+          continue;
+        }
+        if (!current || Math.abs(rect.top - current.top) > 2) rows.push({ top: rect.top, text: segment });
+        else current.text += segment;
+      }
+    }
+    return rows.map((row) => [...segmenter.segment(row.text.replace(/\s+/g, ' ').trim())].length).filter((count) => count > 0);
   };
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -218,6 +247,7 @@ function measure(opacityMin: number): Sample[] {
       layered: parent.closest('[data-mf-layered]') !== null,
       container,
       fontPx: box ? fontPx : Number.POSITIVE_INFINITY,
+      ...(lineChars && owner.classList.contains('mf-line') ? { visualLines: visualLines(owner) } : {}),
     });
   }
   return [...owners.values()];
@@ -320,6 +350,9 @@ export async function audit(buildDir: string, options: AuditOptions): Promise<Au
     const aspect = options.aspect ?? aspectOf(report.width, report.height);
     const safe = safeBoxes(aspect, options.profile, { width: report.width, ...context });
     const minPx = NUMBERS['type.minReadablePx'].shortSideShare * Math.min(report.width, report.height);
+    // short-line: 1:1 overlays only (v1.2).
+    const lineChars = aspect === '1:1' && (options.profile === 'overlay-alpha' || options.profile === 'overlay-key') && applies('short-line');
+    const minLineChars = NUMBERS['type.squareOverlayMinLineChars'];
     const lineTimes = new Map(report.lines.map((line) => [line.id, line]));
     const times = auditTimes(report.duration, fps, report.lines.flatMap((line) => [line.landSec, ...(line.outSec === null ? [] : [line.outSec])]));
 
@@ -327,7 +360,7 @@ export async function audit(buildDir: string, options: AuditOptions): Promise<Au
     let previous = new Map<string, Rect>();
     for (const [index, time] of times.entries()) {
       await seek(page, time);
-      const samples = await evaluate(page, measure, opacityMin);
+      const samples = await evaluate(page, measure, { opacityMin, lineChars });
       const hit = (sample: Sample, problem: AuditProblem) => {
         if (applies(problem)) stepHits.push({ index, time, elementId: sample.elementId, problem });
       };
@@ -351,6 +384,9 @@ export async function audit(buildDir: string, options: AuditOptions): Promise<Au
         const line = sample.lineId ? lineTimes.get(sample.lineId) : undefined;
         const holding = line ? time >= line.landSec - 1e-6 && time <= (line.outSec ?? report.duration) + 1e-6 : true;
         if (holding && sample.fontPx < minPx - 0.01) hit(sample, 'min-size');
+        // A wrapped line with a visual line other than its last under the 1:1 overlay line length.
+        const rows = sample.visualLines ?? [];
+        if (holding && rows.length > 1 && rows.slice(0, -1).some((count) => count < minLineChars)) hit(sample, 'short-line');
       }
       // Text on text: different lines whose boxes meet after shrinking each 20% vertically.
       const lines = samples.filter((sample): sample is Sample & { box: Rect } => sample.lineId !== null && !sample.layered && sample.box !== null);

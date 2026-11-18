@@ -216,7 +216,8 @@ export function capFor(metrics: CapMetrics, rubric: Rubric = RUBRIC): AppliedCap
   const low = metrics.contrast.filter((entry) => entry.ratio >= NUMBERS['contrast.hardMin'] && entry.ratio < NUMBERS['contrast.textMin']).sort((a, b) => a.ratio - b.ratio)[0];
   if (low) add(2, `${low.elementId} at ${fmt(low.atSec)} s is ${fmt(low.ratio)}:1`);
 
-  const small = metrics.audit.hits.find((hit) => hit.problem === 'min-size');
+  // A 1:1 overlay line shorter than type.squareOverlayMinLineChars is scored under min-size (v1.2).
+  const small = metrics.audit.hits.find((hit) => hit.problem === 'min-size' || hit.problem === 'short-line');
   if (small) add(3, `${small.elementId} at ${fmt(small.fromSec)} s`);
 
   const short = metrics.lines.find((line) => !line.ok);

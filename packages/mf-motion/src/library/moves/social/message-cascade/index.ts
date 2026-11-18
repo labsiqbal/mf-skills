@@ -1,8 +1,9 @@
 // message-cascade (social-01): a received message, a typing indicator, the sent
 // reply, another typing indicator and the last received message, each bubble
 // landing in turn. Overlays stack the thread beside the face band (a column at
-// the left in 16:9 and 1:1, the strip above it in 9:16) and leave in the last
-// 0.45 s; the b-roll centres a chat with a header band and a seeded drift.
+// the left in 16:9, the strip above it in 9:16; no 1:1 overlay, its columns are
+// too narrow for readable lines) and leave in the last 0.45 s; the b-roll
+// centres a chat with a header band and a seeded drift.
 import type { MoveModule, ResolvedVars } from '../../../contract';
 import { type TrustedHtml, html, trusted } from '../../../../kit/build/html';
 import type { Composition, MoveCtx } from '../../../../kit/build/move';
@@ -85,7 +86,6 @@ export function build(ctx: MoveCtx, v: ResolvedVars): Composition {
 .mc-typing.mc-sent .mc-dot { background: ${ink}; }
 /* Overlays: beside the face band, lifted clear of the caption band by more than a bubble's entrance travel. */
 .is-landscape .mc-chat { left: 0; bottom: ${u(32)}; width: ${u(440)}; }
-.is-square .mc-chat { left: 0; bottom: ${u(32)}; width: ${u(190)}; }
 .is-portrait .mc-chat { left: 0; right: 0; top: 0; }
 /* 9:16 has 212 px above the face band: three compact bubbles, with room for the last one's entrance travel. */
 .is-portrait #mc-thread { gap: ${u(6)}; }

@@ -10,7 +10,7 @@ import { packageRoot } from '../engine/index';
 import { type MoveCtx, type MoveLayer, type MoveMode, moveCtx, moveProfile, writeMoveBuild } from '../kit/build/move';
 import type { AspectKey } from '../kit/numbers';
 import { type LintResult, lint } from '../lint/index';
-import { type DemoBrand, type ResolvedVars, DEMOS, resolveVars } from '../library/contract';
+import { type DemoBrand, type ResolvedVars, DEMOS, overlayAspectsOf, resolveVars } from '../library/contract';
 import { type RegistryEntry, findMove } from '../library/registry';
 
 export interface MoveRenderRequest {
@@ -94,6 +94,10 @@ export async function buildMove(request: MoveRenderRequest): Promise<MoveBuildRe
   }
   if (!meta.modes.includes(request.mode)) {
     throw new MfmError('MODE_UNSUPPORTED', { move: meta.id, mode: request.mode, modes: meta.modes }, { message: `${meta.id} renders in ${meta.modes.join(', ')}, not ${request.mode}.` });
+  }
+  const overlayAspects = overlayAspectsOf(meta);
+  if (request.mode !== 'full' && !overlayAspects.includes(request.aspect)) {
+    throw new MfmError('ASPECT_UNSUPPORTED', { move: meta.id, aspect: request.aspect, mode: request.mode, overlayAspects }, { message: `${meta.id} has no ${request.aspect} overlay (its alpha and key modes render in ${overlayAspects.join(', ')}).` });
   }
   const duration = request.durationSec ?? meta.durationSec.default;
   if (duration < meta.durationSec.min || duration > meta.durationSec.max) {

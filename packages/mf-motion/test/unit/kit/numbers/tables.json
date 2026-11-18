@@ -193,6 +193,10 @@
         "Value": "5"
       },
       {
+        "Key": "type.squareOverlayMinLineChars",
+        "Value": "16 graphemes on every wrapped visual line but the last of an mf-line, in 1:1 overlay-alpha and overlay-key (v1.2)"
+      },
+      {
         "Key": "type.trackingFloorEm",
         "Value": "-0.025"
       },

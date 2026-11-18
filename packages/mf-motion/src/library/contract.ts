@@ -36,6 +36,11 @@ export function validateMeta(value: unknown, source: string): MoveMeta {
   return doc;
 }
 
+/** The aspects a move's alpha and key modes build in: overlayAspects, or every aspect when absent (v1.2). */
+export function overlayAspectsOf(meta: Pick<MoveMeta, 'aspects' | 'overlayAspects'>): MoveMeta['aspects'] {
+  return [...(meta.overlayAspects ?? meta.aspects)];
+}
+
 /** JSON Schema of a move's variables (for `move info`). */
 export function varsJsonSchema(meta: MoveMeta): Record<string, unknown> {
   const one = (spec: Omit<VarSpec, 'items'> & { items?: VarSpec['items'] }): Record<string, unknown> => {
