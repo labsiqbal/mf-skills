@@ -74,7 +74,9 @@ const negative = defineCommand({
   handler: () => ({ data: { errors: 2 }, exitCode: 1 }),
 });
 
-const commands: readonly AnyCommand[] = [...COMMANDS, render, info, search, catalog, crash, refuse, negative];
+// The test commands stand in for real ones of the same name (move render and move info exist since MFM-041).
+const stubs = [render, info, search, catalog, crash, refuse, negative];
+const commands: readonly AnyCommand[] = [...COMMANDS.filter((command) => !stubs.some((stub) => stub.name === command.name)), ...stubs];
 
 function usage(argv: string[]) {
   try {

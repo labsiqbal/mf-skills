@@ -18,6 +18,7 @@ import { doctorCommand } from './doctor';
 import { beatgridCheckCommand, filmBriefCommand, planCheckCommand } from './film';
 import { lintCommand } from './lint';
 import { migrateCommand } from './migrate';
+import { moveInfoCommand, moveRenderCommand } from './move';
 import { approveCommand, newCommand, noteCommand, statusCommand } from './project';
 import { auditCommand, gateCommand, measureCommand, packetCommand, sheetsCommand } from './quality';
 import { schemaCommand } from './schema';
@@ -55,4 +56,6 @@ export const COMMANDS: readonly AnyCommand[] = [
   packetCommand,
   auditCommand,
   gateCommand,
+  moveInfoCommand,
+  moveRenderCommand,
 ];
