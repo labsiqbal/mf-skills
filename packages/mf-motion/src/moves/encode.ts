@@ -8,9 +8,12 @@ import { MfmError } from '../cli/errors';
 import type { MoveMode } from '../kit/build/move';
 import { NUMBERS } from '../kit/numbers';
 import { parseHex } from '../kit/oklch';
+import { growMask } from '../media/pixels';
 import { run, runStream } from '../proc/run';
 import { parseFps } from '../time/grammar';
 import { type Master, masterFrame } from './render';
+
+export { growMask };
 
 export const FORMATS = ['mp4', 'mov', 'webm', 'key-mp4', 'png'] as const;
 export type Format = (typeof FORMATS)[number];
@@ -31,7 +34,13 @@ const BT709 = ['-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc'
  * had faded out (measured on the fixture's last frame).
  */
 const KEY_X264 = ['-x264-params', 'aq-mode=0'];
-const toYuv = (pixFmt: string) => `scale=out_color_matrix=bt709:out_range=tv,format=${pixFmt}`;
+/**
+ * The accurate, bit-exact swscale path: FFmpeg builds differ in their fast
+ * RGB/YUV converters (macOS arm64 with FFmpeg 9 moved every key pixel), and
+ * the generic path is the same everywhere.
+ */
+export const SWS_FLAGS = 'accurate_rnd+bitexact+full_chroma_int';
+const toYuv = (pixFmt: string) => `scale=out_color_matrix=bt709:out_range=tv:flags=${SWS_FLAGS},format=${pixFmt}`;
 const MOV = ['-c:v', 'prores_ks', '-profile:v', '4444', '-pix_fmt', 'yuva444p10le', '-alpha_bits', '16', '-vendor', 'apl0'];
 const WEBM = ['-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-b:v', '0', '-crf', '24', '-row-mt', '1', '-auto-alt-ref', '0'];
 
@@ -136,9 +145,31 @@ export function encodeArgs(format: Exclude<Format, 'png'>, master: Master, file:
   }
 }
 
+/**
+ * The master over the key colour, losslessly in RGB (libx264rgb, CRF 0): what
+ * the gate measures in key mode, so key purity judges the rendering (soft
+ * edges) rather than the delivery codec, whose tolerance the -key.mp4 check
+ * covers.
+ */
+export async function encodeKeyLossless(master: Master, file: string, keyColor: string, ffmpeg = 'ffmpeg'): Promise<Output> {
+  const args = [
+    '-v', 'error', '-y', '-framerate', master.fps, '-start_number', '1', '-i', master.pattern,
+    '-f', 'lavfi', '-i', `color=c=${ffColor(keyColor)}:s=${master.width}x${master.height}:r=${master.fps},format=rgba`,
+    '-filter_complex', `[1:v][0:v]overlay=shortest=1:format=rgb,scale=flags=${SWS_FLAGS},format=rgb24[v]`, '-map', '[v]',
+    '-c:v', 'libx264rgb', '-crf', '0', '-preset', 'veryfast', '-pix_fmt', 'rgb24',
+    '-r', master.fps, '-frames:v', String(master.frames), '-an', file,
+  ];
+  const result = await run(ffmpeg, args, { timeoutMs: ENCODE_TIMEOUT_MS });
+  if (result.spawnError) throw new MfmError('FFMPEG_MISSING', { tool: 'ffmpeg', spawnError: result.spawnError.code });
+  if (result.timedOut) throw new MfmError('TIMEOUT', { tool: 'ffmpeg', format: 'key-lossless', timeoutMs: ENCODE_TIMEOUT_MS });
+  if (result.code !== 0) throw new MfmError('ENCODE_FAILED', { format: 'key-lossless', file, code: result.code, stderrTail: result.stderr.slice(-2000) }, { message: `FFmpeg could not encode the lossless key render (${path.basename(file)}).` });
+  return { format: 'key-mp4', path: file, bytes: statSync(file).size, keyColor };
+}
+
 /** One decoded RGBA frame, by index when given (exact: select by frame number, not by time). */
 async function rgbaFrame(file: string, index: number | null, ffmpeg: string): Promise<Uint8Array> {
-  const filter = index === null ? 'format=rgba' : `select=eq(n\\,${index}),format=rgba`;
+  const toRgba = `scale=flags=${SWS_FLAGS},format=rgba`;
+  const filter = index === null ? toRgba : `select=eq(n\\,${index}),${toRgba}`;
   const stream = runStream(ffmpeg, ['-v', 'error', '-i', file, '-vf', filter, '-frames:v', '1', '-f', 'rawvideo', '-'], { timeoutMs: ENCODE_TIMEOUT_MS });
   const parts: Buffer[] = [];
   for await (const chunk of stream.chunks) parts.push(chunk);
@@ -146,27 +177,6 @@ async function rgbaFrame(file: string, index: number | null, ffmpeg: string): Pr
   if (result.spawnError) throw new MfmError('FFMPEG_MISSING', { tool: 'ffmpeg', spawnError: result.spawnError.code });
   if (result.timedOut || result.code !== 0) throw new MfmError('ENCODE_FAILED', { file, index, stderrTail: result.stderr.slice(-2000) }, { message: `FFmpeg could not decode frame ${index ?? 0} of ${path.basename(file)}.` });
   return new Uint8Array(Buffer.concat(parts));
-}
-
-/** Mask (1 = content) grown by `band` pixels in every direction (a square window, as two sliding-window passes). */
-export function growMask(mask: Uint8Array, width: number, height: number, band: number): Uint8Array {
-  const pass = (source: Uint8Array, along: 'x' | 'y') => {
-    const out = new Uint8Array(source.length);
-    const lines = along === 'x' ? height : width;
-    const length = along === 'x' ? width : height;
-    const at = (line: number, i: number) => (along === 'x' ? line * width + i : i * width + line);
-    for (let line = 0; line < lines; line += 1) {
-      let count = 0;
-      for (let i = 0; i < Math.min(band, length); i += 1) count += source[at(line, i)] ?? 0;
-      for (let i = 0; i < length; i += 1) {
-        if (i + band < length) count += source[at(line, i + band)] ?? 0;
-        if (i - band - 1 >= 0) count -= source[at(line, i - band - 1)] ?? 0;
-        out[at(line, i)] = count > 0 ? 1 : 0;
-      }
-    }
-    return out;
-  };
-  return pass(pass(mask, 'x'), 'y');
 }
 
 /**

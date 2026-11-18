@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "scores",
+  "packetHash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "judge": {
+    "mode": "self",
+    "context": "same-session",
+    "provider": null,
+    "modelId": null
+  },
+  "axes": {
+    "hook": {
+      "score": 8,
+      "notes": [],
+      "fixes": []
+    },
+    "brand": {
+      "score": 8,
+      "notes": [],
+      "fixes": []
+    },
+    "motion": {
+      "score": 8,
+      "notes": [],
+      "fixes": []
+    },
+    "legibility": {
+      "score": 8,
+      "notes": [],
+      "fixes": []
+    },
+    "rhythm": {
+      "score": 8,
+      "notes": [],
+      "fixes": []
+    },
+    "finish": {
+      "score": 8,
+      "notes": [],
+      "fixes": []
+    }
+  },
+  "at": "2026-11-18T00:00:00.000Z"
+}

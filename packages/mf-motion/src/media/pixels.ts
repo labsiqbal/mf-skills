@@ -369,3 +369,24 @@ export function colorClusters(frame: Frame, options: ClusterOptions = {}): Clust
     return { rgb, hex: toHex(rgb), share: cluster.count / points.length };
   });
 }
+
+/** Mask (1 = content) grown by `band` pixels in every direction (a square window, as two sliding-window passes). */
+export function growMask(mask: Uint8Array, width: number, height: number, band: number): Uint8Array {
+  const pass = (source: Uint8Array, along: 'x' | 'y') => {
+    const out = new Uint8Array(source.length);
+    const lines = along === 'x' ? height : width;
+    const length = along === 'x' ? width : height;
+    const at = (line: number, i: number) => (along === 'x' ? line * width + i : i * width + line);
+    for (let line = 0; line < lines; line += 1) {
+      let count = 0;
+      for (let i = 0; i < Math.min(band, length); i += 1) count += source[at(line, i)] ?? 0;
+      for (let i = 0; i < length; i += 1) {
+        if (i + band < length) count += source[at(line, i + band)] ?? 0;
+        if (i - band - 1 >= 0) count -= source[at(line, i - band - 1)] ?? 0;
+        out[at(line, i)] = count > 0 ? 1 : 0;
+      }
+    }
+    return out;
+  };
+  return pass(pass(mask, 'x'), 'y');
+}

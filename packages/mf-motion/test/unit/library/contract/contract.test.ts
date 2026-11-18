@@ -87,7 +87,8 @@ describe('move contract', () => {
           const out = temp('aspects');
           const result = await buildMove({ id: subject.meta.id, brand: 'demo:tessarine', aspect, mode, out, home, engine });
           expect(result.lint.errors, `${subject.meta.id} ${aspect} ${mode}`).toEqual([]);
-          expect(result.profile).toBe(moveProfile(subject.meta.uses.includes('overlay') || mode !== 'full' ? 'overlay' : 'broll', mode));
+          // Full mode renders the b-roll when the move offers one; alpha and key render the overlay.
+          expect(result.profile).toBe(moveProfile(mode === 'full' && subject.meta.uses.includes('broll') ? 'broll' : 'overlay', mode));
           expect(result.keyColor === null).toBe(mode !== 'key');
         }
       }

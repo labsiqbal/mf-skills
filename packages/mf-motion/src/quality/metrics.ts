@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { MfmError } from '../cli/errors';
 import { NUMBERS } from '../kit/numbers';
-import { type Frame, alphaCoverage, changedFraction, frameAt, frames, inkFraction, relativeLuminance } from '../media/pixels';
+import { type Frame, alphaCoverage, changedFraction, frameAt, frames, growMask, inkFraction, relativeLuminance } from '../media/pixels';
 import { probe } from '../media/probe';
 import { audioMetrics } from './audioMetrics';
 import { type CheckId, type Profile, applies, modeOf } from './profiles';
@@ -111,16 +111,37 @@ export async function stillStretches(file: string, durationSec: number): Promise
   return out;
 }
 
-/** Share of pixels of the frame that sit at the key colour (pure) and that are near it without being pure (bleed). */
+/**
+ * Anti-aliasing ring around content that the key check leaves out: Chrome
+ * draws every rounded corner and glyph edge with one blended pixel, which a
+ * keyer handles. A soft edge (blur, a soft shadow) reaches further and still
+ * counts.
+ */
+export const KEY_AA_RING_PX = 2;
+
+/**
+ * Background purity of a key-mode frame: content is every pixel further than
+ * 64 levels from the key colour; background pixels beyond KEY_AA_RING_PX of
+ * content are pure within key.purityLevels and impure otherwise.
+ */
 export function keyPurity(frame: Frame, key: [number, number, number]): { pure: number; impure: number } {
   const tolerance = NUMBERS['key.purityLevels'];
   const near = 64;
+  const pixels = frame.width * frame.height;
+  const distance = new Uint8Array(pixels);
+  const content = new Uint8Array(pixels);
+  for (let p = 0; p < pixels; p += 1) {
+    const d = Math.max(Math.abs((frame.data[p * 4] ?? 0) - key[0]), Math.abs((frame.data[p * 4 + 1] ?? 0) - key[1]), Math.abs((frame.data[p * 4 + 2] ?? 0) - key[2]));
+    distance[p] = d;
+    content[p] = d > near ? 1 : 0;
+  }
+  const ring = growMask(content, frame.width, frame.height, KEY_AA_RING_PX);
   let pure = 0;
   let impure = 0;
-  for (let p = 0; p < frame.width * frame.height; p += 1) {
-    const d = Math.max(Math.abs((frame.data[p * 4] ?? 0) - key[0]), Math.abs((frame.data[p * 4 + 1] ?? 0) - key[1]), Math.abs((frame.data[p * 4 + 2] ?? 0) - key[2]));
-    if (d <= tolerance) pure += 1;
-    else if (d <= near) impure += 1;
+  for (let p = 0; p < pixels; p += 1) {
+    if (ring[p]) continue;
+    if ((distance[p] ?? 0) <= tolerance) pure += 1;
+    else impure += 1;
   }
   return { pure, impure };
 }

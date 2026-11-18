@@ -20,7 +20,7 @@ import { makeSheets } from '../quality/sheets';
 import { writeDoc } from '../schemas/index';
 import { parseFps } from '../time/grammar';
 import { type MoveRenderRequest, brandFor, buildMove } from './build';
-import { type Format, type Output, encode, standaloneBase } from './encode';
+import { type Format, type Output, encode, encodeKeyLossless, standaloneBase } from './encode';
 
 export const MASTER_PATTERN = 'frame-%05d.png';
 
@@ -118,7 +118,7 @@ export const DEFAULT_FORMATS: Record<MoveRenderRequest['mode'], Format[]> = {
   key: ['key-mp4'],
 };
 
-/** The delivered file the gate measures: the one that keeps what the mode is about. */
+/** The delivered file the gate measures: the one that keeps what the mode is about (key mode measures a lossless key render). */
 const MEASURED: Record<MoveRenderRequest['mode'], Exclude<Format, 'png'>> = { full: 'mp4', alpha: 'mov', key: 'key-mp4' };
 
 export interface RenderMoveRequest extends MoveRenderRequest {
@@ -180,7 +180,9 @@ export async function renderMove(request: RenderMoveRequest): Promise<RenderMove
     lint(built.build, { profile: built.profile as never, round });
     const browser = request.browserPath ? { browserPath: request.browserPath } : {};
     writeAudit(path.join(round, 'audit.json'), await audit(built.build, { profile, aspect: request.aspect, avoidFace: meta.avoidFace, engine: request.engine, ...browser }));
-    const [measured] = await encode(master, [MEASURED[request.mode]], { ...common, out: round, base: 'render', keepMaster: true });
+    const measured = request.mode === 'key' && keyColor
+      ? await encodeKeyLossless(master, path.join(round, 'render-key-lossless.mp4'), keyColor)
+      : (await encode(master, [MEASURED[request.mode]], { ...common, out: round, base: 'render', keepMaster: true }))[0];
     if (!measured) throw new MfmError('INTERNAL', { round }, { message: 'The gate render was not encoded.' });
     request.onProgress?.('Measuring the render');
     const metrics = await measure(measured.path, {

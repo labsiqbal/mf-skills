@@ -1,8 +1,10 @@
-// The library moves, one line each, appended by every move ticket:
-//   move(metaOf, () => import('./<category>/<id>/index')),
-// A move's meta comes from its own meta.ts (loaded at start-up); its builder
-// loads on demand, so esbuild code-splits each move into its own chunk.
+// The library moves. Every move ticket appends its meta import and one entry:
+//   import { meta as <name> } from './<category>/<id>/meta';
+//   move(<name>, () => import('./<category>/<id>/index')),
+// A move's meta loads at start-up; its builder loads on demand, so esbuild
+// code-splits each move into its own chunk.
 import type { MoveMeta, MoveModule } from '../contract';
+import { meta as messageCascade } from './social/message-cascade/meta';
 
 export interface LibraryMove {
   meta: MoveMeta;
@@ -10,6 +12,7 @@ export interface LibraryMove {
 }
 
 const move = (meta: MoveMeta, load: () => Promise<MoveModule>): LibraryMove => ({ meta, load });
-void move;
 
-export const LIBRARY_MOVES: LibraryMove[] = [];
+export const LIBRARY_MOVES: LibraryMove[] = [
+  move(messageCascade, () => import('./social/message-cascade/index')),
+];
