@@ -105,7 +105,7 @@ export function transcriptLines(words: readonly Word[]): Line[] {
 
 const CUE_TIME = /^(?:(\d+):)?([0-5]\d):([0-5]\d)[,.](\d{3})$/;
 function timestamp(raw: string): number {
-  const match = CUE_TIME.exec(raw);
+  const match = raw.match(CUE_TIME);
   return match ? Number(match[1] ?? 0) * 3600 + Number(match[2]) * 60 + Number(match[3]) + Number(match[4]) / 1000 : NaN;
 }
 
