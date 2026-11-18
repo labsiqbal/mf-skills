@@ -1,0 +1,18 @@
+# The bootstrap check on a machine with nothing cached: doctor names what is
+# missing and points at --fix; the CLI then answers through version.
+name: doctor
+env:
+  MF_MOTION_CACHE: "{tmp}"
+  MF_MOTION_HOME: "{tmp}"
+steps:
+  - run: mf-motion doctor --offline --json
+    exit: 1
+    expect:
+      - ok == true
+      - data.ok == false
+      - next[0] == "mf-motion doctor --fix --json"
+      - data.launcher[0] == "npx"
+  - run: mf-motion version --json
+    exit: 0
+    expect:
+      - data.cli == "1.0.0"

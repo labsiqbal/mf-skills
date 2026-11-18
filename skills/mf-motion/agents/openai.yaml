@@ -1,0 +1,6 @@
+interface:
+  display_name: "MF Motion"
+  short_description: "Branded motion graphics rendered locally"
+  default_prompt: "Use $mf-motion to direct a branded film, B-roll moves or overlays: run the mf-motion CLI, get my approval on the plan, and deliver only what passes its gate."
+policy:
+  allow_implicit_invocation: true
