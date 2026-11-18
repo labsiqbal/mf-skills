@@ -12,6 +12,7 @@ import { meta as terminalRun } from './dev/terminal-run/meta';
 import { meta as inkUnderline } from './paper/ink-underline/meta';
 import { meta as taskCheckoff } from './productivity/task-checkoff/meta';
 import { meta as messageCascade } from './social/message-cascade/meta';
+import { meta as titleLockup } from './system/title-lockup/meta';
 
 export interface LibraryMove {
   meta: MoveMeta;
@@ -29,4 +30,5 @@ export const LIBRARY_MOVES: LibraryMove[] = [
   move(revenueStep, () => import('./business/revenue-step/index')),
   move(rankedBars, () => import('./data/ranked-bars/index')),
   move(inkUnderline, () => import('./paper/ink-underline/index')),
+  move(titleLockup, () => import('./system/title-lockup/index')),
 ];

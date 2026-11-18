@@ -31,6 +31,17 @@ export interface AssetSink {
   add(from: string, name?: string): string;
 }
 
+interface BrandMark {
+  kind: 'mark' | 'logo';
+  width: number;
+  height: number;
+}
+
+export interface PickedBrandMark extends BrandMark {
+  source: string;
+  format: 'svg' | 'png' | 'jpg';
+}
+
 export interface MoveCtx {
   aspect: AspectKey;
   width: number;
@@ -42,6 +53,8 @@ export interface MoveCtx {
   /** The chroma-key colour in key mode, else null. */
   keyColor: string | null;
   brand: BrandTokens;
+  brandName: string | null;
+  brandMark: (BrandMark & { file: string }) | null;
   safe: SafeBoxes;
   seed: number;
   durationSec: number;
@@ -64,7 +77,8 @@ export interface MoveCtxInput {
   mode: MoveMode;
   layer: MoveLayer;
   /** brand.json colours, type and radius; `palette` (brand.colors.palette) feeds the key colour. */
-  brand: TokenBrand & { colors: TokenBrand['colors'] & { palette?: string[] } };
+  brand: TokenBrand & { name?: string; colors: TokenBrand['colors'] & { palette?: string[] } };
+  brandMark?: PickedBrandMark | null;
   fps?: string;
   seed: number;
   durationSec: number;
@@ -108,6 +122,14 @@ export function moveCtx(input: MoveCtxInput): MoveCtx {
   const height = Math.round((base.height * width) / base.width);
   const brand = brandTokens(input.brand, { aspect: input.aspect, width, height });
   const safe = safeBoxes(input.aspect, moveProfile(input.layer, input.mode), { width, ...(input.avoidFace === false ? { avoidFace: false } : {}) });
+  const assets = assetSink();
+  const picked = input.brandMark;
+  const brandMark = picked ? {
+    file: assets.add(picked.source, `brand/${picked.kind}.${picked.format}`),
+    kind: picked.kind,
+    width: picked.width,
+    height: picked.height,
+  } : null;
   return {
     aspect: input.aspect,
     width,
@@ -117,10 +139,12 @@ export function moveCtx(input: MoveCtxInput): MoveCtx {
     mode: input.mode,
     keyColor: input.mode === 'key' ? keyColor(brandPalette(input.brand)).hex : null,
     brand,
+    brandName: typeof input.brand.name === 'string' ? input.brand.name : null,
+    brandMark,
     safe,
     seed: input.seed,
     durationSec: input.durationSec,
-    assets: assetSink(),
+    assets,
   };
 }
 

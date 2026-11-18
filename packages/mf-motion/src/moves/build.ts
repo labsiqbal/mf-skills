@@ -2,16 +2,19 @@
 // the move, brand, aspect, mode, duration and variables, build the
 // composition into <out>/build/ with its vars inlined, and lint it. Rendering
 // and encoding the master come with MFM-042.
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { safeParse } from 'valibot';
 import { showBrand } from '../brand/library';
 import { MfmError } from '../cli/errors';
 import { packageRoot } from '../engine/index';
-import { type MoveCtx, type MoveLayer, type MoveMode, moveCtx, moveProfile, writeMoveBuild } from '../kit/build/move';
+import { type MoveCtx, type MoveLayer, type MoveMode, type PickedBrandMark, moveCtx, moveProfile, writeMoveBuild } from '../kit/build/move';
 import type { AspectKey } from '../kit/numbers';
 import { type LintResult, lint } from '../lint/index';
 import { type DemoBrand, type ResolvedVars, DEMOS, overlayAspectsOf, resolveVars } from '../library/contract';
 import { type RegistryEntry, findMove } from '../library/registry';
+import { confine } from '../paths/index';
+import { Asset } from '../schemas/brand';
 
 export interface MoveRenderRequest {
   id: string;
@@ -52,6 +55,23 @@ export function brandFor(home: string, id: string): { doc: Record<string, unknow
   }
   const shown = showBrand(home, id) as unknown as Record<string, unknown> & { colors: Record<string, string>; dir: string };
   return { doc: shown, demo: (DEMOS as readonly string[]).includes(id) ? (id as DemoBrand) : null, dir: shown.dir };
+}
+
+/** Resolve the chosen still artwork without following it outside the brand's folder. */
+export function resolveBrandMark({ doc, dir }: { doc: Record<string, unknown>; dir: string }): PickedBrandMark | null {
+  const parsed = safeParse(Asset, doc.mark ?? doc.logo);
+  if (!parsed.success) return null;
+  const asset = parsed.output;
+  if (asset.kind === 'mp4') return null;
+  let source: string;
+  try {
+    source = confine(dir, asset.path);
+  } catch (error) {
+    if (error instanceof MfmError && error.code === 'PATH_ESCAPES_ROOT') return null;
+    throw error;
+  }
+  if (!statSync(source, { throwIfNoEntry: false })?.isFile()) return null;
+  return { source, kind: doc.mark == null ? 'logo' : 'mark', format: asset.kind, width: asset.w, height: asset.h };
 }
 
 interface BrandType {
@@ -111,6 +131,7 @@ export async function buildMove(request: MoveRenderRequest): Promise<MoveBuildRe
     mode: request.mode,
     layer,
     brand: brand.doc as unknown as Parameters<typeof moveCtx>[0]['brand'],
+    brandMark: resolveBrandMark(brand),
     seed: request.seed ?? 1,
     durationSec: duration,
     ...(request.fps ? { fps: request.fps } : {}),

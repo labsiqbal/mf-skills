@@ -42,7 +42,7 @@ describe('keyColor', () => {
 describe('moveCtx', () => {
   it('builds the context of the contract, with the key colour only in key mode', () => {
     const ctx = moveCtx({ aspect: '16:9', mode: 'key', layer: 'overlay', brand: mossmallow, seed: 7, durationSec: 4 });
-    expect(Object.keys(ctx).sort()).toEqual(['aspect', 'assets', 'brand', 'durationSec', 'fps', 'height', 'keyColor', 'mode', 'safe', 'seed', 'u', 'width'].sort());
+    expect(Object.keys(ctx).sort()).toEqual(['aspect', 'assets', 'brand', 'brandMark', 'brandName', 'durationSec', 'fps', 'height', 'keyColor', 'mode', 'safe', 'seed', 'u', 'width'].sort());
     expect(ctx).toMatchObject({ width: 1920, height: 1080, u: 1, keyColor: '#6C00D9', fps: '30' });
     expect(ctx.safe.profile).toBe('overlay-key');
     // Overlays end their copy box above the caption band and avoid the face band.
