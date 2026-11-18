@@ -29,15 +29,12 @@ function mfm(home: string, ...args: string[]) {
   return { code: result.status, json: JSON.parse(result.stdout) as Record<string, any>, stderr: result.stderr };
 }
 
-function mfmAsync(home: string, ...args: string[]): Promise<{ code: number | null; signal: NodeJS.Signals | null; stdout: string; stderr: string }> {
-  return new Promise((done, reject) => {
+function mfmAsync(home: string, ...args: string[]): Promise<{ code: number | null; stdout: string }> {
+  return new Promise((done) => {
     const child = spawn(process.execPath, [cli, ...args, '--json'], { env: env(home) });
     let stdout = '';
-    let stderr = '';
-    child.stdout.setEncoding('utf8').on('data', (chunk: string) => (stdout += chunk));
-    child.stderr.setEncoding('utf8').on('data', (chunk: string) => (stderr += chunk));
-    child.once('error', reject);
-    child.once('close', (code, signal) => done({ code, signal, stdout, stderr }));
+    child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+    child.on('close', (code) => done({ code, stdout }));
   });
 }
 
@@ -127,16 +124,13 @@ describe('locks', () => {
     expect(result.json.data.event).toMatchObject({ seq: 2, type: 'note.added', actor: 'agent', data: { text: 'hello' } });
   });
 
-  // Temporary MFM-133 diagnostic. Repeat in one Windows CI job and report every failing envelope.
-  const repeat = process.platform === 'win32' && process.env.CI === 'true' ? 30 : 1;
-  it.each(Array.from({ length: repeat }, (_, index) => index + 1))('keeps seq strictly increasing under 20 concurrent note calls (run %i)', async () => {
+  it('keeps seq strictly increasing under 20 concurrent note calls', async () => {
     const home = tempHome();
     const { root } = newProject(home);
     const results = await Promise.all(Array.from({ length: 20 }, (_, i) => mfmAsync(home, 'note', '--text', `note ${i}`, '--project', root)));
-    for (const [index, result] of results.entries()) {
-      const diagnostic = `note ${index} exit ${result.code} signal ${result.signal}\nstdout: ${result.stdout}\nstderr: ${result.stderr}`;
-      expect([0, 4], diagnostic).toContain(result.code);
-      if (result.code === 4) expect(JSON.parse(result.stdout).error.code, diagnostic).toBe('LOCKED');
+    for (const result of results) {
+      expect([0, 4]).toContain(result.code);
+      if (result.code === 4) expect(JSON.parse(result.stdout).error.code).toBe('LOCKED');
     }
     const succeeded = results.filter((result) => result.code === 0).length;
     expect(succeeded).toBeGreaterThan(0);
