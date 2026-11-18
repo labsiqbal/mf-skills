@@ -5,8 +5,6 @@ import { defineConfig } from 'vitest/config';
 // serial: one file at a time in one worker).
 export default defineConfig({
   test: {
-    // The root setup runs once, including when only one project is selected.
-    globalSetup: './test/helpers/global-setup.ts',
     projects: [
       {
         test: {
