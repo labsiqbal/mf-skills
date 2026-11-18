@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "kind": "placement",
+  "source": {
+    "media": "media/footage-cfr.mp4",
+    "transcript": "media/transcript.json",
+    "fps": "25",
+    "durationSec": 16
+  },
+  "aspect": "16:9",
+  "mode": "alpha",
+  "items": [
+    {
+      "id": "p01",
+      "at": 0.48,
+      "durSec": 3.5,
+      "move": "title-lockup",
+      "layer": "overlay",
+      "vars": {
+        "headline": "Meet Tessarine"
+      },
+      "say": "Meet Tessarine",
+      "reason": "Tessarine title and mark",
+      "version": "1.0.0"
+    },
+    {
+      "id": "p02",
+      "at": 4.96,
+      "durSec": 3.3,
+      "move": "ink-underline",
+      "layer": "overlay",
+      "vars": {
+        "keyword": "Baseline"
+      },
+      "say": "Set the baseline",
+      "reason": "Underline the baseline keyword",
+      "version": "1.0.0"
+    },
+    {
+      "id": "p03",
+      "at": 9.6,
+      "durSec": 4.5,
+      "move": "three-step-flow",
+      "layer": "broll",
+      "vars": {},
+      "say": "Three steps follow",
+      "reason": "Show the three steps",
+      "version": "1.0.0"
+    }
+  ]
+}

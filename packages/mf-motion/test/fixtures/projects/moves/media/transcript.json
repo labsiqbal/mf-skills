@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "transcript",
+  "language": "en",
+  "engine": "user",
+  "model": "fixture",
+  "words": [
+    {
+      "w": "Meet",
+      "start": 0.48,
+      "end": 0.68,
+      "conf": 1
+    },
+    {
+      "w": "Tessarine",
+      "start": 0.68,
+      "end": 0.88,
+      "conf": 1
+    },
+    {
+      "w": "Set",
+      "start": 4.96,
+      "end": 5.16,
+      "conf": 1
+    },
+    {
+      "w": "the",
+      "start": 5.16,
+      "end": 5.36,
+      "conf": 1
+    },
+    {
+      "w": "baseline",
+      "start": 5.36,
+      "end": 5.56,
+      "conf": 1
+    },
+    {
+      "w": "Three",
+      "start": 9.6,
+      "end": 9.8,
+      "conf": 1
+    },
+    {
+      "w": "steps",
+      "start": 9.8,
+      "end": 10.0,
+      "conf": 1
+    },
+    {
+      "w": "follow",
+      "start": 10.0,
+      "end": 10.2,
+      "conf": 1
+    }
+  ],
+  "lines": [
+    {
+      "text": "Meet Tessarine",
+      "start": 0.48,
+      "end": 0.88
+    },
+    {
+      "text": "Set the baseline",
+      "start": 4.96,
+      "end": 5.56
+    },
+    {
+      "text": "Three steps follow",
+      "start": 9.6,
+      "end": 10.2
+    }
+  ]
+}
