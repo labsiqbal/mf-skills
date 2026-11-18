@@ -10,11 +10,11 @@ export const warmHouse: GenrePreset = {
   sevenths: true,
   roles: {
     pad: { wave: 'triangle', cutoff: 1500, detuneCents: 6, gain: 0.06, octave: 4, attack: 0.5 },
-    bass: { wave: 'sine', cutoff: 400, gain: 0.26, octave: 2, pattern: 'offbeat' },
+    bass: { wave: 'sine', cutoff: 400, gain: 0.234, octave: 2, pattern: 'offbeat' },
     pluck: { kind: 'fm', gain: 0.12, octave: 4, pattern: 'stabs', brightness: 0.4, ratio: 2 },
     lead: null,
   },
-  drums: { kick: 0.65, snare: 0.0, clap: 0.24, hat: 0.09, fourOnFloor: true, halfTime: false, swing: 0.08, kickFromDrop: false },
+  drums: { kick: 0.585, snare: 0.0, clap: 0.24, hat: 0.09, fourOnFloor: true, halfTime: false, swing: 0.08, kickFromDrop: false },
   voicing: { spread: 'open' },
   fills: ['hat-burst', 'drop-out', 'snare-roll'],
   sfx: { hit: 'clap-stack', shimmer: 'bell', whoosh: 'filtered' },
