@@ -1,6 +1,6 @@
 // Logo and shot candidates, their sheets, and brand pick, through the built CLI.
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -34,7 +34,7 @@ function mfm(home: string, cwd: string, ...args: string[]) {
 beforeAll(async () => {
   expect(spawnSync(process.execPath, ['esbuild.config.mjs'], { cwd: packageRoot, encoding: 'utf8' }).status).toBe(0);
   await testBrowser();
-  site = mkdtempSync(path.join(tmpdir(), 'mfm-cand-site-'));
+  site = realpathSync.native(mkdtempSync(path.join(tmpdir(), 'mfm-cand-site-')));
   cpSync(fixture, site, { recursive: true });
   mkdirSync(path.join(site, 'img'));
   ffmpeg(['-f', 'lavfi', '-i', 'testsrc2=size=1600x900', '-frames:v', '1', path.join(site, 'img', 'hero-a.png')]);
@@ -53,7 +53,7 @@ describe('candidates', () => {
 
   let home = '';
   it('capture writes both sheets and keeps one of two identical hero images', async () => {
-    home = mkdtempSync(path.join(tmpdir(), 'mfm-home-'));
+    home = realpathSync.native(mkdtempSync(path.join(tmpdir(), 'mfm-home-')));
     const result = mfm(home, site, 'brand', 'capture', '--local-file', path.join(site, 'index.html'), '--local-root', site, '--name', 'tessarine');
     expect(result.code, result.stderr).toBe(0);
     const dir = path.join(home, 'brands', 'tessarine');
@@ -84,7 +84,7 @@ describe('candidates', () => {
     const { doc: before } = readDoc('brand', path.join(home, 'brands', 'tessarine', 'brand.json'));
     const shots = before.candidates.shots.map((_: string, i: number) => `s${i + 1}`);
     while (shots.length < 3) shots.push(shots[0] ?? 's1');
-    const project = path.join(mkdtempSync(path.join(tmpdir(), 'mfm-work-')), 'film');
+    const project = path.join(realpathSync.native(mkdtempSync(path.join(tmpdir(), 'mfm-work-'))), 'film');
     expect(mfm(home, site, 'new', 'Pick Test', '--type', 'film', '--dir', project).code).toBe(0);
     const result = mfm(home, project, 'brand', 'pick', 'tessarine', '--logo', 'l1', '--mark', 'l2', '--shots', shots.slice(0, 3).join(','));
     expect(result.code, JSON.stringify(result.json.error)).toBe(0);
