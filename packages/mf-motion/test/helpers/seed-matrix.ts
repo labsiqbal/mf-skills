@@ -46,7 +46,8 @@ export const SEED_TABLE: readonly SeedRow[] = [
   overlayAndBroll('follower-milestone', 'creator'),
   brollOnly('prompt-to-result', 'ai'),
   brollOnly('terminal-run', 'dev'),
-  overlayAndBroll('task-checkoff', 'productivity'),
+  // MFM-047: a task line beside the 1:1 face band wraps under 16 graphemes; 1:1 is b-roll only.
+  { ...overlayAndBroll('task-checkoff', 'productivity'), overlayAspects: ['16:9', '9:16'] },
   brollOnly('revenue-step', 'business'),
   brollOnly('ranked-bars', 'data'),
   overlayOnly('ink-underline', 'paper'),

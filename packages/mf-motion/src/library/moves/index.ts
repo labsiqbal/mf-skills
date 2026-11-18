@@ -7,6 +7,7 @@ import type { MoveMeta, MoveModule } from '../contract';
 import { meta as promptToResult } from './ai/prompt-to-result/meta';
 import { meta as followerMilestone } from './creator/follower-milestone/meta';
 import { meta as terminalRun } from './dev/terminal-run/meta';
+import { meta as taskCheckoff } from './productivity/task-checkoff/meta';
 import { meta as messageCascade } from './social/message-cascade/meta';
 
 export interface LibraryMove {
@@ -21,4 +22,5 @@ export const LIBRARY_MOVES: LibraryMove[] = [
   move(followerMilestone, () => import('./creator/follower-milestone/index')),
   move(promptToResult, () => import('./ai/prompt-to-result/index')),
   move(terminalRun, () => import('./dev/terminal-run/index')),
+  move(taskCheckoff, () => import('./productivity/task-checkoff/index')),
 ];
