@@ -1,6 +1,6 @@
 // The brand library: reuse, refresh, show, list, use and rm under per-brand locks.
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, utimesSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, utimesSync, writeFileSync } from 'node:fs';
 import { hostname, tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +18,8 @@ const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const site = path.join(packageRoot, 'test', 'fixtures', 'brands', 'injection', 'site');
 const candidatesFixture = path.join(packageRoot, 'test', 'fixtures', 'brands', 'candidates', 'site');
 
-const temp = (prefix: string) => mkdtempSync(path.join(tmpdir(), prefix));
+// The CLI reports canonical paths (macOS /private/var, Windows long names).
+const temp = (prefix: string) => realpathSync.native(mkdtempSync(path.join(tmpdir(), prefix)));
 
 async function mfm(home: string, ...args: string[]) {
   const result = await runIn([...args, '--home', home, '--json'], COMMANDS);
