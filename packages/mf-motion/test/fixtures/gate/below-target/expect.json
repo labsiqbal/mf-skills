@@ -1,0 +1,10 @@
+{
+  "about": "Rhythm scored 7 with a fix line: FAIL below target.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [],
+      "capped": []
+    }
+  ]
+}

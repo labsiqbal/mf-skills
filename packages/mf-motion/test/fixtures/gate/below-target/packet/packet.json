@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "kind": "judge-packet",
+  "unit": {
+    "type": "film",
+    "id": "gate-below-target",
+    "version": null
+  },
+  "profile": "film",
+  "aspect": "16:9",
+  "mode": "full",
+  "target": 8,
+  "rubricVersion": "1.0.0",
+  "builder": {
+    "provider": null,
+    "modelId": null
+  },
+  "files": [
+    {
+      "role": "brand-card",
+      "path": "brand-card.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "dense",
+      "path": "dense.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "facts",
+      "path": "facts.md",
+      "sha256": "12bbf580d8649559e954ac999d80ab539fa914637c00f830ed0829aa31015985",
+      "bytes": 61
+    },
+    {
+      "role": "phone",
+      "path": "phone.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    }
+  ],
+  "metrics": {
+    "path": "metrics.json",
+    "sha256": "73d26b3030fff8b56eb795de966a17fb59cf60356bc3fa4dc58fe0c97e7055f9"
+  },
+  "hash": "df33757a8b7806199b1a432de030923b7bc3e8492cf808e229fb201d3bff5a61"
+}

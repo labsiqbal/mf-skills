@@ -1,0 +1,16 @@
+{
+  "about": "All axes 10 from a fresh judge; the longest still is 3.1 s, so rhythm is capped to 6.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [],
+      "capped": [
+        {
+          "axis": "rhythm",
+          "raw": 10,
+          "capped": 6
+        }
+      ]
+    }
+  ]
+}

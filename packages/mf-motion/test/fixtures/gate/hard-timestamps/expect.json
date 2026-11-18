@@ -1,0 +1,11 @@
+{
+  "about": "Hard check timestamps failed (film); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "timestamps"
+      ]
+    }
+  ]
+}

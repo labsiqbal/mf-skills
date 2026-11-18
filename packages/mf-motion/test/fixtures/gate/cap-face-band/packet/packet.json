@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "kind": "judge-packet",
+  "unit": {
+    "type": "film",
+    "id": "gate-cap-face-band",
+    "version": null
+  },
+  "profile": "film",
+  "aspect": "16:9",
+  "mode": "full",
+  "target": 8,
+  "rubricVersion": "1.0.0",
+  "builder": {
+    "provider": null,
+    "modelId": null
+  },
+  "files": [
+    {
+      "role": "brand-card",
+      "path": "brand-card.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "dense",
+      "path": "dense.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "facts",
+      "path": "facts.md",
+      "sha256": "454dc904ad998a4296ae1577745e5caa54fc4b9b5719481f1eb9bfc660d4dda1",
+      "bytes": 62
+    },
+    {
+      "role": "phone",
+      "path": "phone.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    }
+  ],
+  "metrics": {
+    "path": "metrics.json",
+    "sha256": "9846f9ed8a533414000e28f958cb719e79848358d6dc9c5a65abf22cd392c6b7"
+  },
+  "hash": "74420f98b6978362b9c0e00e939c76cdce6934aed9d8083f6c436796e8229410"
+}

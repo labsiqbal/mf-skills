@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "kind": "judge-packet",
+  "unit": {
+    "type": "film",
+    "id": "gate-cap-sfx-timing",
+    "version": null
+  },
+  "profile": "film",
+  "aspect": "16:9",
+  "mode": "full",
+  "target": 8,
+  "rubricVersion": "1.0.0",
+  "builder": {
+    "provider": null,
+    "modelId": null
+  },
+  "files": [
+    {
+      "role": "brand-card",
+      "path": "brand-card.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "dense",
+      "path": "dense.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "facts",
+      "path": "facts.md",
+      "sha256": "a368a1a0ee58d588106aca3fde44f5fc94c7133a176ec5777d2f7bf47f6077e0",
+      "bytes": 63
+    },
+    {
+      "role": "phone",
+      "path": "phone.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    }
+  ],
+  "metrics": {
+    "path": "metrics.json",
+    "sha256": "58920d178e84e3890816004d2fb7a13382612335ebb9c56e1fd13e7fc0c87ba8"
+  },
+  "hash": "d58fa3aca939189b470803131c63737ff983012921ab1664dd67cdf929a126f1"
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "lint",
+  "errors": [
+    {
+      "code": "SEC001",
+      "file": "index.html",
+      "line": 10,
+      "col": 1,
+      "message": "Network URL in a script src."
+    },
+    {
+      "code": "SEC001",
+      "file": "index.html",
+      "line": 11,
+      "col": 1,
+      "message": "Network URL in a script src."
+    }
+  ],
+  "warnings": []
+}

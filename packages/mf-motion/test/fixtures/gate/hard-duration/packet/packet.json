@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "kind": "judge-packet",
+  "unit": {
+    "type": "film",
+    "id": "gate-hard-duration",
+    "version": null
+  },
+  "profile": "film",
+  "aspect": "16:9",
+  "mode": "full",
+  "target": 8,
+  "rubricVersion": "1.0.0",
+  "builder": {
+    "provider": null,
+    "modelId": null
+  },
+  "files": [
+    {
+      "role": "brand-card",
+      "path": "brand-card.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "dense",
+      "path": "dense.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    },
+    {
+      "role": "facts",
+      "path": "facts.md",
+      "sha256": "253b666ce341c83084aade9b5e928075f866a8f5f4931ec32cc09bb9c0946556",
+      "bytes": 62
+    },
+    {
+      "role": "phone",
+      "path": "phone.png",
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0",
+      "bytes": 70
+    }
+  ],
+  "metrics": {
+    "path": "metrics.json",
+    "sha256": "244b4a1374b2e0b826ff1a17a05f6151fa6cecb8cf8fdc0fd388d5a4cd97a813"
+  },
+  "hash": "800ccc68fbbeb7559c85c48287b626d054d9e8da2bf8297c024d0caf0289a54e"
+}

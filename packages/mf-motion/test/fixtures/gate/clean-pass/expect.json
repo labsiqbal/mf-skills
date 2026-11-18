@@ -1,0 +1,20 @@
+{
+  "about": "All axes 9 from a fresh judge of another family: PASS at runtime and in library mode.",
+  "runs": [
+    {
+      "level": "PASS"
+    },
+    {
+      "args": {
+        "library": true
+      },
+      "level": "PASS"
+    },
+    {
+      "args": {
+        "target": 9
+      },
+      "level": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "scores",
+  "packetHash": "e0653ab3439bab9a0df5e139082ce00c231891beb739398def77f26f3c4c717d",
+  "judge": {
+    "mode": "fresh",
+    "context": "subagent",
+    "provider": "openai",
+    "modelId": "openai-judge"
+  },
+  "axes": {
+    "hook": {
+      "score": 10,
+      "notes": [],
+      "fixes": []
+    },
+    "brand": {
+      "score": 10,
+      "notes": [],
+      "fixes": []
+    },
+    "motion": {
+      "score": 10,
+      "notes": [],
+      "fixes": []
+    },
+    "legibility": {
+      "score": 10,
+      "notes": [],
+      "fixes": []
+    },
+    "rhythm": {
+      "score": 10,
+      "notes": [],
+      "fixes": []
+    },
+    "finish": {
+      "score": 10,
+      "notes": [],
+      "fixes": []
+    }
+  },
+  "at": "2026-11-18T09:00:00.000Z"
+}

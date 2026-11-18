@@ -1,0 +1,11 @@
+{
+  "about": "Hard check caption-band failed (overlay-alpha); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "caption-band"
+      ]
+    }
+  ]
+}

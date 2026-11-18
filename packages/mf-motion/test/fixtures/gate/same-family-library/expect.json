@@ -1,0 +1,15 @@
+{
+  "about": "Library mode where the judge and the builder share a provider.",
+  "runs": [
+    {
+      "args": {
+        "library": true
+      },
+      "code": "JUDGE_NOT_INDEPENDENT",
+      "level": "FAIL"
+    },
+    {
+      "level": "PASS"
+    }
+  ]
+}

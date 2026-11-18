@@ -1,0 +1,16 @@
+{
+  "about": "Measured cap face-band: finish at most 6; fresh judge at 10.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [],
+      "capped": [
+        {
+          "axis": "finish",
+          "raw": 10,
+          "capped": 6
+        }
+      ]
+    }
+  ]
+}

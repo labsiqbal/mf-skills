@@ -1,0 +1,11 @@
+{
+  "about": "Hard check overlay-empty failed (overlay-alpha); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "overlay-empty"
+      ]
+    }
+  ]
+}

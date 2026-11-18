@@ -1,0 +1,12 @@
+{
+  "about": "Copy outside the copy-safe box; all axes 10: no score overrules it.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "copy-safe"
+      ],
+      "capped": []
+    }
+  ]
+}

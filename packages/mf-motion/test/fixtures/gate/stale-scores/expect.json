@@ -1,0 +1,8 @@
+{
+  "about": "scores.json written for another packet.",
+  "runs": [
+    {
+      "code": "SCORES_STALE"
+    }
+  ]
+}

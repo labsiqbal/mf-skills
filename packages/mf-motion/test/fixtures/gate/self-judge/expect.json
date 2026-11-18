@@ -1,0 +1,14 @@
+{
+  "about": "All axes 9 from the building session: PASS-SELF at runtime, FAIL in library mode.",
+  "runs": [
+    {
+      "level": "PASS-SELF"
+    },
+    {
+      "args": {
+        "library": true
+      },
+      "level": "FAIL"
+    }
+  ]
+}

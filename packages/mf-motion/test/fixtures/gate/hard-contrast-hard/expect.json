@@ -1,0 +1,11 @@
+{
+  "about": "Hard check contrast-hard failed (film); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "contrast-hard"
+      ]
+    }
+  ]
+}

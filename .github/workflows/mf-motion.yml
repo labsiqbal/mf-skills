@@ -236,6 +236,21 @@ jobs:
             const out = JSON.parse(execFileSync(d.launcher[0], [...d.launcher.slice(1), "version", "--json"]).toString());
             if (out.data.cli !== "1.0.0") throw new Error("launcher version " + out.data.cli);
           '
+          # The gate offline on fixture rounds: PASS-MEASURED exits 0, a measured cap under target exits 1.
+          rm -rf .cache/gate-smoke && mkdir -p .cache/gate-smoke
+          for case in no-vision high-scores-measured-defect; do
+            cp -R packages/mf-motion/test/fixtures/projects/film ".cache/gate-smoke/$case"
+            mkdir -p ".cache/gate-smoke/$case/rounds"
+            cp -R "packages/mf-motion/test/fixtures/gate/$case" ".cache/gate-smoke/$case/rounds/1"
+          done
+          node packages/mf-motion/dist/cli.mjs gate --project .cache/gate-smoke/no-vision --no-vision --json > .cache/gate-measured.json
+          node -e 'const d = require("./.cache/gate-measured.json").data; if (d.level !== "PASS-MEASURED") throw new Error("gate " + d.level);'
+          set +e
+          node packages/mf-motion/dist/cli.mjs gate --project .cache/gate-smoke/high-scores-measured-defect --json > .cache/gate-fail.json
+          code=$?
+          set -e
+          if [ "$code" != 1 ]; then echo "gate exited $code, expected 1" >&2; exit 1; fi
+          node -e 'const d = require("./.cache/gate-fail.json").data; if (d.level !== "FAIL" || d.capped[0].capped !== 6) throw new Error(JSON.stringify(d));'
           EOF2
           sudo --preserve-env unshare --net -- sudo --preserve-env -u "$USER" env "PATH=$PATH" bash .cache/offline.sh
 

@@ -1,0 +1,16 @@
+{
+  "about": "Measured cap reading-hold: legibility at most 7; fresh judge at 10.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [],
+      "capped": [
+        {
+          "axis": "legibility",
+          "raw": 10,
+          "capped": 7
+        }
+      ]
+    }
+  ]
+}

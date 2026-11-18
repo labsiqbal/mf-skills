@@ -1,0 +1,11 @@
+{
+  "about": "Hard check true-peak failed (film); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "true-peak"
+      ]
+    }
+  ]
+}

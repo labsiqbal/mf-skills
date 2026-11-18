@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kind": "metrics",
+  "file": "render.mp4",
+  "sha256": "cb9be9e60b91746b075913485ee6be45799c961246fbcbf9603aeabba86000ec",
+  "profile": "film",
+  "aspect": "16:9",
+  "mode": "full",
+  "durationSec": 4,
+  "expectedSec": 4,
+  "frames": 120,
+  "fps": "30",
+  "timestamps": {
+    "irregular": 0,
+    "maxJitterMs": 0.001
+  },
+  "frame0Ink": 0.9993,
+  "overlayCoverage": null,
+  "stills": [],
+  "longestStillSec": 0,
+  "contrast": [],
+  "audit": {
+    "hits": []
+  },
+  "lines": [],
+  "key": null,
+  "audio": null,
+  "engineCheck": {
+    "errors": 0,
+    "warnings": 0,
+    "findings": []
+  },
+  "hard": [
+    {
+      "check": "duration",
+      "pass": true,
+      "value": "4 s",
+      "limit": "4 s +-1 frame"
+    },
+    {
+      "check": "timestamps",
+      "pass": true,
+      "value": 0,
+      "limit": 1
+    },
+    {
+      "check": "true-peak",
+      "value": -0.3,
+      "limit": -1,
+      "pass": false
+    }
+  ],
+  "caps": []
+}

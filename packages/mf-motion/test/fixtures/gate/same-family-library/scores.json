@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "scores",
+  "packetHash": "9e303bd698071414b73dad6a6e06a3ad361075f8d9c5eaa69c8fda35f78ccc2f",
+  "judge": {
+    "mode": "fresh",
+    "context": "subagent",
+    "provider": "anthropic",
+    "modelId": "anthropic-judge"
+  },
+  "axes": {
+    "hook": {
+      "score": 9,
+      "notes": [],
+      "fixes": []
+    },
+    "brand": {
+      "score": 9,
+      "notes": [],
+      "fixes": []
+    },
+    "motion": {
+      "score": 9,
+      "notes": [],
+      "fixes": []
+    },
+    "legibility": {
+      "score": 9,
+      "notes": [],
+      "fixes": []
+    },
+    "rhythm": {
+      "score": 9,
+      "notes": [],
+      "fixes": []
+    },
+    "finish": {
+      "score": 9,
+      "notes": [],
+      "fixes": []
+    }
+  },
+  "at": "2026-11-18T09:00:00.000Z"
+}

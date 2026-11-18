@@ -1,14 +1,16 @@
 // Quality commands. measure: metrics.json from a rendered file (MFM-036);
 // sheets: the review sheets of a render (MFM-037); packet: the judge packet
-// (MFM-038); audit: the frame audit of a build (MFM-035).
+// (MFM-038); audit: the frame audit of a build (MFM-035); gate: the one
+// verdict of a round (MFM-039).
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { type Hold, measure } from '../../quality/metrics';
 import { PROFILE_LIST, type Profile } from '../../quality/profiles';
 import { makeSheets } from '../../quality/sheets';
 import { audit, writeAudit } from '../../quality/audit';
+import { gate } from '../../quality/gate';
 import { JUDGE_ROUTES, buildPacket, latestRound } from '../../quality/packet';
-import { findProjectRoot, readProject } from '../../paths/index';
+import { appendEvent, findProjectRoot, readProject } from '../../paths/index';
 import { ensureBrowser, ensureEngine, readOk } from '../../engine/index';
 import { readDoc, writeDoc } from '../../schemas/index';
 import { MfmError } from '../errors';
@@ -160,5 +162,49 @@ export const auditCommand = defineCommand({
     writeAudit(out, result);
     // Exit 1 when a hit is hard for the profile.
     return { data: { audit: out, hits: result.hits, lines: result.lines, hard: result.hard }, exitCode: result.hard > 0 ? 1 : 0 };
+  },
+});
+
+export const gateCommand = defineCommand({
+  name: 'gate',
+  summary: "The round's one verdict from lint, audit, check, metrics, packet and scores: PASS, PASS-SELF, PASS-MEASURED or FAIL; writes verdict.json.",
+  flags: {
+    round: { type: 'integer', value: '<n>', description: 'round number (default the latest round)' },
+    target: { type: 'string', enum: ['8', '9'], value: '8|9', description: "target on every axis (default the packet's; library mode is 9)" },
+    library: { type: 'boolean', description: 'library mode: only PASS at target 9, judge from another model family (lab)' },
+    scores: { type: 'string', value: '<file>', description: 'scores.json to read (default rounds/<n>/scores.json)' },
+    'no-vision': { type: 'boolean', description: 'the agent cannot see images: no scores, PASS-MEASURED at best' },
+  },
+  dataSchema: {
+    type: 'object',
+    required: ['verdict', 'level', 'summary'],
+    properties: { verdict: { type: 'string' }, level: { type: 'string' }, summary: { type: 'string' }, hardFailures: { type: 'array' }, capped: { type: 'array' }, effective: {} },
+  },
+  async handler({ flags, cwd, global, log }) {
+    const project = findProjectRoot(cwd, global.project);
+    const doc = readProject(project, CLI_VERSION);
+    const round = flags.round ?? latestRound(project);
+    const roundDir = round === null ? null : path.join(project, 'rounds', String(round));
+    if (round === null || roundDir === null || !existsSync(roundDir)) {
+      throw new MfmError('PACKET_MISSING', { round: round ?? null }, { message: round === null ? 'The project has no rounds yet.' : `Round ${round} does not exist.` });
+    }
+    const outcome = gate({
+      roundDir,
+      round,
+      ...(flags.target !== undefined ? { target: Number(flags.target) as 8 | 9 } : {}),
+      library: flags.library === true,
+      ...(flags.scores !== undefined ? { scoresFile: path.resolve(cwd, flags.scores) } : {}),
+      noVision: flags['no-vision'] === true,
+      engine: doc.engine.hyperframes,
+      cli: CLI_VERSION,
+    });
+    const { verdict } = outcome;
+    appendEvent(project, { type: 'gate.verdict', actor: 'cli', round, data: { level: verdict.level, target: verdict.target, library: verdict.library, hardFailures: verdict.hardFailures.map((entry) => entry.check), capped: verdict.capped.map((entry) => entry.axis), min: verdict.min, packetHash: verdict.packetHash } }, { command: 'gate' });
+    log.progress(outcome.summary);
+    if (outcome.failure) throw outcome.failure;
+    return {
+      data: { verdict: outcome.file, level: verdict.level, summary: outcome.summary, hardFailures: verdict.hardFailures, capped: verdict.capped, effective: verdict.effective },
+      exitCode: verdict.level === 'FAIL' ? 1 : 0,
+    };
   },
 });

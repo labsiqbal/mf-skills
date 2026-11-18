@@ -1,0 +1,16 @@
+{
+  "about": "Measured cap sfx-rise: rhythm at most 8; fresh judge at 10.",
+  "runs": [
+    {
+      "level": "PASS",
+      "hardFailures": [],
+      "capped": [
+        {
+          "axis": "rhythm",
+          "raw": 10,
+          "capped": 8
+        }
+      ]
+    }
+  ]
+}

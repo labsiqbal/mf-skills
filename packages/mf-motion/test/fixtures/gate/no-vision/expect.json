@@ -1,0 +1,15 @@
+{
+  "about": "No scores and no hard failures, judged with --no-vision.",
+  "runs": [
+    {
+      "args": {
+        "noVision": true
+      },
+      "level": "PASS-MEASURED",
+      "hardFailures": []
+    },
+    {
+      "code": "SCORES_INVALID"
+    }
+  ]
+}

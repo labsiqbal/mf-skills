@@ -1,0 +1,11 @@
+{
+  "about": "Hard check key-purity failed (overlay-key); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "key-purity"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "about": "Hard check frame-margin failed (film); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "frame-margin"
+      ]
+    }
+  ]
+}

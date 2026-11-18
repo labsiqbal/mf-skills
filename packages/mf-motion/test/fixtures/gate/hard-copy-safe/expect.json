@@ -1,0 +1,11 @@
+{
+  "about": "Hard check copy-safe failed (broll); perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "copy-safe"
+      ]
+    }
+  ]
+}

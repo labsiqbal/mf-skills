@@ -1,0 +1,11 @@
+{
+  "about": "Two lint errors in lint.json; perfect scores.",
+  "runs": [
+    {
+      "level": "FAIL",
+      "hardFailures": [
+        "lint"
+      ]
+    }
+  ]
+}

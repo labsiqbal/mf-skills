@@ -1,0 +1,16 @@
+{
+  "about": "Measured cap low-share: finish at most 8; fresh judge at 10.",
+  "runs": [
+    {
+      "level": "PASS",
+      "hardFailures": [],
+      "capped": [
+        {
+          "axis": "finish",
+          "raw": 10,
+          "capped": 8
+        }
+      ]
+    }
+  ]
+}
