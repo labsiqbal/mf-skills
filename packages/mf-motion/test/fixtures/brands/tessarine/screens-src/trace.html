@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tessarine - Trace</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.split { display: grid; grid-template-columns: 1fr 420px; gap: 18px; min-height: 0; }
+.tree { padding: 6px 0; }
+.node { display: grid; grid-template-columns: 1fr 86px 70px; align-items: center; height: 44px; padding: 0 18px; font-size: 13px; position: relative; }
+.node.d1 .name { padding-left: 22px; }
+.node.d2 .name { padding-left: 44px; }
+.node.d1::before, .node.d2::before { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+.node.d1::before { left: 27px; }
+.node.d2::before { left: 49px; }
+.node.failed { background: rgba(242, 102, 122, 0.08); }
+.node.failed .name { color: var(--fail); }
+.node .chip { justify-self: start; }
+.node .ms { text-align: right; color: var(--muted); font-size: 12px; }
+.chip.skip { background: var(--raise); color: var(--muted); }
+.same { padding: 6px 0; }
+.same .row2 { display: grid; grid-template-columns: 120px 1fr 140px 80px; gap: 16px; align-items: center; height: 44px; padding: 0 18px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.same .row2:last-child { border-bottom: 0; }
+.same .row2.h { height: 36px; font-size: 12px; }
+.same .row2 > :last-child { text-align: right; }
+.detail { display: flex; flex-direction: column; gap: 14px; }
+.detail h2 { color: var(--fail); }
+.kv { display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; font-size: 13px; }
+pre { margin: 0; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; color: var(--ink); }
+pre .e { color: var(--fail); }
+@media (max-width: 600px) {
+  .split { grid-template-columns: 1fr; gap: 14px; }
+  .node { grid-template-columns: 1fr 74px; height: 40px; font-size: 12px; padding: 0 14px; }
+  .node .ms { display: none; }
+  .detail .kv { grid-template-columns: 96px 1fr; font-size: 12px; }
+  .same { display: none; }
+}
+</style>
+</head>
+<body>
+<aside class="side">
+  <img src="../site/assets/logo.svg" alt="Tessarine" width="459" height="80">
+  <nav class="nav"><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h10M6 10h11M9 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>Runs</a><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M5 7h6M5 13h6M11 7v4h5M11 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Traces</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 17V9M10 17V4M16 17v-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Evals</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 15l5-5 4 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Cost</a></nav>
+  <div class="proj"><strong>support-agent</strong><span class="muted">production · us-east</span></div>
+</aside>
+<div class="bar"><img src="../site/assets/logo.svg" alt="Tessarine" width="459" height="80"><span class="avatar">MR</span></div>
+<main class="main">
+<div class="top">
+  <div><h1>Trace #4822</h1><p class="muted">support-agent · failed at step 4 of 7</p></div>
+  <div class="wide-only" style="display:flex;gap:10px"><a class="btn alt" href="#">Replay</a><a class="btn" href="#">Add to eval set</a></div>
+</div>
+<div class="split">
+  <div class="card tree">
+<div class="node d0"><span class="name"><span class="mono">run support-agent #4822</span></span><span class="chip ok"><span class="dot"></span>ok</span><span class="ms mono num">2.91 s</span></div>
+<div class="node d1"><span class="name"><span class="mono">plan</span></span><span class="chip ok"><span class="dot"></span>ok</span><span class="ms mono num">540 ms</span></div>
+<div class="node d1"><span class="name"><span class="mono">tool · search_orders</span></span><span class="chip ok"><span class="dot"></span>ok</span><span class="ms mono num">410 ms</span></div>
+<div class="node d1"><span class="name"><span class="mono">tool · lookup_policy</span></span><span class="chip ok"><span class="dot"></span>ok</span><span class="ms mono num">388 ms</span></div>
+<div class="node d1 failed"><span class="name"><span class="mono">tool · issue_refund</span></span><span class="chip fail"><span class="dot"></span>error</span><span class="ms mono num">1.02 s</span></div>
+<div class="node d2 failed"><span class="name"><span class="mono">http POST /refunds</span></span><span class="chip fail"><span class="dot"></span>error</span><span class="ms mono num">998 ms</span></div>
+<div class="node d1"><span class="name"><span class="mono">draft reply</span></span><span class="chip skip">skipped</span><span class="ms mono num">-</span></div>
+<div class="node d1"><span class="name"><span class="mono">send</span></span><span class="chip skip">skipped</span><span class="ms mono num">-</span></div>
+  </div>
+  <div class="card detail">
+    <h2>tool · issue_refund</h2>
+    <div class="kv"><span class="muted">Status</span><span>HTTP 422 after 998 ms</span><span class="muted">Input</span><span class="mono">order 55190 · $84.00</span><span class="muted">Attempt</span><span>1 of 1, no retry policy</span></div>
+    <pre><code>POST /refunds
+{ "order": 55190, "amount": 8400 }
+<span class="e">422 refund exceeds policy limit (5000)</span></code></pre>
+    <p class="muted">The model passed the amount in cents. The policy limit is in dollars.</p>
+  </div>
+</div>
+<div class="card same">
+  <div class="row2 h"><span class="muted">Run</span><span class="muted">Same error, last 24 h</span><span class="muted">Amount sent</span><span class="muted">Time</span></div>
+  <div class="row2"><span class="mono">#4822</span><span>422 refund exceeds policy limit</span><span class="mono num">8400</span><span class="muted num">09:51</span></div>
+  <div class="row2"><span class="mono">#4807</span><span>422 refund exceeds policy limit</span><span class="mono num">12900</span><span class="muted num">08:12</span></div>
+  <div class="row2"><span class="mono">#4779</span><span>422 refund exceeds policy limit</span><span class="mono num">6150</span><span class="muted num">06:40</span></div>
+</div>
+</main>
+<nav class="tabs"><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h10M6 10h11M9 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>Runs</a><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M5 7h6M5 13h6M11 7v4h5M11 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Traces</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 17V9M10 17V4M16 17v-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Evals</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 15l5-5 4 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Cost</a></nav>
+</body>
+</html>

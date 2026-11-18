@@ -1,0 +1,72 @@
+/* Tessarine landing page. Invented brand for mf-motion tests; tessarine.example is a reserved domain. */
+@font-face {
+  font-family: "Inter";
+  src: url("assets/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Noto Sans Mono";
+  src: url("assets/fonts/NotoSansMono.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  font-style: normal;
+}
+:root {
+  --ground: #0B0F17;
+  --surface: #141B26;
+  --ink: #E8EEF7;
+  --muted: #808CA0;
+  --accent: #8B6DFF;
+  --accent2: #2DD4BF;
+  --line: #222B3A;
+  --radius: 10px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+header .wrap { display: flex; align-items: center; justify-content: space-between; height: 88px; }
+header .home img { display: block; height: 32px; width: auto; }
+nav { display: flex; gap: 28px; font-size: 16px; }
+nav a { color: var(--ink); text-decoration: none; font-weight: 500; }
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; margin: 0; line-height: 1.08; }
+h1 { font-size: 72px; max-width: 820px; }
+h2 { font-size: 44px; }
+h3 { font-size: 22px; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.hero { padding-top: 64px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+.hero .sub { font-size: 22px; max-width: 640px; }
+.actions { display: flex; gap: 16px; align-items: center; }
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--radius); text-decoration: none; font-weight: 600; white-space: nowrap;
+}
+.button.primary { height: 56px; padding: 0 30px; background: var(--accent); color: var(--ground); font-size: 18px; }
+.button.secondary { height: 44px; padding: 0 22px; background: var(--accent2); color: var(--ground); font-size: 16px; }
+code { font-family: "Noto Sans Mono", monospace; font-weight: 500; font-size: 15px; }
+.install code { display: inline-block; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; color: var(--ink); }
+.frame { background: var(--surface); border: 1px solid var(--line); padding: 10px; border-radius: 16px; }
+.shot { display: block; width: 100%; height: auto; border-radius: 8px; }
+.hero-shot { margin: 8px auto 72px; }
+.row .frame { padding: 6px; border-radius: 12px; }
+.row .shot { border-radius: 6px; }
+.screens h2 { margin-bottom: 12px; }
+.screens > .wrap > p { margin-bottom: 32px; font-size: 20px; }
+.row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+figure { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+figcaption { font-size: 16px; }
+.features { padding: 88px 0; }
+.features .row article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+footer { padding: 40px 0 56px; border-top: 1px solid var(--line); }
+footer .wrap { display: flex; align-items: center; gap: 16px; font-size: 15px; }
+footer img { width: 32px; height: 32px; }
+footer .domain { margin-left: auto; }

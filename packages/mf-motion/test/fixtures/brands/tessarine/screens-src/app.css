@@ -1,0 +1,95 @@
+/* Tessarine app screens: brand tokens only. Desktop 1440x900, phone 390x844. */
+@font-face {
+  font-family: "Inter";
+  src: url("../site/assets/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Noto Sans Mono";
+  src: url("../site/assets/fonts/NotoSansMono.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  font-style: normal;
+}
+:root {
+  --ground: #0B0F17;
+  --surface: #141B26;
+  --raise: #1B2433;
+  --ink: #E8EEF7;
+  --muted: #808CA0;
+  --accent: #8B6DFF;
+  --accent2: #2DD4BF;
+  --fail: #F2667A;
+  --warn: #F2B65A;
+  --line: #222B3A;
+  --radius: 10px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  overflow: hidden;
+}
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+h1 { font-size: 30px; }
+h2 { font-size: 18px; }
+h3 { font-size: 15px; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.mono, code { font-family: "Noto Sans Mono", monospace; font-weight: 500; }
+.num { font-variant-numeric: tabular-nums; }
+
+.side { padding: 24px 16px; display: flex; flex-direction: column; gap: 28px; border-right: 1px solid var(--line); background: var(--ground); }
+.side img { width: 150px; height: auto; margin-left: 8px; }
+.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav a { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: var(--muted); text-decoration: none; font-weight: 500; }
+.nav a.on { background: var(--surface); color: var(--ink); }
+.nav a.on svg { color: var(--accent); }
+.nav svg { width: 18px; height: 18px; flex: none; }
+.side .proj { margin-top: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; font-size: 13px; }
+.side .proj strong { display: block; font-weight: 600; }
+
+.main { padding: 28px 36px; overflow: hidden; display: flex; flex-direction: column; gap: 22px; }
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.top p { margin-top: 6px; font-size: 15px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 8px; background: var(--accent); color: var(--ground); font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap; }
+.btn.alt { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.chip.ok { background: rgba(45, 212, 191, 0.14); color: var(--accent2); }
+.chip.fail { background: rgba(242, 102, 122, 0.14); color: var(--fail); }
+.chip.run { background: rgba(139, 109, 255, 0.16); color: #B3A1FF; }
+.dot { width: 8px; height: 8px; border-radius: 4px; background: currentColor; flex: none; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stats .card { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; }
+.stats strong { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+
+.bar { display: none; }
+.tabs { display: none; }
+
+@media (max-width: 600px) {
+  body { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; font-size: 14px; }
+  .side { display: none; }
+  .bar { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 8px; }
+  .bar img { height: 24px; width: auto; }
+  .bar .avatar { width: 34px; height: 34px; border-radius: 17px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; color: var(--accent); font-weight: 700; font-size: 13px; }
+  .main { padding: 12px 20px; gap: 16px; }
+  .top { flex-direction: column; align-items: flex-start; gap: 12px; }
+  h1 { font-size: 26px; }
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stats .card { padding: 12px 14px; }
+  .stats strong { font-size: 19px; }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 10px 8px 22px; }
+  .tabs a { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; color: var(--muted); text-decoration: none; }
+  .tabs a.on { color: var(--ink); }
+  .tabs a.on svg { color: var(--accent); }
+  .tabs svg { width: 22px; height: 22px; }
+  .wide-only { display: none !important; }
+}

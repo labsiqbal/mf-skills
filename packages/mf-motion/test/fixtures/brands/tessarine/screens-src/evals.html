@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tessarine - Evals</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.board { padding: 6px 0; }
+.board .hdr, .suite { display: grid; grid-template-columns: 220px 1fr 80px 64px; gap: 16px; align-items: center; padding: 0 18px; }
+.board .hdr { height: 36px; font-size: 12px; border-bottom: 1px solid var(--line); }
+.suite { height: 52px; font-size: 13px; border-bottom: 1px solid var(--line); }
+.suite:last-child { border-bottom: 0; }
+.meter { height: 8px; border-radius: 4px; background: var(--raise); position: relative; overflow: hidden; }
+.meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: var(--accent2); }
+.meter i.down { background: var(--warn); }
+.suite strong { font-weight: 600; text-align: right; }
+.delta { text-align: right; font-size: 12px; font-weight: 600; }
+.delta.up { color: var(--accent2); }
+.delta.down { color: var(--warn); }
+.gate { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.gate p { font-size: 14px; }
+.cases { padding: 6px 0; }
+.cases .c { display: grid; grid-template-columns: 90px 1fr 120px; gap: 16px; align-items: center; height: 44px; padding: 0 18px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.cases .c:last-child { border-bottom: 0; }
+.cases .c.h { height: 36px; font-size: 12px; }
+.cases .c > :last-child { justify-self: end; }
+@media (max-width: 600px) {
+  .board .hdr, .suite { grid-template-columns: 1fr 58px 44px; gap: 10px; padding: 0 14px; }
+  .board .hdr .m, .suite .meter { display: none; }
+  .suite { height: 46px; font-size: 12px; }
+  .gate { flex-direction: column; align-items: flex-start; }
+  .cases { display: none; }
+}
+</style>
+</head>
+<body>
+<aside class="side">
+  <img src="../site/assets/logo.svg" alt="Tessarine" width="459" height="80">
+  <nav class="nav"><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h10M6 10h11M9 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>Runs</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M5 7h6M5 13h6M11 7v4h5M11 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Traces</a><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 17V9M10 17V4M16 17v-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Evals</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 15l5-5 4 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Cost</a></nav>
+  <div class="proj"><strong>support-agent</strong><span class="muted">production · us-east</span></div>
+</aside>
+<div class="bar"><img src="../site/assets/logo.svg" alt="Tessarine" width="459" height="80"><span class="avatar">MR</span></div>
+<main class="main">
+<div class="top">
+  <div><h1>Evals</h1><p class="muted">prompt v14 against v13 · 1,240 cases · run 6 min ago</p></div>
+  <div class="wide-only" style="display:flex;gap:10px"><a class="btn alt" href="#">Diff prompts</a><a class="btn" href="#">Run suite</a></div>
+</div>
+<div class="stats">
+  <div class="card"><span class="muted">Pass rate</span><strong class="num">94.2%</strong></div>
+  <div class="card"><span class="muted">Cases</span><strong class="num">1,240</strong></div>
+  <div class="card"><span class="muted">Regressions</span><strong class="num">1 suite</strong></div>
+  <div class="card"><span class="muted">Eval cost</span><strong class="num">$3.86</strong></div>
+</div>
+<div class="card board">
+  <div class="hdr"><span class="muted">Suite</span><span class="muted m">Pass rate</span><span class="muted" style="text-align:right">v14</span><span class="muted" style="text-align:right">vs v13</span></div>
+<div class="suite"><span class="mono">refund-policy</span><span class="meter"><i style="width:96.4%" class="up"></i></span><strong class="num">96.4%</strong><span class="delta up num">+1.2</span></div>
+<div class="suite"><span class="mono">order-lookup</span><span class="meter"><i style="width:93.8%" class="up"></i></span><strong class="num">93.8%</strong><span class="delta up num">+0.4</span></div>
+<div class="suite"><span class="mono">tone-and-safety</span><span class="meter"><i style="width:98.1%" class="up"></i></span><strong class="num">98.1%</strong><span class="delta up num">0.0</span></div>
+<div class="suite"><span class="mono">escalation</span><span class="meter"><i style="width:88.2%" class="down"></i></span><strong class="num">88.2%</strong><span class="delta down num">-2.6</span></div>
+<div class="suite"><span class="mono">multi-step-returns</span><span class="meter"><i style="width:91.5%" class="up"></i></span><strong class="num">91.5%</strong><span class="delta up num">+3.1</span></div>
+</div>
+<div class="card gate"><p><strong>escalation</strong> <span class="muted">dropped 2.6 points. Merges stay blocked until it is back within 2.0.</span></p><span class="chip fail"><span class="dot"></span>merge blocked</span></div>
+<div class="card cases">
+  <div class="c h"><span class="muted">Case</span><span class="muted">New failures in escalation</span><span class="muted">Result</span></div>
+  <div class="c"><span class="mono">esc-0412</span><span>Angry customer, second refund in a week</span><span class="chip fail"><span class="dot"></span>no handoff</span></div>
+  <div class="c"><span class="mono">esc-0538</span><span>Legal threat in the first message</span><span class="chip fail"><span class="dot"></span>no handoff</span></div>
+  <div class="c"><span class="mono">esc-0611</span><span>Order over $500, damaged on arrival</span><span class="chip fail"><span class="dot"></span>late handoff</span></div>
+</div>
+</main>
+<nav class="tabs"><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h10M6 10h11M9 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>Runs</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3v14M5 7h6M5 13h6M11 7v4h5M11 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Traces</a><a href="#" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 17V9M10 17V4M16 17v-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Evals</a><a href="#"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 15l5-5 4 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Cost</a></nav>
+</body>
+</html>

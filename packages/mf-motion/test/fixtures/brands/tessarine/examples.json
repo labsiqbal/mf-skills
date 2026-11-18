@@ -1,0 +1,130 @@
+{
+  "message-cascade": {
+    "messages": [
+      {
+        "from": "user",
+        "text": "Why did run 4822 fail?"
+      },
+      {
+        "from": "brand",
+        "text": "Step 4, issue_refund, returned 422. The amount was sent in cents."
+      },
+      {
+        "from": "user",
+        "text": "How many runs hit the same error?"
+      },
+      {
+        "from": "brand",
+        "text": "37 in the last 24 h. All after prompt v14 shipped at 06:12."
+      }
+    ]
+  },
+  "follower-milestone": {
+    "handle": "@tessarine",
+    "from": 24000,
+    "to": 25000,
+    "label": "engineers tracing their agents"
+  },
+  "prompt-to-result": {
+    "prompt": "Show runs where cost per run went over 5 cents this week.",
+    "result": {
+      "title": "212 runs over 5 cents",
+      "body": "All in support-agent. A retry loop on lookup_policy doubled the tokens per run.",
+      "meta": "Searched 182,406 runs in 140 ms"
+    }
+  },
+  "terminal-run": {
+    "command": "tessarine eval run --suite refund-policy",
+    "lines": [
+      "refund-policy ...... 482 cases",
+      "passed ............. 465",
+      "failed ............. 17  (3.5%)"
+    ],
+    "result": "96.4% pass rate, up 1.2 points from v13"
+  },
+  "task-checkoff": {
+    "title": "Ship prompt v15",
+    "items": [
+      "Trace 50 production runs",
+      "Run the full eval suite",
+      "Compare cost per run with v14",
+      "Review the 3 new failures"
+    ],
+    "progressLabel": "Release checks"
+  },
+  "revenue-step": {
+    "title": "Agent runs traced each quarter",
+    "unit": "k runs",
+    "series": [
+      {
+        "label": "Q1",
+        "value": 1200
+      },
+      {
+        "label": "Q2",
+        "value": 2600
+      },
+      {
+        "label": "Q3",
+        "value": 4100
+      },
+      {
+        "label": "Q4",
+        "value": 6800
+      }
+    ],
+    "delta": "+66%"
+  },
+  "ranked-bars": {
+    "title": "Slowest steps, median latency",
+    "unit": "ms",
+    "items": [
+      {
+        "label": "draft reply",
+        "value": 1020
+      },
+      {
+        "label": "plan",
+        "value": 620
+      },
+      {
+        "label": "search_orders",
+        "value": 460
+      },
+      {
+        "label": "lookup_policy",
+        "value": 460
+      },
+      {
+        "label": "send",
+        "value": 320
+      }
+    ]
+  },
+  "ink-underline": {
+    "text": "Every step, every run, one trace",
+    "keyword": "every",
+    "shape": "underline"
+  },
+  "title-lockup": {
+    "headline": "See every step your agents take.",
+    "subline": "Start tracing"
+  },
+  "three-step-flow": {
+    "steps": [
+      {
+        "title": "Trace",
+        "body": "Add one line. Every tool and model call becomes a span."
+      },
+      {
+        "title": "Evaluate",
+        "body": "Run a suite on each prompt change. Regressions block the merge."
+      },
+      {
+        "title": "Cut cost",
+        "body": "See tokens and cents per run. Fix the step that burns them."
+      }
+    ],
+    "highlight": 1
+  }
+}

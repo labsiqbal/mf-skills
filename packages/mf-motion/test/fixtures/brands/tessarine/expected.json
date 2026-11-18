@@ -1,0 +1,23 @@
+{
+  "id": "tessarine",
+  "colors": {
+    "ground": "#0B0F17",
+    "surface": "#141B26",
+    "ink": "#E8EEF7",
+    "muted": "#808CA0",
+    "accent": "#8B6DFF",
+    "accent2": "#2DD4BF"
+  },
+  "type": {
+    "display": { "family": "Inter", "weight": 700, "files": [{ "path": "capture/assets/fonts/Inter.woff2", "licenceHint": "ofl" }] },
+    "heading": { "family": "Inter", "weight": 700, "files": [{ "path": "capture/assets/fonts/Inter.woff2", "licenceHint": "ofl" }] },
+    "body": { "family": "Inter", "weight": 400, "files": [{ "path": "capture/assets/fonts/Inter.woff2", "licenceHint": "ofl" }] },
+    "mono": { "family": "Noto Sans Mono", "weight": 500, "files": [{ "path": "capture/assets/fonts/NotoSansMono.woff2", "licenceHint": "ofl" }] }
+  },
+  "candidates": { "logos": 2, "shots": 7 },
+  "copy": {
+    "headline": "See every step your agents take.",
+    "tagline": "Traces, evals and cost for every run, in one place.",
+    "cta": "Start tracing"
+  }
+}

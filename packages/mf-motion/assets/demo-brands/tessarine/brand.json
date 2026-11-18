@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "kind": "brand",
+  "id": "tessarine",
+  "name": "Tessarine",
+  "tagline": "Traces, evals and cost for every run, in one place.",
+  "status": "picked",
+  "source": {
+    "mode": "capture-local",
+    "url": null,
+    "capturedAt": null,
+    "engine": "0.9.61"
+  },
+  "colors": {
+    "ground": "#0B0F17",
+    "ink": "#E8EEF7",
+    "accent": "#8B6DFF",
+    "accent2": "#2DD4BF",
+    "surface": "#141B26",
+    "muted": "#808CA0",
+    "palette": [
+      "#0B0F17",
+      "#E8EEF7",
+      "#8B6DFF",
+      "#2DD4BF",
+      "#808CA0",
+      "#19202D"
+    ],
+    "evidence": {
+      "ground": {
+        "method": "area",
+        "share": 0.979,
+        "contrast": null
+      },
+      "ink": {
+        "method": "text-use",
+        "share": 0.578,
+        "contrast": 16.443
+      },
+      "accent": {
+        "method": "button-fill",
+        "share": null,
+        "contrast": 5.233
+      },
+      "surface": {
+        "method": "area",
+        "share": 0.833,
+        "contrast": null
+      },
+      "muted": {
+        "method": "text-use",
+        "share": 0.414,
+        "contrast": 5.641
+      }
+    }
+  },
+  "type": {
+    "display": {
+      "family": "Inter",
+      "weight": 700,
+      "sizePx": 72,
+      "letterSpacingEm": -0.02,
+      "lineHeight": 1.08,
+      "files": [
+        {
+          "path": "capture/assets/fonts/Inter.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "opsz,wght",
+          "source": "captured",
+          "origin": "assets/fonts/Inter.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "inter"
+    },
+    "heading": {
+      "family": "Inter",
+      "weight": 700,
+      "sizePx": 44,
+      "letterSpacingEm": -0.02,
+      "lineHeight": 1.08,
+      "files": [
+        {
+          "path": "capture/assets/fonts/Inter.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "opsz,wght",
+          "source": "captured",
+          "origin": "assets/fonts/Inter.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "inter"
+    },
+    "body": {
+      "family": "Inter",
+      "weight": 400,
+      "sizePx": 22,
+      "letterSpacingEm": null,
+      "lineHeight": 1.55,
+      "files": [
+        {
+          "path": "capture/assets/fonts/Inter.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "opsz,wght",
+          "source": "captured",
+          "origin": "assets/fonts/Inter.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "inter"
+    },
+    "mono": {
+      "family": "Noto Sans Mono",
+      "weight": 500,
+      "sizePx": 15,
+      "letterSpacingEm": null,
+      "lineHeight": 1.55,
+      "files": [
+        {
+          "path": "capture/assets/fonts/NotoSansMono.woff2",
+          "weight": "100 900",
+          "style": "normal",
+          "axes": "wght,wdth",
+          "source": "captured",
+          "origin": "assets/fonts/NotoSansMono.woff2",
+          "licenceHint": "ofl"
+        }
+      ],
+      "fallback": "noto-sans-mono"
+    }
+  },
+  "logo": {
+    "path": "logo.svg",
+    "kind": "svg",
+    "w": 459,
+    "h": 80
+  },
+  "mark": {
+    "path": "mark.svg",
+    "kind": "svg",
+    "w": 80,
+    "h": 80
+  },
+  "shots": [
+    {
+      "path": "shots/shot-1.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s3.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-2.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s4.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-3.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s2.png",
+      "note": null
+    },
+    {
+      "path": "shots/shot-4.png",
+      "kind": "png",
+      "w": 1440,
+      "h": 900,
+      "from": "candidates/s1.png",
+      "note": null
+    }
+  ],
+  "candidates": {
+    "sheet": null,
+    "logoSheet": null,
+    "logos": [],
+    "shots": []
+  },
+  "radiusPx": null,
+  "buttons": [],
+  "copy": {
+    "headline": "See every step your agents take.",
+    "cta": "Start tracing",
+    "domain": null
+  },
+  "rights": {
+    "noticeShownAt": null,
+    "oflSubstituted": false
+  }
+}
