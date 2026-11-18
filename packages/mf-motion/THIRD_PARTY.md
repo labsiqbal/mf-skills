@@ -35,6 +35,41 @@ SIL Open Font License 1.1; licence texts in `assets/fonts/OFL.txt`, versions and
 
 Fetched into the user's cache only on request (`doctor --fix --fonts cjk,emoji`), not shipped: Noto Sans SC, TC, JP and KR, and Noto Color Emoji (OFL 1.1, same commit; URLs and sha256 in `assets/fonts/fetch-manifest.json`).
 
+## Installed into the user's cache on request, not distributed
+
+`doctor --fix --voice` installs the local voice runtime into a private Python venv in the user's cache (`<cache>/voice/venv/`), from the hash-locked `assets/voice/requirements.lock` (built by `scripts/voice-lock.mjs`; top level kokoro-onnx 0.6.1 and soundfile 0.14.0). mf-motion ships no Python code and no model; the npm package carries only the lock and the model manifest. The engine runs this Python in a separate process; mf-motion neither links nor bundles any of it, and speech it generates is not covered by these licences.
+
+phonemizer and the espeak-ng library (shipped inside the espeakng-loader wheel) are GPL-3.0-or-later. They run only inside that venv, in a separate process, so the MIT licence of mf-motion is unaffected.
+
+| Package | Version | Licence | Use |
+|---|---|---|---|
+| attrs | 26.1.0 | MIT | used by phonemizer |
+| cffi | 2.1.1 | MIT-0 | used by soundfile |
+| cloudpickle | 3.1.2 | BSD-3-Clause | used by joblib |
+| coloredlogs | 15.0.1 | MIT | used by onnxruntime (macOS x86_64 only) |
+| dlinfo | 2.0.0 | MIT | used by phonemizer |
+| espeakng-loader | 0.2.4 | not declared in its metadata; ships the espeak-ng library, GPL-3.0-or-later | loads the bundled espeak-ng library |
+| flatbuffers | 25.12.19 | Apache-2.0 | used by onnxruntime |
+| humanfriendly | 10.0 | MIT | used by coloredlogs (macOS x86_64 only) |
+| joblib | 1.6.0 | BSD-3-Clause | used by phonemizer |
+| kokoro-onnx | 0.6.1 | MIT | Kokoro text-to-speech through ONNX Runtime (imported by the engine's tts) |
+| mpmath | 1.3.0 | BSD-3-Clause | used by sympy (macOS x86_64 only) |
+| numpy | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | audio arrays |
+| numpy | 2.5.5 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | audio arrays |
+| onnxruntime | 1.23.2 | MIT | runs the Kokoro model |
+| onnxruntime | 1.32.0 | MIT | runs the Kokoro model |
+| packaging | 26.3 | Apache-2.0 OR BSD-2-Clause | used by onnxruntime |
+| phonemizer | 3.6.0 | GPL-3.0-or-later | text to phonemes through espeak-ng |
+| protobuf | 7.36.2 | BSD-3-Clause | used by onnxruntime |
+| pycparser | 3.12 | BSD-3-Clause | used by cffi |
+| soundfile | 0.14.0 | BSD-3-Clause | writes the WAV |
+| sympy | 1.14.0 | BSD-3-Clause | used by onnxruntime (macOS x86_64 only) |
+| typing-extensions | 4.16.0 | PSF-2.0 | used by soundfile and phonemizer |
+
+| Model | Files | Licence | Use |
+|---|---|---|---|
+| Kokoro-82M v1.0 | `kokoro-v1.0.onnx`, `voices-v1.0.bin` (fetched by the engine into `<engine>/hf-cache/tts/`, sha256 in `assets/voice/manifest.json`) | Apache-2.0 | local text-to-speech |
+
 ## Development only (not shipped)
 
 | Package | Version | Licence | Use |

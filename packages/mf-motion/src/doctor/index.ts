@@ -25,6 +25,7 @@ import { cache as cacheDir, dataHome, withLock } from '../paths/index';
 import { npmCli } from '../proc/npmBin';
 import { run } from '../proc/run';
 import { type FixOs, type OsRelease, detectFixOs, fixLine, readOsRelease } from './fixes';
+import { voiceCheck } from './voice';
 
 export type CheckStatus = 'ok' | 'missing' | 'optional' | 'warn';
 
@@ -56,6 +57,10 @@ export interface DoctorOptions {
   fix?: boolean;
   fonts?: Array<'cjk' | 'emoji'>;
   transcribe?: boolean;
+  /** With fix: install or repair the local voice runtime. */
+  voice?: boolean;
+  /** Tests: install this lock instead of assets/voice/requirements.lock. */
+  voiceLockFile?: string;
   offline?: boolean;
   cliTarball?: string;
   env?: NodeJS.ProcessEnv;
@@ -448,7 +453,22 @@ export async function runDoctor(options: DoctorOptions = {}): Promise<DoctorData
   }
   add({ id: 'transcribe-model', status: 'optional', found: null, need: 'local transcription model (downloaded on first use)', fix: 'mf-motion doctor --fix --transcribe --json' });
 
-  // 9. Cloud keys: present keys never reach engine calls unless a module is enabled.
+  // 9. Local voice runtime: optional until installed; `missing` only when an install or its files fail.
+  add(
+    await voiceCheck({
+      cacheRoot,
+      engine: unsafe === null ? engine : null,
+      fix: options.fix === true && options.voice === true,
+      offline: options.offline === true,
+      env,
+      platform,
+      pythonFix: fixFor('python'),
+      ...(options.voiceLockFile !== undefined ? { lockFile: options.voiceLockFile } : {}),
+      ...(options.onProgress ? { onProgress: options.onProgress } : {}),
+    }),
+  );
+
+  // 10. Cloud keys: present keys never reach engine calls unless a module is enabled.
   const present = CLOUD_CREDENTIALS.filter((name) => (env[name] ?? '') !== '');
   add({
     id: 'cloud-keys',

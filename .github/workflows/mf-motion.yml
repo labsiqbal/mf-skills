@@ -40,6 +40,10 @@ jobs:
           - os: ubuntu-24.04
             node: 22
     runs-on: ${{ matrix.os }}
+    env:
+      # The local voice runtime tests must run, not skip (MFM-094).
+      MFM_VOICE_REQUIRED: '1'
+      PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip
     steps:
       - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
         run: git config --global core.autocrlf false
@@ -47,6 +51,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - uses: actions/cache@v4
         with:
           path: .cache/npm
@@ -64,6 +71,25 @@ jobs:
       - run: npm --prefix packages/mf-motion ci
       - run: npm --prefix packages/mf-motion run typecheck
       - run: npm --prefix packages/mf-motion run build
+      - run: mkdir -p "$GITHUB_WORKSPACE/.cache" && npm pack ./packages/mf-motion --pack-destination "$GITHUB_WORKSPACE/.cache"
+      - name: doctor --fix installs the CLI copy, engine and Chrome (the engine install replaces its folder, so the voice caches restore after it)
+        run: node packages/mf-motion/dist/cli.mjs doctor --fix --json --cli-tarball .cache/mf-motion-1.0.0.tgz
+      - name: Restore the engine's Kokoro files and the pip cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/mf-motion/engine/*/hf-cache/tts
+            .cache/pip
+          key: voice-${{ runner.os }}-${{ hashFiles('packages/mf-motion/assets/voice/manifest.json', 'packages/mf-motion/assets/voice/requirements.lock') }}
+      - name: doctor --fix --voice installs the local voice runtime
+        run: |
+          node packages/mf-motion/dist/cli.mjs doctor --fix --voice --json --cli-tarball .cache/mf-motion-1.0.0.tgz > .cache/doctor-voice.json
+          node -e '
+            const d = require("./.cache/doctor-voice.json").data;
+            const voice = d.checks.find((c) => c.id === "voice");
+            console.log(JSON.stringify(voice));
+            if (!d.ok || voice.status !== "ok") process.exit(1);
+          '
       - run: npm --prefix packages/mf-motion run test:unit
 
   render:
@@ -231,6 +257,19 @@ jobs:
       - run: npm --prefix packages/mf-motion run build
       - run: mkdir -p "$GITHUB_WORKSPACE/.cache" && npm pack ./packages/mf-motion --pack-destination "$GITHUB_WORKSPACE/.cache"
       - run: node packages/mf-motion/dist/cli.mjs doctor --fix --json --cli-tarball .cache/mf-motion-1.0.0.tgz
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore the engine's Kokoro files and the pip cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache/mf-motion/engine/*/hf-cache/tts
+            .cache/pip
+          key: voice-${{ runner.os }}-${{ hashFiles('packages/mf-motion/assets/voice/manifest.json', 'packages/mf-motion/assets/voice/requirements.lock') }}
+      - run: node packages/mf-motion/dist/cli.mjs doctor --fix --voice --json --cli-tarball .cache/mf-motion-1.0.0.tgz
+        env:
+          PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip
       - name: Without a network, doctor --offline exits 0 and its launcher runs version
         # A network namespace without links; the commands run as the runner user,
         # not a mapped root, so the cache keeps its real owners.
@@ -247,7 +286,11 @@ jobs:
             if (!d.ok) throw new Error("doctor --offline not ok");
             const out = JSON.parse(execFileSync(d.launcher[0], [...d.launcher.slice(1), "version", "--json"]).toString());
             if (out.data.cli !== "1.0.0") throw new Error("launcher version " + out.data.cli);
+            const voice = d.checks.find((c) => c.id === "voice");
+            if (voice.status !== "ok") throw new Error("voice " + JSON.stringify(voice));
           '
+          # The engine tts speaks offline through the installed voice runtime, with no download.
+          (cd packages/mf-motion && MFM_VOICE_REQUIRED=1 node node_modules/vitest/vitest.mjs run --project unit test/integration/doctor/voice -t "tts speaks")
           # The gate offline on fixture rounds: PASS-MEASURED exits 0, a measured cap under target exits 1.
           rm -rf .cache/gate-smoke && mkdir -p .cache/gate-smoke
           for case in no-vision high-scores-measured-defect; do

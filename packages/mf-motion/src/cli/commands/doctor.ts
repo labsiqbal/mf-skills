@@ -15,11 +15,12 @@ const CHECK_SCHEMA = {
 
 export const doctorCommand = defineCommand({
   name: 'doctor',
-  summary: 'Check Node, FFmpeg, the engine, Chrome, disk and fonts; with --fix install the CLI copy, engine and Chrome into the cache.',
+  summary: 'Check Node, FFmpeg, the engine, Chrome, disk, fonts and the voice runtime; with --fix install the CLI copy, engine and Chrome into the cache.',
   flags: {
     fix: { type: 'boolean', description: 'install the pinned CLI copy, the engine and Chrome into the cache (never system packages)' },
     fonts: { type: 'list', enum: ['cjk', 'emoji'], value: 'cjk,emoji', description: 'with --fix, also fetch these optional fonts' },
     transcribe: { type: 'boolean', description: 'with --fix, also prefetch the transcription model' },
+    voice: { type: 'boolean', description: 'with --fix, install the local voice runtime (private Python venv with Kokoro, about 400 MB)' },
     offline: { type: 'boolean', description: 'report install state only; touch no network' },
     'cli-tarball': { type: 'string', value: '<tgz>', description: 'with --fix, install the CLI copy from this local npm pack tarball instead of the registry' },
   },
@@ -41,6 +42,7 @@ export const doctorCommand = defineCommand({
       fix: flags.fix,
       fonts: flags.fonts as Array<'cjk' | 'emoji'>,
       transcribe: flags.transcribe,
+      voice: flags.voice,
       offline: flags.offline,
       ...(flags['cli-tarball'] !== undefined ? { cliTarball: flags['cli-tarball'] } : {}),
       env,

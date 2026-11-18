@@ -19,6 +19,13 @@
       "Windows": "winget install Gyan.FFmpeg"
     },
     {
+      "Need": "Python 3.11-3.13 (local voice only)",
+      "macOS": "brew install python@3.13",
+      "Debian/Ubuntu": "sudo apt-get install -y python3 python3-venv",
+      "Fedora": "sudo dnf install python3",
+      "Windows": "winget install Python.Python.3.13"
+    },
+    {
       "Need": "yt-dlp",
       "macOS": "brew install yt-dlp",
       "Debian/Ubuntu": "pipx install yt-dlp",

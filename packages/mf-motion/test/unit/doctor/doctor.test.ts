@@ -61,7 +61,7 @@ describe('ffmpeg capability parsing', () => {
 
 describe('fix lines', () => {
   it('match the table of setup-and-doctor.md', () => {
-    expect(fixTableSpec().map((row) => row.Need)).toEqual(['Node 24', 'FFmpeg', 'yt-dlp', 'Chrome libs']);
+    expect(fixTableSpec().map((row) => row.Need)).toEqual(['Node 24', 'FFmpeg', 'Python 3.11-3.13 (local voice only)', 'yt-dlp', 'Chrome libs']);
   });
 
   it('pick the column for the OS and the ALSA name for older Debian and Ubuntu', () => {

@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 
 export type FixOs = 'macos' | 'debian' | 'fedora' | 'windows';
-export type FixNeed = 'node' | 'ffmpeg' | 'yt-dlp' | 'chrome-libs';
+export type FixNeed = 'node' | 'ffmpeg' | 'python' | 'yt-dlp' | 'chrome-libs';
 
 export interface FixLine {
   command: string;
@@ -26,6 +26,13 @@ export const FIXES: Record<FixNeed, { label: string } & Record<FixOs, FixLine | 
     debian: { command: 'sudo apt-get install -y ffmpeg' },
     fedora: { command: 'sudo dnf install ffmpeg', note: 'RPM Fusion' },
     windows: { command: 'winget install Gyan.FFmpeg' },
+  },
+  python: {
+    label: 'Python 3.11-3.13 (local voice only)',
+    macos: { command: 'brew install python@3.13' },
+    debian: { command: 'sudo apt-get install -y python3 python3-venv' },
+    fedora: { command: 'sudo dnf install python3' },
+    windows: { command: 'winget install Python.Python.3.13' },
   },
   'yt-dlp': {
     label: 'yt-dlp',

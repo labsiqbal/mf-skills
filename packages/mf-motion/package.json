@@ -27,7 +27,8 @@
     "pack:check": "node scripts/pack-check.mjs",
     "licence:check": "node scripts/licence-denylist.mjs",
     "fixtures:screens": "node scripts/fixtures-screens.mjs",
-    "fixtures:brands": "node scripts/fixtures-brands.mjs"
+    "fixtures:brands": "node scripts/fixtures-brands.mjs",
+    "voice:lock": "node scripts/voice-lock.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
