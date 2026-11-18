@@ -17,7 +17,8 @@ import { registerMoves } from '../../../../src/library/registry';
 import { frameAt } from '../../../../src/media/pixels';
 import { probe } from '../../../../src/media/probe';
 import { buildMove } from '../../../../src/moves/build';
-import { growMask, outputName, placementBase, standaloneBase } from '../../../../src/moves/encode';
+import { SWS_FLAGS, growMask, outputName, placementBase, standaloneBase } from '../../../../src/moves/encode';
+import { runStream } from '../../../../src/proc/run';
 import { checkDisk, estimateBytes, expectedFrames, masterFrame, renderMaster } from '../../../../src/moves/render';
 import { testBrowser, testCacheRoot } from '../../../helpers/engine';
 import { runIn } from '../../../unit/cli/harness';
@@ -116,9 +117,14 @@ describe('move render: alpha mode', () => {
     expect(key?.keyColor).toBe(data.keyColor);
     expect(key?.keyPurity).toMatchObject({ pass: true, impurePixels: 0 });
     expect(key?.keyPurity?.checkedPixels).toBeGreaterThan(1080 * 1920);
-    const corner = await frameAt(key?.path as string, 1.7, { format: 'rgba' });
+    // Decoded with the same accurate swscale path as the encoder (FFmpeg's fast converters differ by build).
+    const decode = runStream('ffmpeg', ['-v', 'error', '-ss', '1.7', '-i', key?.path as string, '-frames:v', '1', '-vf', `scale=flags=${SWS_FLAGS},format=rgba`, '-f', 'rawvideo', '-']);
+    const parts: Buffer[] = [];
+    for await (const chunk of decode.chunks) parts.push(chunk);
+    expect((await decode.result).code).toBe(0);
+    const corner = Buffer.concat(parts);
     const rgb = parseHex(data.keyColor as string);
-    for (let c = 0; c < 3; c += 1) expect(Math.abs((corner.data[c] ?? 0) - (rgb[c] ?? 0))).toBeLessThanOrEqual(NUMBERS['key.purityLevels']);
+    for (let c = 0; c < 3; c += 1) expect(Math.abs((corner[c] ?? 0) - (rgb[c] ?? 0))).toBeLessThanOrEqual(NUMBERS['key.purityLevels']);
   }, 120_000);
 
   it('the -preview.mp4 shows the move over the brand ground', async () => {
