@@ -29,7 +29,8 @@
     "fixtures:screens": "node scripts/fixtures-screens.mjs",
     "fixtures:brands": "node scripts/fixtures-brands.mjs",
     "voice:lock": "node scripts/voice-lock.mjs",
-    "gen:troubleshooting": "node scripts/gen-troubleshooting.mjs"
+    "gen:troubleshooting": "node scripts/gen-troubleshooting.mjs",
+    "gen:land-mask": "node scripts/gen-land-mask.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
