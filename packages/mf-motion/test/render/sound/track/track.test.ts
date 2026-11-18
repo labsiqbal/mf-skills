@@ -11,7 +11,7 @@ import { COMMANDS } from '../../../../src/cli/commands/index';
 import type { Engine } from '../../../../src/engine/index';
 import { readDoc } from '../../../../src/schemas/index';
 import { arrange, renderArrangement } from '../../../../src/sound/arrange';
-import { GENRE_PRESETS } from '../../../../src/sound/presets/index';
+import type { GenrePreset } from '../../../../src/sound/presets/types';
 import { SAMPLE_RATE, encodeWav24 } from '../../../../src/sound/synth/index';
 import { type TrackAnalysisDoc, analyseTrack, fitGrid } from '../../../../src/sound/track';
 import { resolveSpec } from '../../../../src/time/index';
@@ -41,8 +41,9 @@ beforeAll(async () => {
       { name: 'drop', from: r(8 * BAR), to: r(16 * BAR), energy: 0.95, riser: false, drop: true },
     ],
   };
-  const preset = GENRE_PRESETS['driving-electronic'];
-  if (!preset) throw new Error('preset');
+  // The driving-electronic voicing as of MFM-069, frozen so preset tuning
+  // (MFM-097) does not move the fixture track or the fallback snapshot.
+  const preset = JSON.parse(readFileSync(path.join(packageRoot, 'test', 'render', 'sound', 'track', 'fixture-preset.json'), 'utf8')) as GenrePreset;
   track = path.join(mkdtempSync(path.join(tmpdir(), 'mfm-track-')), 'fixture-track.wav');
   writeFileSync(track, encodeWav24(renderArrangement(arrange(grid, preset, 4), preset, 4).channels, SAMPLE_RATE));
 }, 900_000);
