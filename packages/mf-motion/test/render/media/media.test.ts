@@ -146,6 +146,18 @@ describe('sheets', () => {
     expect(result.files).toEqual([out]);
     expect((await probe(out)).video?.width).toBe(1200);
   }, 120_000);
+
+  it('shows a brand-card logo on the ground the item names', async () => {
+    const dir = work();
+    const logo = path.join(dir, 'logo.svg');
+    writeFileSync(logo, '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60"><rect width="200" height="60" fill="#1F2A24"/></svg>');
+    const out = path.join(dir, 'brand-card-ground.png');
+    await renderSheet('brand-card', [{ role: 'logo', image: logo, label: 'logo', color: '#FBF7F0' }, { role: 'swatch', color: '#FBF7F0', label: 'ground' }], out, { engine, browserPath });
+    const frame = await frameAt(out, 0, { format: 'rgba' });
+    // Inside the logo panel (24 px padding), clear of the centred logo: the named ground.
+    const at = (x: number, y: number) => Array.from(frame.data.subarray((y * frame.width + x) * 4, (y * frame.width + x) * 4 + 3));
+    expect(at(24 + 8, 24 + 8)).toEqual([251, 247, 240]);
+  }, 120_000);
 });
 
 describe('pixel reader and probe', () => {

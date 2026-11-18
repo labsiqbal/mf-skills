@@ -20,7 +20,7 @@ export interface SheetItem {
   image?: string;
   label?: string;
   sublabel?: string;
-  /** brand-card swatch colour (#RRGGBB). */
+  /** brand-card swatch colour, or the ground behind a logo (#RRGGBB). */
   color?: string;
   /** plates: what the overlay frame is composited over. */
   plate?: { color?: string; image?: string };
@@ -158,7 +158,9 @@ function brandCardPage(items: SheetItem[], workDir: string, title: string | unde
   const logoHtml = logos
     .map((item, i) => {
       const image = localImage(workDir, item.image, i, 'logo');
-      return image ? `<div class="logo"><img src="${escapeHtml(image)}" alt=""><span>${escapeHtml(item.label ?? '')}</span></div>` : '';
+      // A logo shows on its brand ground when the item names one (a dark wordmark vanishes on the dark checker).
+      const ground = item.color ? ` style="background:${safeColor(item.color)}"` : '';
+      return image ? `<div class="logo"${ground}><img src="${escapeHtml(image)}" alt=""><span>${escapeHtml(item.label ?? '')}</span></div>` : '';
     })
     .join('');
   const swatchHtml = swatches
@@ -184,7 +186,7 @@ h1 { font-size: 20px; font-weight: 600; }
 .logos { display: flex; gap: 24px; height: 180px; }
 .logo { flex: 1; background: repeating-conic-gradient(#2A2A2A 0 25%, #1E1E1E 0 50%) 0 0 / 16px 16px; position: relative; }
 .logo img { position: absolute; inset: 16px 16px 32px; width: calc(100% - 32px); height: calc(100% - 48px); object-fit: contain; }
-.logo span { position: absolute; left: 12px; bottom: 8px; font-size: 13px; color: #A8A8A8; }
+.logo span { position: absolute; left: 12px; bottom: 8px; padding: 2px 6px; border-radius: 4px; background: rgba(20, 20, 20, 0.72); font-size: 13px; color: #F2F2F2; }
 .swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
 .swatch { display: flex; flex-direction: column; gap: 6px; }
 .chip { height: 88px; border-radius: 6px; border: 1px solid #3A3A3A; }
