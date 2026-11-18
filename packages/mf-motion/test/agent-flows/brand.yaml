@@ -1,0 +1,41 @@
+# references/brand.md followed literally on the Tessarine fixture site: capture
+# a local file, pick from the sheets (fixture choices), show, swap fonts, list.
+name: brand
+env:
+  MF_MOTION_CACHE: "{cache}"
+  MF_MOTION_HOME: "{tmp}"
+steps:
+  - run: mf-motion brand capture --local-file test/fixtures/brands/tessarine/site/index.html --local-root test/fixtures/brands/tessarine/site --name tessarine --json
+    exit: 0
+    expect:
+      - data.brand.id == "tessarine"
+      - data.brand.status == "draft"
+      - next[0] == "mf-motion brand pick tessarine --logo <l> --shots <s1,s2,s3> --json"
+      - data.roles.accent == "#8B6DFF"
+  - run: mf-motion brand pick tessarine --logo l1 --mark l2 --shots s3,s4,s2,s1 --json
+    exit: 0
+    expect:
+      - data.brand.status == "picked"
+      - data.brand.logo.path == "logo.svg"
+      - data.brand.shots.length == 4
+  - run: mf-motion brand show tessarine --json
+    exit: 0
+    expect:
+      - data.brand.status == "picked"
+      - data.brand.colors.ink == "#E8EEF7"
+      - data.brand.type.display.family == "Inter"
+  - run: mf-motion brand fonts tessarine --substitute-ofl --json
+    exit: 0
+    expect:
+      - data.replaced == []
+  - run: mf-motion brand list --json
+    exit: 0
+    expect:
+      - data.brands.length == 1
+      - data.brands[0].id == "tessarine"
+      - data.brands[0].status == "picked"
+  - run: mf-motion brand show nobody --json
+    exit: 2
+    expect:
+      - error.code == "BRAND_NOT_FOUND"
+      - next[0] == "mf-motion brand list --json"
