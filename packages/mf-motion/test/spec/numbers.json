@@ -90,6 +90,8 @@
     "sfx.riseDb",
     "sfx.bedBandHz",
     "sfx.ownWindowMs",
+    "sfx.sharpBodyMs",
+    "sfx.crestMaxDb",
     "mix.kickDuckMax",
     "mix.preHitDip",
     "mix.endFadeSec",

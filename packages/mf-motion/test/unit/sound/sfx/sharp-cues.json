@@ -1,0 +1,11 @@
+{
+  "about": "MFM-095: the sharp SFX cues on the MFM-071 steady bed (score seed 3, 30 fps), shared by test/unit/sound/sfx/sharp.test.ts and test/render/sound/mix/sharp-sfx.test.ts.",
+  "seed": 3,
+  "fps": 30,
+  "cues": [
+    { "role": "click", "at": { "sec": 1.5 }, "event": "tap" },
+    { "role": "type", "at": { "sec": 3.0 }, "event": "key" },
+    { "role": "tick", "at": { "sec": 3.75 }, "event": "tock" },
+    { "role": "hit", "at": { "sec": 4.5 }, "event": "land" }
+  ]
+}

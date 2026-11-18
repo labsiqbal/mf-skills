@@ -2,7 +2,9 @@
 // buffer and peak offset; placement lands the peak at the picture time plus
 // sfx.peakOffsetFrames; gain sits sfx.riseDb over the bed (300-4000 Hz, the
 // 300 ms before the SFX starts), the bed yields around each SFX and dips
-// before the one hit.
+// before the one hit. The sharp voices (click, tick, type, hit) are a
+// transient plus a short in-band body, so their crest factor stays under
+// sfx.crestMaxDb and the rise survives loudness normalisation (MFM-095).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { MfmError } from '../cli/errors';
@@ -63,42 +65,68 @@ function peakOf(buffer: Float64Array): number {
 
 const make = (seconds: number, sr: number) => new Float64Array(Math.round(seconds * sr));
 
+/**
+ * The body of a sharp voice: a linear attack, a hold that sags `sagDb` (so its
+ * first cycle stays the loudest), then a fall of 60 dB over `decay` seconds.
+ * The hold and the start of the fall keep the band envelope within 12 dB of
+ * its peak for sfx.sharpBodyMs.
+ */
+function bodyLevel(n: number, sr: number, shape: { attack: number; hold: number; decay: number; sagDb: number }): number {
+  const t = n / sr;
+  if (t < shape.attack) return t / shape.attack;
+  if (t < shape.attack + shape.hold) return dbToGain((-shape.sagDb * (t - shape.attack)) / shape.hold);
+  return dbToGain(-shape.sagDb - (60 * (t - shape.attack - shape.hold)) / shape.decay);
+}
+
+const SHARP_BODY = { attack: 0.001, hold: 0.03, decay: 0.08, sagDb: 1.5 } as const;
+
 /** One generator per role (sfx.roles). */
 export function generateSfx(role: SfxRole, sr: number, seed: number): SfxBuffer {
   let buffer: Float64Array;
   switch (role) {
     case 'click': {
-      buffer = make(0.03, sr);
+      // The snap (high-passed noise) over a 2 kHz body.
+      buffer = make(0.09, sr);
       const noise = whiteNoise(seed);
       const high = new Svf(sr, 3000, 0.7);
-      const decay = decayCoefficient(0.006, sr);
+      const decay = decayCoefficient(0.004, sr);
       let level = 1;
       for (let n = 0; n < buffer.length; n += 1) {
-        buffer[n] = (high.process(noise(), 'high') * 0.8 + sin((TWO_PI * 2000 * n) / sr) * 0.4) * level;
+        const tone = sin((TWO_PI * 2000 * n) / sr);
+        buffer[n] = high.process(noise(), 'high') * 0.8 * level + tone * 0.55 * bodyLevel(n, sr, SHARP_BODY);
         level *= decay;
       }
       break;
     }
     case 'tick': {
-      buffer = make(0.05, sr);
-      const decay = decayCoefficient(0.02, sr);
+      // A metallic 5.1 kHz tap over a 3.2 kHz body.
+      buffer = make(0.09, sr);
+      const decay = decayCoefficient(0.006, sr);
       let level = 1;
       for (let n = 0; n < buffer.length; n += 1) {
-        buffer[n] = sin((TWO_PI * 3200 * n) / sr) * level * (n < 24 ? n / 24 : 1);
+        const ramp = n < 24 ? n / 24 : 1;
+        const shape = { ...SHARP_BODY, attack: 0.0005 };
+        buffer[n] = (sin((TWO_PI * 5100 * n) / sr) * 0.4 * level + sin((TWO_PI * 3200 * n) / sr) * 0.8 * bodyLevel(n, sr, shape)) * ramp;
         level *= decay;
       }
       break;
     }
     case 'type': {
-      buffer = make(0.06, sr);
+      // The key's double click (band noise, the second 12 ms in) over a thock that bends from 1050 to 800 Hz.
+      buffer = make(0.09, sr);
       const noise = whiteNoise(seed);
       const band = new Svf(sr, 2500, 1.3);
       const decay = decayCoefficient(0.018, sr);
+      const bend = decayCoefficient(0.03, sr);
       let level = 1;
+      let phase = 0;
+      let pitch = 1;
       const second = Math.round(0.012 * sr);
       for (let n = 0; n < buffer.length; n += 1) {
         if (n === second) level = Math.max(level, 0.6);
-        buffer[n] = band.process(noise(), 'band') * level * 3;
+        phase += (800 + 250 * pitch) / sr;
+        pitch *= bend;
+        buffer[n] = band.process(noise(), 'band') * level * 1.8 + sin(TWO_PI * (phase - Math.floor(phase))) * bodyLevel(n, sr, SHARP_BODY);
         level *= decay;
       }
       break;
@@ -131,17 +159,30 @@ export function generateSfx(role: SfxRole, sr: number, seed: number): SfxBuffer 
       break;
     }
     case 'hit': {
+      // The impact (a band-passed noise crack, a low thump under it) over a pitched body that
+      // bends from 1100 to 700 Hz, and a quiet crash tail above the band.
       buffer = make(1.2, sr);
-      renderKick(buffer, 0, 1, seed, sr, 1.5);
-      const noise = whiteNoise(voiceSeed(seed, 'crash'));
+      renderKick(buffer, 0, 0.06, seed, sr, 1.5);
+      const crash = whiteNoise(voiceSeed(seed, 'crash'));
       const high = new Svf(sr, 4000, 0.7);
-      const decay = decayCoefficient(0.9, sr);
-      let level = 0.35;
+      const crashDecay = decayCoefficient(0.9, sr);
+      const crack = whiteNoise(voiceSeed(seed, 'impact'));
+      const band = new Svf(sr, 1800, 0.8);
+      const crackDecay = decayCoefficient(0.003, sr);
+      const bend = decayCoefficient(0.05, sr);
+      const shape = { attack: 0.005, hold: 0.035, decay: 0.06, sagDb: 1.5 };
+      let tail = 0.03;
+      let impact = 0.3;
+      let phase = 0;
+      let pitch = 1;
       for (let n = 0; n < buffer.length; n += 1) {
-        buffer[n] = (buffer[n] ?? 0) + high.process(noise(), 'high') * level;
-        level *= decay;
+        phase += (700 + 400 * pitch) / sr;
+        pitch *= bend;
+        const body = sin(TWO_PI * (phase - Math.floor(phase))) * bodyLevel(n, sr, shape);
+        buffer[n] = (buffer[n] ?? 0) + body + band.process(crack(), 'band') * impact + high.process(crash(), 'high') * tail;
+        impact *= crackDecay;
+        tail *= crashDecay;
       }
-      renderBell(buffer, 0, 220, 1.1, 0.25, sr, 3.5, 2.8);
       break;
     }
     case 'shimmer': {
@@ -157,6 +198,43 @@ export function generateSfx(role: SfxRole, sr: number, seed: number): SfxBuffer 
     }
   }
   return { buffer, peakOffset: peakOf(buffer) };
+}
+
+/**
+ * The shape the sharp voices are held to (sfx.crestMaxDb, sfx.sharpBodyMs):
+ * crest factor, the full-band sample peak over the band RMS in the 40 ms
+ * window around it (the window the rise is read in, silence before the
+ * buffer); body, how long the band envelope (5 ms RMS, 1 ms steps) stays
+ * within sfx.sharpBodyMs.withinDb of its peak, in ms.
+ */
+export function sfxShape(buffer: Float64Array, sr: number): { crestDb: number; bodyMs: number } {
+  const peakAt = peakOf(buffer);
+  const pad = Math.round(0.08 * sr);
+  const padded = new Float64Array(pad + buffer.length + Math.round(0.1 * sr));
+  padded.set(buffer, pad);
+  const own = Math.round(0.02 * sr);
+  const crestDb = toDb(Math.abs(buffer[peakAt] ?? 0) / Math.max(1e-12, bandRms(padded, pad + peakAt - own, pad + peakAt + own, sr)));
+  const band = NUMBERS['sfx.bedBandHz'];
+  const high = new Svf(sr, band.min, 0.707);
+  const low = new Svf(sr, band.max, 0.707);
+  const filtered = padded.map((x) => low.process(high.process(x, 'high'), 'low'));
+  const win = Math.round(0.005 * sr);
+  const hop = Math.round(0.001 * sr);
+  const envelope: number[] = [];
+  for (let start = 0; start + win <= filtered.length; start += hop) {
+    let sum = 0;
+    for (let i = start; i < start + win; i += 1) {
+      const y = filtered[i] ?? 0;
+      sum += y * y;
+    }
+    envelope.push(Math.sqrt(sum / win));
+  }
+  let top = 0;
+  let at = 0;
+  for (const [i, value] of envelope.entries()) if (value > top) [top, at] = [value, i];
+  let end = at;
+  while (end < envelope.length && toDb((envelope[end] ?? 0) / top) >= -NUMBERS['sfx.sharpBodyMs'].withinDb) end += 1;
+  return { crestDb: Math.round(crestDb * 100) / 100, bodyMs: ((end - at) * hop * 1000) / sr };
 }
 
 /** RMS of a mono signal in the bed band (sfx.bedBandHz) between two sample indices. */

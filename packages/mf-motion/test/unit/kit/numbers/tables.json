@@ -470,6 +470,16 @@
         "Resolves": "-"
       },
       {
+        "Key": "sfx.sharpBodyMs",
+        "Value": "30-60: after the transient of click, tick, type and hit, the sfx.bedBandHz envelope stays within 12 dB of its peak for this long (v1.2)",
+        "Resolves": "-"
+      },
+      {
+        "Key": "sfx.crestMaxDb",
+        "Value": "full-band sample peak over the sfx.bedBandHz band RMS in the 40 ms window around the peak: click, tick, type 12; hit 7 (v1.2)",
+        "Resolves": "-"
+      },
+      {
         "Key": "mix.kickDuckMax",
         "Value": "bed ducked by up to 55% on kick",
         "Resolves": "-"

@@ -138,6 +138,8 @@ const numbers = {
   'sfx.riseDb': { target: 5, hit: 10, min: 3, max: 14, flagUnder: 3 },
   'sfx.bedBandHz': { min: 300, max: 4000 },
   'sfx.ownWindowMs': 70,
+  'sfx.sharpBodyMs': { min: 30, max: 60, withinDb: 12 },
+  'sfx.crestMaxDb': { click: 12, tick: 12, type: 12, hit: 7, windowMs: 40 },
   'mix.kickDuckMax': 0.55,
   'mix.preHitDip': { level: 0.15, sec: 0.3 },
   'mix.endFadeSec': 0.25,
