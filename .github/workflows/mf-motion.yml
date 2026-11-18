@@ -11,6 +11,12 @@ on:
       - 'skills/mf-motion/**'
       - 'packages/mf-motion/**'
       - '.github/workflows/mf-motion.yml'
+  workflow_dispatch:
+    inputs:
+      full_matrix:
+        description: Render every seed case on all three operating systems (release candidates)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -97,8 +103,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-15, windows-2025]
+        # Seed moves: the full matrix on Linux, one rotating case per seed on
+        # macOS (offset 0) and Windows (offset 1); every other render test runs
+        # in full everywhere (testing.md, Seed matrix in CI).
+        include:
+          - os: ubuntu-24.04
+            seed_matrix: full
+            seed_offset: '0'
+          - os: macos-15
+            seed_matrix: sample
+            seed_offset: '0'
+          - os: windows-2025
+            seed_matrix: sample
+            seed_offset: '1'
     runs-on: ${{ matrix.os }}
+    env:
+      MFM_SEED_MATRIX: ${{ (github.event_name == 'workflow_dispatch' && inputs.full_matrix) && 'full' || matrix.seed_matrix }}
+      MFM_SEED_OFFSET: ${{ matrix.seed_offset }}
     steps:
       - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
         run: git config --global core.autocrlf false
