@@ -66,8 +66,10 @@ export function engineCommand(engine: Engine, args: readonly string[]): string[]
 }
 
 function engineError(failure: CallOptions['failure'], json: unknown, result: RunResult): MfmError {
-  const error = (json as { ok?: boolean; error?: { code?: unknown; message?: unknown; hint?: unknown } } | undefined)?.error;
-  const engineCode = typeof error?.code === 'string' ? error.code : null;
+  const report = json as { reason?: unknown; error?: { code?: unknown; message?: unknown; hint?: unknown } } | undefined;
+  const error = report?.error;
+  const engineCode = typeof error?.code === 'string' ? error.code
+    : report?.reason === 'whisper_unavailable' ? report.reason : null;
   const engineMessage = typeof error?.message === 'string' ? error.message : null;
   return new MfmError(
     failure,
@@ -301,12 +303,21 @@ export async function tts(engine: Engine, textFile: string, voice: string, outpu
   return json;
 }
 
-/** `transcribe <file> --json [--model <id>] [--language <bcp47>]` (whisper.cpp, local). */
-export async function transcribe(engine: Engine, file: string, options: { model?: string; language?: string } = {}): Promise<unknown> {
-  const args = ['transcribe', file, '--json'];
+/** Invoke local Whisper. Only doctor opts in to runtime installation. */
+export async function transcribe(
+  engine: Engine,
+  file: string,
+  options: { model?: string; language?: string; engine?: 'whisper'; runtimeInstall?: boolean; cwd?: string; parent?: NodeJS.ProcessEnv } = {},
+): Promise<unknown> {
+  const args = ['transcribe', file, '--json', '--engine', options.engine ?? 'whisper', options.runtimeInstall ? '--runtime-install' : '--no-runtime-install'];
   if (options.model) args.push('--model', options.model);
   if (options.language) args.push('--language', options.language);
-  const { json } = await callEngine(engine, args, { timeoutMs: TIMEOUTS.transcribe, failure: 'RENDER_FAILED' });
+  const { json } = await callEngine(engine, args, {
+    timeoutMs: TIMEOUTS.transcribe,
+    failure: 'RENDER_FAILED',
+    ...(options.cwd === undefined ? {} : { cwd: options.cwd }),
+    ...(options.parent === undefined ? {} : { env: { parent: options.parent } }),
+  });
   return json;
 }
 
@@ -328,7 +339,7 @@ export const ADAPTER_FLAGS: Record<string, string[]> = {
   capture: ['--local-file', '--local-root', '--skip-vision', '--json', '--output'],
   audio: ['--only', '--quality', '--json'],
   tts: ['--text-file', '--voice', '--output', '--json'],
-  transcribe: ['--json', '--model', '--language'],
+  transcribe: ['--json', '--model', '--language', '--engine', '--runtime-install', '--no-runtime-install'],
   'remove-background': ['--output', '--json'],
   browser: [],
 };

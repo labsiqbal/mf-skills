@@ -1,10 +1,10 @@
 // Doctor: checks every piece mf-motion needs, in a fixed order, and with --fix
 // installs what lives in the cache (CLI copy, engine, Chrome, optional fonts).
 // It never installs system packages; it prints one fix line for each.
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, statfsSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, statfsSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { MfmError } from '../cli/errors';
+import { isMfmError, MfmError } from '../cli/errors';
 import { CLI_VERSION } from '../cli/registry';
 import {
   CLOUD_CREDENTIALS,
@@ -21,6 +21,7 @@ import {
 } from '../engine/index';
 import { FAMILY_SPECS, bundledFontsDir, families, fetchFonts } from '../fonts/index';
 import { withPage } from '../media/chrome';
+import { callWhisper, verifiedWhisperModel, WHISPER_DEFAULTS, WHISPER_FIX } from '../moves/transcribe';
 import { cache as cacheDir, dataHome, withLock } from '../paths/index';
 import { npmCli } from '../proc/npmBin';
 import { run } from '../proc/run';
@@ -259,6 +260,66 @@ async function chromeLaunch(engine: Engine, browserPath: string): Promise<{ ok: 
   }
 }
 
+function whisperInstallEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  if (process.platform !== 'darwin') return env;
+  // On macOS HyperFrames prefers brew when it is visible. Use its pinned
+  // source build instead, retaining any build tools linked alongside brew.
+  const hasBrew = (dir: string) => existsSync(path.join(dir, 'brew'));
+  const dirs = (env.PATH ?? '').split(path.delimiter).filter(path.isAbsolute);
+  const safe = dirs.flatMap((dir) => {
+    if (!hasBrew(dir)) return [dir];
+    return ['git', 'cmake', 'cc', 'c++'].flatMap((tool) => {
+      const bin = path.join(dir, tool);
+      if (!existsSync(bin)) return [];
+      const realDir = path.dirname(realpathSync(bin));
+      return hasBrew(realDir) ? [] : [realDir];
+    });
+  });
+  return { ...env, PATH: [...new Set(safe)].join(path.delimiter) };
+}
+
+export async function transcribeModelCheck(
+  engine: Engine | null,
+  options: { fix: boolean; env: NodeJS.ProcessEnv },
+): Promise<Check> {
+  const row = { id: 'transcribe-model', need: 'verified local Whisper models for English and multilingual transcription' };
+  const repair = `${WHISPER_FIX} --json`;
+  if (!engine) return { ...row, status: options.fix ? 'missing' : 'optional', found: null, fix: repair };
+  const check = async (): Promise<Check> => {
+    try {
+      const missing: string[] = [];
+      for (const model of WHISPER_DEFAULTS) {
+        if (!(await verifiedWhisperModel(engine, model))) missing.push(model);
+      }
+      if (options.fix) {
+        const dir = mkdtempSync(path.join(tmpdir(), 'mfm-whisper-probe-'));
+        try {
+          const clip = path.join(dir, 'probe.wav');
+          const generated = await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=16000:cl=mono', '-t', '2', clip], {
+            env: options.env, timeoutMs: 30_000, killTree: true,
+          });
+          if (generated.code !== 0) throw new MfmError('TOOL_FAILED', { tool: 'ffmpeg', stderrTail: generated.stderr.slice(-2000) }, { message: 'Could not generate the two-second Whisper probe.' });
+          for (const model of missing.length > 0 ? missing : [WHISPER_DEFAULTS[0]]) {
+            await callWhisper(engine, clip, { model, cwd: dir, parent: whisperInstallEnv(options.env), runtimeInstall: true });
+          }
+        } finally {
+          rmSync(dir, { recursive: true, force: true, maxRetries: 3 });
+        }
+      } else if (missing.length > 0) {
+        return { ...row, status: 'optional', found: null, fix: repair };
+      }
+      return { ...row, status: 'ok', found: WHISPER_DEFAULTS.join(', '), fix: null };
+    } catch (error) {
+      if (isMfmError(error) && error.code === 'MODEL_HASH_MISMATCH') {
+        if (options.fix) throw error;
+        return { ...row, status: 'missing', found: `${error.code}: ${String(error.details.model)}`, fix: repair };
+      }
+      throw error;
+    }
+  };
+  return options.fix ? withLock(path.join(engine.dir, 'whisper-install.lock'), check, { command: WHISPER_FIX }) : check();
+}
+
 /** One line that makes the cache private: use the default cache, or remove group/other write from our own folder. */
 function privateCacheFix(unsafe: string, env: NodeJS.ProcessEnv): string {
   const { MF_MOTION_CACHE: configured, ...rest } = env;
@@ -447,11 +508,10 @@ export async function runDoctor(options: DoctorOptions = {}): Promise<DoctorData
   // 8. Optional yt-dlp and transcription model.
   const ytdlp = await toolVersion('yt-dlp', ['--version'], env);
   add({ id: 'yt-dlp', status: ytdlp.version ? 'ok' : 'optional', found: ytdlp.version, need: 'yt-dlp for reference links (local files work without it)', fix: ytdlp.version ? null : fixFor('yt-dlp') });
-  const modelsManifest = path.join(packageRoot(), 'assets', 'models', 'manifest.json');
-  if (options.fix && options.transcribe) {
-    options.onWarn?.(existsSync(modelsManifest) ? 'Transcription model prefetch runs with `mf-motion transcribe`.' : 'This build has no transcription model manifest yet; the model is fetched on first use of `mf-motion transcribe`.');
-  }
-  add({ id: 'transcribe-model', status: 'optional', found: null, need: 'local transcription model (downloaded on first use)', fix: 'mf-motion doctor --fix --transcribe --json' });
+  add(await transcribeModelCheck(unsafe === null ? engine : null, {
+    fix: options.fix === true && options.transcribe === true,
+    env,
+  }));
 
   // 9. Local voice runtime: optional until installed; `missing` only when an install or its files fail.
   add(

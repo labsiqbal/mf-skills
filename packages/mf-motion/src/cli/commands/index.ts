@@ -24,6 +24,7 @@ import { approveCommand, newCommand, noteCommand, statusCommand } from './projec
 import { auditCommand, gateCommand, measureCommand, packetCommand, sheetsCommand } from './quality';
 import { schemaCommand } from './schema';
 import { scoreCommand } from './score';
+import { transcribeCommand } from './transcribe';
 import { versionCommand } from './version';
 
 export const COMMANDS: readonly AnyCommand[] = [
@@ -60,4 +61,5 @@ export const COMMANDS: readonly AnyCommand[] = [
   catalogCommand, catalogSearchCommand,
   moveInfoCommand,
   moveRenderCommand,
+  transcribeCommand,
 ];
