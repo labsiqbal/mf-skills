@@ -2,7 +2,7 @@
 // Filenames): mp4 (over the brand ground; "-preview" for alpha moves), ProRes
 // 4444 mov with alpha, VP9 webm with alpha, key-colour mp4 and the kept PNG
 // master. Key purity is measured on the encoded key file.
-import { readdirSync, rmSync, statSync } from 'node:fs';
+import { mkdtempSync, readdirSync, renameSync, rmSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { MfmError } from '../cli/errors';
 import type { MoveMode } from '../kit/build/move';
@@ -122,7 +122,7 @@ export const KEY_EDGE_BAND_PX = 16;
 const ffColor = (hex: string) => `0x${hex.replace('#', '').toUpperCase()}`;
 
 /** FFmpeg arguments of one format from the master. */
-export function encodeArgs(format: Exclude<Format, 'png'>, master: Master, file: string, options: Pick<EncodeOptions, 'ground' | 'keyColor'>): string[] {
+export function encodeArgs(format: Exclude<Format, 'png'>, master: Master, file: string, options: Pick<EncodeOptions, 'ground' | 'keyColor'>, allIntra = false): string[] {
   const input = ['-framerate', master.fps, '-start_number', '1', '-i', master.pattern];
   const over = (hex: string) => [
     // The ground is generated as RGBA inside the lavfi graph; a YUV source would move its colour before the composite.
@@ -136,7 +136,7 @@ export function encodeArgs(format: Exclude<Format, 'png'>, master: Master, file:
       return ['-v', 'error', '-y', ...input, ...over(options.ground), ...MP4, ...BT709, ...tail];
     case 'key-mp4': {
       if (!options.keyColor) throw new MfmError('INTERNAL', { format }, { message: 'key-mp4 needs a key colour.' });
-      return ['-v', 'error', '-y', ...input, ...over(options.keyColor), ...MP4, ...KEY_X264, ...BT709, ...tail];
+      return ['-v', 'error', '-y', ...input, ...over(options.keyColor), ...MP4, ...KEY_X264, ...(allIntra ? ['-g', '1'] : []), ...BT709, ...tail];
     }
     case 'mov':
       return ['-v', 'error', '-y', ...input, '-vf', toYuv('yuva444p10le'), ...MOV, ...BT709, ...tail];
@@ -215,6 +215,35 @@ export async function measureKeyPurity(file: string, master: Master, keyColor: s
 
 const folderBytes = (dir: string) => readdirSync(dir).reduce((sum, name) => sum + statSync(path.join(dir, name)).size, 0);
 
+async function encodeFile(format: Exclude<Format, 'png'>, master: Master, file: string, options: EncodeOptions, allIntra = false): Promise<void> {
+  const result = await run(options.ffmpeg ?? 'ffmpeg', encodeArgs(format, master, file, options, allIntra), { timeoutMs: ENCODE_TIMEOUT_MS });
+  if (result.spawnError) throw new MfmError('FFMPEG_MISSING', { tool: 'ffmpeg', spawnError: result.spawnError.code });
+  if (result.timedOut) throw new MfmError('TIMEOUT', { tool: 'ffmpeg', format, timeoutMs: ENCODE_TIMEOUT_MS });
+  if (result.code !== 0) {
+    throw new MfmError('ENCODE_FAILED', { format, file, code: result.code, stderrTail: result.stderr.slice(-2000) }, { message: `FFmpeg could not encode ${format} (${path.basename(file)}).` });
+  }
+}
+
+async function verifyKeyEncode(file: string, master: Master, keyColor: string, options: EncodeOptions): Promise<KeyPurity> {
+  const purity = await measureKeyPurity(file, master, keyColor, options.ffmpeg);
+  if (purity.impurePixels === 0) return purity;
+  // Inter-frame prediction can retain old chroma after a region returns to
+  // the exact key colour. Keep the normal GOP on clean encodes and retry
+  // with intra frames when the measured background drifts.
+  const scratch = mkdtempSync(path.join(options.out, '.key-intra-'));
+  try {
+    const candidate = path.join(scratch, path.basename(file));
+    options.onProgress?.(`Re-encoding ${path.basename(file)} with intra frames to protect the key background`);
+    await encodeFile('key-mp4', master, candidate, options, true);
+    const measured = await measureKeyPurity(candidate, master, keyColor, options.ffmpeg);
+    if (!measured.pass) return purity;
+    renameSync(candidate, file);
+    return measured;
+  } finally {
+    rmSync(scratch, { recursive: true, force: true, maxRetries: 3 });
+  }
+}
+
 /** Encode the requested formats; the master is removed afterwards unless png is requested or keepMaster is set. */
 export async function encode(master: Master, formats: readonly Format[], options: EncodeOptions & { keepMaster?: boolean }): Promise<Output[]> {
   const outputs: Output[] = [];
@@ -222,18 +251,10 @@ export async function encode(master: Master, formats: readonly Format[], options
     if (format === 'png') continue;
     const file = path.join(options.out, outputName(format, options.base, options.mode));
     options.onProgress?.(`Encoding ${path.basename(file)}`);
-    const result = await run(options.ffmpeg ?? 'ffmpeg', encodeArgs(format, master, file, options), { timeoutMs: ENCODE_TIMEOUT_MS });
-    if (result.spawnError) throw new MfmError('FFMPEG_MISSING', { tool: 'ffmpeg', spawnError: result.spawnError.code });
-    if (result.timedOut) throw new MfmError('TIMEOUT', { tool: 'ffmpeg', format, timeoutMs: ENCODE_TIMEOUT_MS });
-    if (result.code !== 0) {
-      throw new MfmError('ENCODE_FAILED', { format, file, code: result.code, stderrTail: result.stderr.slice(-2000) }, { message: `FFmpeg could not encode ${format} (${path.basename(file)}).` });
-    }
-    const output: Output = { format, path: file, bytes: statSync(file).size };
-    if (format === 'key-mp4' && options.keyColor) {
-      output.keyColor = options.keyColor;
-      output.keyPurity = await measureKeyPurity(file, master, options.keyColor, options.ffmpeg);
-    }
-    outputs.push(output);
+    await encodeFile(format, master, file, options);
+    const key = format === 'key-mp4' ? options.keyColor : null;
+    const keyOutput = key ? { keyColor: key, keyPurity: await verifyKeyEncode(file, master, key, options) } : {};
+    outputs.push({ format, path: file, bytes: statSync(file).size, ...keyOutput });
   }
   if (formats.includes('png')) outputs.push({ format: 'png', path: master.dir, bytes: folderBytes(master.dir) });
   else if (!options.keepMaster) rmSync(master.dir, { recursive: true, force: true });
