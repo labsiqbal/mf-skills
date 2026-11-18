@@ -41,6 +41,8 @@ jobs:
             node: 22
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
@@ -72,6 +74,8 @@ jobs:
         os: [ubuntu-24.04, macos-15, windows-2025]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
@@ -102,6 +106,8 @@ jobs:
         os: [ubuntu-24.04, macos-15, windows-2025]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
@@ -147,6 +153,8 @@ jobs:
     name: pack check
     runs-on: ubuntu-24.04
     steps:
+      - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
@@ -163,6 +171,8 @@ jobs:
     name: licence denylist
     runs-on: ubuntu-24.04
     steps:
+      - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
@@ -209,6 +219,8 @@ jobs:
     name: offline smoke
     runs-on: ubuntu-24.04
     steps:
+      - name: Check out with LF line endings (fixtures and hashed packet files are byte-exact)
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:

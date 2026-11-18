@@ -38,6 +38,16 @@ describe('ffmpeg capability parsing', () => {
     ].join('\n');
     expect(missingLibraries(stderr)).toEqual(['libnss3', 'libgbm1', 'libweird.so.7']);
   });
+
+  it('names the libraries ldd reports as not found', () => {
+    const ldd = [
+      '\tlinux-vdso.so.1 (0x00007ffd)',
+      '\tlibnss3.so => not found',
+      '\tlibasound.so.2 => not found',
+      '\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f)',
+    ].join('\n');
+    expect(missingLibraries(ldd)).toEqual(['libnss3', 'libasound2']);
+  });
 });
 
 describe('fix lines', () => {

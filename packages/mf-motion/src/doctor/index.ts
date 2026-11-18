@@ -100,8 +100,12 @@ export function parseFilters(text: string): Set<string> {
 /** Shared libraries a failed Chrome launch could not load. */
 export function missingLibraries(stderr: string): string[] {
   const missing: string[] = [];
-  for (const match of stderr.matchAll(/error while loading shared libraries: (\S+?):/g)) {
-    const so = match[1] ?? '';
+  const names = [
+    ...[...stderr.matchAll(/error while loading shared libraries: (\S+?):/g)].map((match) => match[1] ?? ''),
+    // `ldd` output: "\tlibnss3.so => not found".
+    ...[...stderr.matchAll(/^\s*(\S+\.so[.\d]*)\s+=>\s+not found/gm)].map((match) => match[1] ?? ''),
+  ];
+  for (const so of names) {
     const known = CHROME_LIBRARIES.find(([pattern]) => pattern.test(so));
     const name = known ? known[1] : so;
     if (!missing.includes(name)) missing.push(name);
@@ -116,6 +120,24 @@ function inContainer(): boolean {
   } catch {
     return false;
   }
+}
+
+function lastLines(text: string, count: number): string {
+  return text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).slice(-count).join(' | ');
+}
+
+/**
+ * After a failed launch on Linux: the shared libraries `ldd` cannot resolve,
+ * then the stderr tail of one direct headless run (the driver hides it).
+ */
+async function linuxLaunchDiagnosis(browserPath: string, env: NodeJS.ProcessEnv): Promise<string> {
+  const ldd = await run('ldd', [browserPath], { env, timeoutMs: 30_000 });
+  const notFound = `${ldd.stdout}\n${ldd.stderr}`.split(/\r?\n/).filter((line) => /=>\s+not found/.test(line));
+  if (notFound.length > 0) return notFound.join('\n');
+  const args = ['--headless', '--disable-gpu', '--dump-dom', 'about:blank'];
+  if (process.getuid?.() === 0) args.push('--no-sandbox');
+  const direct = await run(browserPath, args, { env, timeoutMs: 30_000, killTree: true });
+  return direct.code === 0 ? '' : `direct launch exit ${direct.code ?? direct.signal}: ${direct.stderr}`;
 }
 
 /** Free gigabytes on the volume holding `target` (or its nearest existing folder). */
@@ -324,11 +346,12 @@ export async function runDoctor(options: DoctorOptions = {}): Promise<DoctorData
       });
       if (root && inContainer()) options.onWarn?.('Chrome runs with --no-sandbox because doctor runs as root in a container.');
     } else {
-      const libraries = missingLibraries(launch.error);
+      const diagnosis = platform === 'linux' ? await linuxLaunchDiagnosis(browserPath, env) : '';
+      const libraries = missingLibraries(`${launch.error}\n${diagnosis}`);
       add({
         id: 'chrome',
         status: 'missing',
-        found: libraries.length > 0 ? `missing libraries: ${libraries.join(', ')}` : launch.error.split('\n')[0] ?? null,
+        found: libraries.length > 0 ? `missing libraries: ${libraries.join(', ')}` : [launch.error.split('\n')[0], lastLines(diagnosis, 6)].filter(Boolean).join(' | ') || null,
         need: 'Chrome headless shell that launches',
         fix: libraries.length > 0 || platform === 'linux' ? (fixFor('chrome-libs') ?? 'mf-motion doctor --fix --json') : 'mf-motion doctor --fix --json',
       });
