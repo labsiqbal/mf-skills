@@ -1,10 +1,12 @@
 /// <reference lib="dom" />
 // The composition runtime, bundled to dist/vendor/mf-runtime.js (IIFE) and
-// exposed as the global `mf`: time positions, text lines, fitting.
+// exposed as the global `mf`: time positions, text lines, fitting, the move
+// runtime (move, done) and the only randomness (rand, noise2).
 import type { TimeGrid } from '../../time/grammar';
 import { setGrid, t } from './time';
 import { FitError, fitText, textWidth } from './fit';
 import { gone, line, lines, settled } from './lines';
+import { done, move, noise2, rand, readVars } from './move';
 import { ENTRANCE, ENTRANCE_KINDS, EXIT, EXIT_KINDS, entranceDuration, exitDuration, splitFor } from './spec';
 
 /** Reads an inline resolved grid (<script type="application/json" id="mf-grid">) when the page has one. */
@@ -34,6 +36,11 @@ const mf = {
   entranceDuration,
   exitDuration,
   splitFor,
+  move,
+  done,
+  readVars,
+  rand,
+  noise2,
   kinds: { entrance: ENTRANCE_KINDS, exit: EXIT_KINDS },
   defaults: { entrance: ENTRANCE, exit: EXIT },
 };
