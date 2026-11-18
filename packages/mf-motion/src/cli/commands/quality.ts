@@ -6,10 +6,12 @@ import path from 'node:path';
 import { type Hold, measure } from '../../quality/metrics';
 import { PROFILE_LIST, type Profile } from '../../quality/profiles';
 import { makeSheets } from '../../quality/sheets';
+import { JUDGE_ROUTES, buildPacket, latestRound } from '../../quality/packet';
+import { findProjectRoot, readProject } from '../../paths/index';
 import { ensureBrowser, ensureEngine, readOk } from '../../engine/index';
-import { writeDoc } from '../../schemas/index';
+import { readDoc, writeDoc } from '../../schemas/index';
 import { MfmError } from '../errors';
-import { defineCommand } from '../registry';
+import { CLI_VERSION, defineCommand } from '../registry';
 
 function parseHolds(value: string | undefined, cwd: string): Hold[] {
   if (value === undefined) return [];
@@ -86,5 +88,44 @@ export const sheetsCommand = defineCommand({
       ...(flags.check !== undefined ? { check: path.resolve(cwd, flags.check) } : {}),
     });
     return { data: { sheets: result.sheets } };
+  },
+});
+
+export const packetCommand = defineCommand({
+  name: 'packet',
+  summary: "Assemble the round's judge packet: the sheets under their role names, facts.md and packet.json with its content hash; prints the judge instruction.",
+  flags: {
+    round: { type: 'integer', value: '<n>', description: 'round number (default the latest round)' },
+  },
+  dataSchema: {
+    type: 'object',
+    required: ['dir', 'hash', 'files'],
+    properties: { dir: { type: 'string' }, hash: { type: 'string' }, files: { type: 'array' }, dropped: { type: 'array' }, instruction: { type: 'string' } },
+  },
+  async handler({ flags, cwd, env, global, log }) {
+    const project = findProjectRoot(cwd, global.project);
+    const doc = readProject(project, CLI_VERSION);
+    const round = flags.round ?? latestRound(project);
+    const roundDir = round === null ? null : path.join(project, 'rounds', String(round));
+    if (roundDir === null || !existsSync(roundDir)) {
+      throw new MfmError('PACKET_MISSING', { round: round ?? null }, { message: round === null ? 'The project has no rounds yet.' : `Round ${round} does not exist.` });
+    }
+    const briefFile = path.join(project, 'plan', 'brief.json');
+    const purpose = doc.type === 'film' && existsSync(briefFile) ? readDoc('brief', briefFile).doc.purpose : null;
+    const brandDir = path.join(project, 'brand');
+    // A brand card is drawn only when the round has none; that needs the engine's Chrome.
+    const needsCard = !existsSync(path.join(roundDir, 'brand-card.png')) && existsSync(path.join(brandDir, 'brand.json'));
+    const engine = needsCard ? await ensureEngine(undefined, { env, onProgress: (message) => log.progress(message) }) : undefined;
+    const browserPath = engine ? (readOk(engine.dir)?.browserPath ?? (await ensureBrowser(engine))) : undefined;
+    const result = await buildPacket({
+      roundDir,
+      unit: { type: doc.type === 'film' ? 'film' : 'move', id: doc.id, version: null },
+      purpose,
+      brandDir: existsSync(brandDir) ? brandDir : null,
+      ...(engine ? { engine } : {}),
+      ...(browserPath ? { browserPath } : {}),
+    });
+    if (result.dropped.length > 0) log.warn(`Left out of the packet to keep within the image budget: ${result.dropped.join(', ')}.`);
+    return { data: { dir: result.dir, hash: result.hash, files: result.files, dropped: result.dropped, instruction: result.instruction }, next: [...JUDGE_ROUTES] };
   },
 });
