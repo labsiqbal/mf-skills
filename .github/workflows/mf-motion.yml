@@ -97,6 +97,22 @@ jobs:
             if (!d.ok || voice.status !== "ok") process.exit(1);
           '
       - run: npm --prefix packages/mf-motion run test:unit
+      - &check-test-temp
+        name: Check for leftover test temporary folders
+        if: always()
+        run: |
+          node -e '
+            const { readdirSync } = require("node:fs");
+            const { tmpdir } = require("node:os");
+            const { join, resolve } = require("node:path");
+            const roots = new Set([tmpdir(), process.env.RUNNER_TEMP].filter(Boolean).map(p => resolve(p)));
+            for (const root of roots) {
+              const leftovers = readdirSync(root, { withFileTypes: true })
+                .filter(entry => entry.isDirectory() && entry.name.startsWith("mfm-"));
+              for (const entry of leftovers) console.error(join(root, entry.name));
+              if (leftovers.length) process.exitCode = 1;
+            }
+          '
 
   render:
     name: render, serial (${{ matrix.os }})
@@ -144,6 +160,7 @@ jobs:
       - run: npm --prefix packages/mf-motion ci
       - run: npm --prefix packages/mf-motion run build
       - run: npm --prefix packages/mf-motion run test:render
+      - *check-test-temp
 
   synth-identity:
     name: synth identity (${{ matrix.os }})
