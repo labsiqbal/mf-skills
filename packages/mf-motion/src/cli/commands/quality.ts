@@ -1,11 +1,12 @@
 // Quality commands. measure: metrics.json from a rendered file (MFM-036);
-// sheets: the review sheets of a render (MFM-037); later tickets add packet
-// and gate here.
+// sheets: the review sheets of a render (MFM-037); packet: the judge packet
+// (MFM-038); audit: the frame audit of a build (MFM-035).
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { type Hold, measure } from '../../quality/metrics';
 import { PROFILE_LIST, type Profile } from '../../quality/profiles';
 import { makeSheets } from '../../quality/sheets';
+import { audit, writeAudit } from '../../quality/audit';
 import { JUDGE_ROUTES, buildPacket, latestRound } from '../../quality/packet';
 import { findProjectRoot, readProject } from '../../paths/index';
 import { ensureBrowser, ensureEngine, readOk } from '../../engine/index';
@@ -127,5 +128,37 @@ export const packetCommand = defineCommand({
     });
     if (result.dropped.length > 0) log.warn(`Left out of the packet to keep within the image budget: ${result.dropped.join(', ')}.`);
     return { data: { dir: result.dir, hash: result.hash, files: result.files, dropped: result.dropped, instruction: result.instruction }, next: [...JUDGE_ROUTES] };
+  },
+});
+
+export const auditCommand = defineCommand({
+  name: 'audit',
+  summary: 'Frame audit of a composition build: frame margin, copy-safe, spill, overlap, caption and face bands, minimum size and per-line hold; writes audit.json.',
+  positionals: [{ name: 'build-dir', description: 'the composition build folder (index.html)', required: true }],
+  flags: {
+    profile: { type: 'string', required: true, enum: PROFILE_LIST, value: '<profile>', description: 'film, broll, overlay-alpha or overlay-key' },
+    aspect: { type: 'string', enum: ['16:9', '9:16', '1:1'], value: '<aspect>', description: 'default from the composition size' },
+    captions: { type: 'boolean', description: 'films: the brief sets captions, so the caption band applies' },
+    'no-avoid-face': { type: 'boolean', description: 'overlays: the move does not avoid the face band' },
+    out: { type: 'string', value: '<file>', description: 'where to write audit.json (default <build-dir>/audit.json)' },
+  },
+  dataSchema: { type: 'object', required: ['hits', 'lines'], properties: { audit: { type: 'string' }, hits: { type: 'array' }, lines: { type: 'array' }, hard: { type: 'integer' } } },
+  async handler({ args, flags, cwd, env, log }) {
+    const buildDir = path.resolve(cwd, String(args['build-dir']));
+    if (!existsSync(path.join(buildDir, 'index.html'))) throw new MfmError('USAGE', { buildDir }, { message: `${buildDir} has no index.html.` });
+    const engine = await ensureEngine(undefined, { env, onProgress: (message) => log.progress(message) });
+    const browserPath = readOk(engine.dir)?.browserPath ?? (await ensureBrowser(engine));
+    const result = await audit(buildDir, {
+      profile: flags.profile as Profile,
+      ...(flags.aspect !== undefined ? { aspect: flags.aspect as '16:9' | '9:16' | '1:1' } : {}),
+      captions: flags.captions === true,
+      avoidFace: flags['no-avoid-face'] !== true,
+      engine,
+      browserPath,
+    });
+    const out = flags.out ? path.resolve(cwd, flags.out) : path.join(buildDir, 'audit.json');
+    writeAudit(out, result);
+    // Exit 1 when a hit is hard for the profile.
+    return { data: { audit: out, hits: result.hits, lines: result.lines, hard: result.hard }, exitCode: result.hard > 0 ? 1 : 0 };
   },
 });

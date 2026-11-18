@@ -1,0 +1,167 @@
+{
+  "clean": {
+    "about": "A title well inside the copy-safe box: no hits.",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"title\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: 200px; top: 200px;\">Plants watered today</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": []
+    }
+  },
+  "frame-margin": {
+    "about": "Text 10 px off the left frame edge while it holds.",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"edge\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: -10px; top: 400px;\">Edge title</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "copy-safe",
+        "frame-margin"
+      ],
+      "range": {
+        "elementId": "edge",
+        "problem": "frame-margin",
+        "fromMin": 0.3,
+        "fromMax": 0.9,
+        "toMin": 3.1,
+        "toMax": 3.45
+      }
+    }
+  },
+  "copy-safe": {
+    "about": "Text inside the frame margin but left of the copy-safe box (x 60 < 115).",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"near\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: 60px; top: 400px;\">Near the edge</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "copy-safe"
+      ]
+    }
+  },
+  "overlap": {
+    "about": "Two lines 20 px apart vertically.",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"first\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: 300px; top: 300px;\">First line here</div><div class=\"mf-line mf-role-title t\" id=\"second\" data-mf-in=\"rise@0.4\" data-mf-out=\"fall@3.3\" style=\"left: 300px; top: 320px;\">Second line here</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "overlap"
+      ],
+      "elements": [
+        "first",
+        "second"
+      ]
+    }
+  },
+  "caption-band": {
+    "about": "Overlay copy in the 9:16 caption band (y 1150-1320).",
+    "aspect": "9:16",
+    "layer": "overlay",
+    "mode": "alpha",
+    "profile": "overlay-alpha",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"caption\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: 200px; top: 1180px;\">In the band</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "caption-band",
+        "copy-safe"
+      ]
+    }
+  },
+  "face-band": {
+    "about": "Overlay copy in the 16:9 face band (x 576-1344, y 108-864).",
+    "aspect": "16:9",
+    "layer": "overlay",
+    "mode": "alpha",
+    "profile": "overlay-alpha",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"face\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: 700px; top: 400px;\">On the face</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "face-band"
+      ]
+    }
+  },
+  "hold": {
+    "about": "A six-word line held 0.6 s (lands 0.85 s, exits 1.45 s); a later line follows.",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"quick\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@1.45\" style=\"left: 200px; top: 200px;\">One two three four five six</div><div class=\"mf-line mf-role-title t\" id=\"later\" data-mf-in=\"rise@1.8\" data-mf-out=\"fall@3.5\" style=\"left: 200px; top: 500px;\">Then the next line</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [],
+      "line": {
+        "elementId": "quick",
+        "holdSec": 0.6,
+        "words": 6,
+        "needSec": 2.3,
+        "ok": false
+      }
+    }
+  },
+  "moving": {
+    "about": "A headline sliding across the left frame margin the whole time it shows: exempt.",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"slide\" data-mf-in=\"rise@0.3\" data-mf-out=\"cut@3.0\" style=\"left: 200px; top: 300px; font-size: 96px;\">Moving headline</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "tl.fromTo('#slide', { x: -600 }, { x: 0, duration: 2.7, ease: 'none' }, 0.3);",
+    "expect": {
+      "problems": []
+    }
+  },
+  "spill": {
+    "about": "A line box (700 px) wider than the card (200 px) that paints behind it.",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"card\"><div class=\"mf-line mf-role-body\" id=\"spilling\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\">This text is far wider than its card</div></div>",
+    "css": ".card { position: fixed; left: 300px; top: 300px; width: 200px; height: 120px; background: var(--mf-surface); border-radius: 12px; } #mf-root #spilling { font-family: var(--mf-font-body); font-size: 40px; color: var(--mf-ink); white-space: nowrap; padding: 20px; width: 700px; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "spill"
+      ]
+    }
+  },
+  "min-size": {
+    "about": "A line set at 20 px on a 1920 x 1080 frame (minimum 28 px).",
+    "aspect": "16:9",
+    "layer": "broll",
+    "mode": "full",
+    "profile": "broll",
+    "html": "<div class=\"mf-line mf-role-title t\" id=\"small\" data-mf-in=\"rise@0.3\" data-mf-out=\"fall@3.2\" style=\"left: 200px; top: 200px; font-size: 20px;\">Small print here</div>",
+    "css": "#mf-root .t { position: fixed; margin: 0; font-family: var(--mf-font-display); font-size: 64px; line-height: 1.2; font-weight: 700; color: var(--mf-ink); white-space: nowrap; }",
+    "script": "",
+    "expect": {
+      "problems": [
+        "min-size"
+      ]
+    }
+  }
+}
