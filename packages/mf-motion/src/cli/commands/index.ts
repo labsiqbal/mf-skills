@@ -13,6 +13,7 @@ import {
   brandShowCommand,
   brandUseCommand,
 } from './brand';
+import { catalogCommand, catalogSearchCommand } from './catalog';
 import { cloudDisableCommand, cloudEnableCommand, cloudListCommand } from './cloud';
 import { doctorCommand } from './doctor';
 import { beatgridCheckCommand, filmBriefCommand, planCheckCommand } from './film';
@@ -56,6 +57,7 @@ export const COMMANDS: readonly AnyCommand[] = [
   packetCommand,
   auditCommand,
   gateCommand,
+  catalogCommand, catalogSearchCommand,
   moveInfoCommand,
   moveRenderCommand,
 ];

@@ -20,6 +20,8 @@
   },
   "scripts": {
     "build": "node esbuild.config.mjs",
+    "postbuild": "npm run catalogue",
+    "catalogue": "node scripts/gen-catalogue.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
