@@ -4,6 +4,7 @@
 // A move's meta loads at start-up; its builder loads on demand, so esbuild
 // code-splits each move into its own chunk.
 import type { MoveMeta, MoveModule } from '../contract';
+import { meta as followerMilestone } from './creator/follower-milestone/meta';
 import { meta as messageCascade } from './social/message-cascade/meta';
 
 export interface LibraryMove {
@@ -15,4 +16,5 @@ const move = (meta: MoveMeta, load: () => Promise<MoveModule>): LibraryMove => (
 
 export const LIBRARY_MOVES: LibraryMove[] = [
   move(messageCascade, () => import('./social/message-cascade/index')),
+  move(followerMilestone, () => import('./creator/follower-milestone/index')),
 ];
