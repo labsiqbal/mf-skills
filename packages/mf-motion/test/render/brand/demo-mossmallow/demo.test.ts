@@ -1,6 +1,7 @@
 // Demo brand Mossmallow: the fixture site follows the fixture contract, its
 // local-file capture equals expected.json, and a re-capture reproduces the
-// committed assets/demo-brands/mossmallow/ byte for byte.
+// committed assets/demo-brands/mossmallow/ byte for byte on Linux (by roles
+// elsewhere).
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdtempSync, readFileSync, readdirSync, statSync } from 'node:fs';
@@ -27,7 +28,7 @@ const SCREENS = ['checkup', 'shelf', 'streak', 'watering'];
 function walk(dir: string): string[] {
   return readdirSync(dir)
     .sort()
-    .flatMap((name) => (statSync(path.join(dir, name)).isDirectory() ? walk(path.join(dir, name)).map((rel) => path.join(name, rel)) : [name]));
+    .flatMap((name) => (statSync(path.join(dir, name)).isDirectory() ? walk(path.join(dir, name)).map((rel) => `${name}/${rel}`) : [name]));
 }
 
 const hashes = (dir: string) => Object.fromEntries(walk(dir).map((rel) => [rel, createHash('sha256').update(readFileSync(path.join(dir, rel))).digest('hex')]));
@@ -103,6 +104,23 @@ describe('Mossmallow capture', () => {
     const out = mkdtempSync(path.join(tmpdir(), 'mfm-demo-out-'));
     const result = spawnSync(process.execPath, ['scripts/fixtures-brands.mjs', '--only', ID, '--out', out], { cwd: packageRoot, encoding: 'utf8', timeout: 600_000 });
     expect(result.status, result.stderr).toBe(0);
-    expect(hashes(path.join(out, ID))).toEqual(hashes(demo));
+    const fresh = hashes(path.join(out, ID));
+    const committed = hashes(demo);
+    if (process.platform === 'linux') {
+      expect(fresh).toEqual(committed);
+      return;
+    }
+    // Generated on Linux: elsewhere font rasterisation moves the pixel
+    // evidence in brand.json and brand.md, so those compare by their roles.
+    const measured = new Set(['brand.json', 'brand.md']);
+    const files = (all: Record<string, string>) => Object.fromEntries(Object.entries(all).filter(([rel]) => !measured.has(rel)));
+    expect(Object.keys(fresh).sort()).toEqual(Object.keys(committed).sort());
+    expect(files(fresh)).toEqual(files(committed));
+    const roles = (dir: string) => {
+      const { doc } = readDoc('brand', path.join(dir, 'brand.json'));
+      const { ground, surface, ink, muted, accent, accent2 } = doc.colors;
+      return { colors: { ground, surface, ink, muted, accent, accent2 }, type: doc.type, logo: doc.logo, mark: doc.mark, shots: doc.shots, copy: doc.copy, status: doc.status };
+    };
+    expect(roles(path.join(out, ID))).toEqual(roles(demo));
   }, 600_000);
 });
